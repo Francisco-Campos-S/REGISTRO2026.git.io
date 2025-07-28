@@ -765,6 +765,10 @@ function agregarEstudiante() {
     }
 
     function renderAsistencia() {
+    // Eliminar estudiantes sin datos antes de renderizar
+    if (Array.isArray(estudiantes)) {
+        estudiantes = estudiantes.filter(e => e.cedula?.trim() || e.nombre?.trim() || e.apellido1?.trim() || e.apellido2?.trim());
+    }
     // Si no hay estudiantes, agregar una fila vacía y mostrar % asistencia y Acciones
     if (!estudiantes || estudiantes.length === 0) {
         let html = `<div class="version-mensaje" style="margin-bottom:10px;font-size:1.08em;color:var(--color-primario);font-weight:500;">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
