@@ -1185,18 +1185,22 @@ if (!localStorage.getItem(STORAGE_KEY)) {
                     asistenciaDias
                 });
             });
-            // Eliminar todas las filas vacías excepto una tras importar
-            if (estudiantes && estudiantes.length > 0) {
-                let vacias = 0;
-                for (let i = estudiantes.length - 1; i >= 0; i--) {
-                    const e = estudiantes[i];
-                    if (!e.cedula && !e.nombre && !e.apellido1 && !e.apellido2) {
-                        vacias++;
-                        if (vacias > 1) {
-                            estudiantes.splice(i, 1);
-                        }
+            // Eliminar todas las filas vacías excepto una antes de renderizar
+            let vacias = 0;
+            for (let i = estudiantes.length - 1; i >= 0; i--) {
+                const e = estudiantes[i];
+                if (!e.cedula && !e.nombre && !e.apellido1 && !e.apellido2) {
+                    vacias++;
+                    if (vacias > 1) {
+                        estudiantes.splice(i, 1);
                     }
                 }
+            }
+            // Al final, mover la fila vacía (si existe) al último lugar
+            let idxVacia = estudiantes.findIndex(e => !e.cedula && !e.nombre && !e.apellido1 && !e.apellido2);
+            if (idxVacia !== -1 && idxVacia !== estudiantes.length - 1) {
+                const vacia = estudiantes.splice(idxVacia, 1)[0];
+                estudiantes.push(vacia);
             }
             guardarDatos();
             renderAsistencia();

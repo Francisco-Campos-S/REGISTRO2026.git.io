@@ -1197,6 +1197,12 @@ if (!localStorage.getItem(STORAGE_KEY)) {
                         }
                     }
                 }
+                // Al final, mover la fila vacía (si existe) al último lugar
+                let idxVacia = estudiantes.findIndex(e => !e.cedula && !e.nombre && !e.apellido1 && !e.apellido2);
+                if (idxVacia !== -1 && idxVacia !== estudiantes.length - 1) {
+                    const vacia = estudiantes.splice(idxVacia, 1)[0];
+                    estudiantes.push(vacia);
+                }
             }
             guardarDatos();
             renderAsistencia();
