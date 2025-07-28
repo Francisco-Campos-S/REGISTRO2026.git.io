@@ -28,8 +28,20 @@ body.dark-mode {
     --color-table-hover: #1976d2;
     --color-text: #fff;
 }
-tbody tr:nth-child(odd) td { background: #fff !important; color: #263238 !important; transition: background 0.2s, color 0.2s; }
-tbody tr:nth-child(even) td { background: #c3d0e6 !important; color: #263238 !important; transition: background 0.2s, color 0.2s; }
+tbody tr:nth-child(odd) td,
+tbody tr:nth-child(odd) td.sticky,
+tbody tr:nth-child(odd) td.numero {
+    background: #f5f7fa !important;
+    color: #263238 !important;
+    transition: background 0.2s, color 0.2s;
+}
+tbody tr:nth-child(even) td,
+tbody tr:nth-child(even) td.sticky,
+tbody tr:nth-child(even) td.numero {
+    background: #c2c8d6 !important;
+    color: #263238 !important;
+    transition: background 0.2s, color 0.2s;
+}
 body.dark-mode tbody tr:nth-child(odd) td { background: #263238 !important; color: #fff !important; }
 body.dark-mode tbody tr:nth-child(even) td { background: #37474f !important; color: #fff !important; }
 body.dark-mode tbody tr:nth-child(odd) td.sticky { background: #263238 !important; color: #fff !important; }
@@ -42,8 +54,6 @@ body.dark-mode tbody tr td select {
     background: inherit !important;
     border: 1px solid #789;
 }
-tbody tr:nth-child(odd) td.sticky { background: #fff !important; color: #263238 !important; }
-tbody tr:nth-child(even) td.sticky { background: #c3d0e6 !important; color: #263238 !important; }
 td.sticky input,
 td.sticky select,
 tbody tr td input,
@@ -209,7 +219,6 @@ td.apellido2,
 td:nth-child(1) {
     position: sticky;
     left: 0;
-    background: linear-gradient(180deg, #e3e9f7 0%, #f8fafc 100%);
     box-shadow: 2px 0 8px rgba(44,62,80,0.07);
 }
 th[rowspan="2"]:nth-child(2) { left: 54px; }
@@ -314,22 +323,6 @@ th, td { z-index: 2; }
             box-shadow: 0 2px 12px rgba(44,62,80,0.22);
             padding: 8px 0;
             transition: background 0.2s, color 0.2s;
-        }
-        tbody tr:nth-child(odd) td.numero {
-            background: #f0f4fa !important;
-            color: #111 !important;
-            font-size: 1.45em !important;
-            font-weight: 900 !important;
-            border: 3px solid #1565c0 !important;
-            text-shadow: 0 2px 12px #fff, 0 1px 0 #fff, 0 2px 8px #263238;
-        }
-        tbody tr:nth-child(even) td.numero {
-            background: rgba(44,62,80,0.13) !important;
-            color: #fff !important;
-            font-size: 1.45em !important;
-            font-weight: 900 !important;
-            border: 3px solid #1565c0 !important;
-            text-shadow: 0 2px 8px #222, 0 1px 0 #222;
         }
         tr:hover td {
             transition: background 0.2s;
@@ -506,10 +499,6 @@ th, td { z-index: 2; }
             table { font-size: 13px; }
         }
         /* Refuerzo alternancia en sticky: todas las sticky td heredan el fondo alterno de la fila */
-tbody tr:nth-child(odd) td.sticky { background: #f4f7fb !important; }
-tbody tr:nth-child(even) td.sticky { background: #e3e9f7 !important; }
-body.dark-mode tbody tr:nth-child(odd) td.sticky { background: #263238 !important; }
-body.dark-mode tbody tr:nth-child(even) td.sticky { background: #37474f !important; }
 td.sticky { box-shadow: none !important; }
 th input[type="date"] {
     width: 180px !important;
