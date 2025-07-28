@@ -1,1 +1,1 @@
-# REGISTRO2026git.io
+# registro2.git.io
