@@ -1253,14 +1253,11 @@ function eliminarEstudiantePorNumero() {
 
 // Ordenar estudiantes por primer apellido (manual)
 function ordenarEstudiantesManual() {
+    if (!estudiantes || estudiantes.length === 0) {
+        mostrarAlerta('No hay estudiantes para ordenar.', 'error');
+        return;
+    }
     estudiantes.sort((a, b) => {
-        // Si ambos están vacíos, no importa el orden
-        const aVacio = !(a.nombre && a.apellido1);
-        const bVacio = !(b.nombre && b.apellido1);
-        if (aVacio && !bVacio) return 1; // a vacío va abajo
-        if (!aVacio && bVacio) return -1; // b vacío va abajo
-        if (aVacio && bVacio) return 0; // ambos vacíos
-        // Ambos tienen datos, ordenar por primer apellido
         const ap1 = (a.apellido1 || '').toLowerCase();
         const ap2 = (b.apellido1 || '').toLowerCase();
         if (ap1 < ap2) return -1;
