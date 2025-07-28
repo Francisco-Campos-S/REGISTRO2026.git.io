@@ -43,7 +43,12 @@ tbody tr:nth-child(even) td.numero {
     transition: background 0.2s, color 0.2s;
 }
 body.dark-mode tbody tr:nth-child(odd) td { background: #263238 !important; color: #fff !important; }
-body.dark-mode tbody tr:nth-child(even) td { background: #37474f !important; color: #fff !important; }
+body.dark-mode tbody tr:nth-child(even) td {
+    background: #fff !important;
+    color: #263238 !important;
+    border: 2px solid #b0bec5 !important;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.13) !important;
+}
 body.dark-mode tbody tr:nth-child(odd) td.sticky { background: #263238 !important; color: #fff !important; }
 body.dark-mode tbody tr:nth-child(even) td.sticky { background: #37474f !important; color: #fff !important; }
 body.dark-mode td.sticky input,
@@ -51,17 +56,18 @@ body.dark-mode td.sticky select,
 body.dark-mode tbody tr td input,
 body.dark-mode tbody tr td select {
     color: #fff !important;
-    background: inherit !important;
-    border: 1px solid #789;
+    background: rgba(255,255,255,0.13) !important;
+    border: 1.5px solid #b0bec5 !important;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.13) !important;
 }
 td.sticky input,
 td.sticky select,
 tbody tr td input,
 tbody tr td select {
-    background: inherit !important;
+    background: #fff !important;
     color: #263238 !important;
-    box-shadow: none !important;
-    border: 1px solid #bfc9d8;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07) !important;
+    border: 1.5px solid #bfc9d8 !important;
 }
 #tooltipModoOscuro {
     display:none;
