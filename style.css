@@ -312,10 +312,6 @@ body.dark-mode header.scrolled {
     box-shadow: 0 8px 32px var(--color-shadow);
     animation: fadeBlockIn 1.1s cubic-bezier(.77,0,.18,1) 0.5s;
     margin: 0 20px;
-    /* Asegurar que sticky funcione en todos los navegadores */
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    position: relative !important;
 }
 
 .table-wrapper {
@@ -327,16 +323,10 @@ body.dark-mode header.scrolled {
 }
 
 .table-responsive {
-    overflow-x: auto !important;
-    overflow-y: visible !important;
+    overflow-x: auto;
     border-radius: var(--border-radius-lg);
     scroll-behavior: smooth;
-    position: relative !important;
-    /* Fixes para sticky en todos los navegadores */
-    -webkit-overflow-scrolling: touch;
-    will-change: scroll-position;
-    /* Asegurar contexto sticky */
-    contain: layout style paint;
+    position: relative;
 }
 
 /* Indicador visual de scroll horizontal */
@@ -395,9 +385,6 @@ table {
     color: var(--color-text);
     margin: 0;
     width: 100%;
-    /* Asegurar contexto para sticky */
-    position: relative !important;
-    isolation: isolate !important;
 }
 
 th, td {
@@ -409,320 +396,71 @@ th, td {
 }
 
 /* ===== COLUMNAS STICKY - SOLO NOMBRE ===== */
-/* ELIMINADO - REEMPLAZADO POR SOLUCIÓN DEFINITIVA AL FINAL */
-
-/* ===== STICKY SOLO PARA FUNCIONALIDAD (SIN ESTILOS VISUALES) ===== */
-/* Solo se aplicará por JavaScript cuando sea necesario */
-
-/* ELIMINAR - Nombre usa los mismos estilos generales que todas las demás columnas */
-
-/* ELIMINAR ESTILOS ESPECÍFICOS DEL ENCABEZADO NOMBRE */
-/* Los encabezados se manejan con las reglas generales de th */
-
-/* ESTILOS DUPLICADOS ELIMINADOS - SE USAN LOS DE ARRIBA */
-
-/* Inputs dentro de columnas iguales (nombre, apellido1, apellido2) - ANCHO COMO CÉDULA */
-td.nombre input[type="text"],
-td.apellido1 input[type="text"], 
-td.apellido2 input[type="text"] {
-    width: 90%;
-    min-width: 240px;
-    max-width: 360px;
-    background: #fff !important;
-    color: #263238 !important;
-    border: 1.5px solid #b0bec5 !important;
-    border-radius: 8px !important;
-    padding: 8px !important;
-    font-size: 1em !important;
-    transition: all 0.2s ease !important;
-}
-
-/* Focus se maneja por JavaScript para consistencia con otras columnas */
-
-/* Modo oscuro para inputs - TODAS LAS COLUMNAS IGUALES */
-/* Inputs en filas claras (oscuras) en modo oscuro */
-body.dark-mode tbody tr:nth-child(odd) td.nombre input[type="text"],
-body.dark-mode tbody tr:nth-child(odd) td.apellido1 input[type="text"],
-body.dark-mode tbody tr:nth-child(odd) td.apellido2 input[type="text"] {
-    background: rgba(44,62,80,0.18) !important;
-    color: #fff !important;
-    border: 2px solid var(--color-primario) !important;
-    box-shadow: 0 2px 8px var(--color-shadow) !important;
-}
-
-/* Inputs en filas blancas en modo oscuro */
-body.dark-mode tbody tr:nth-child(even) td.nombre input[type="text"],
-body.dark-mode tbody tr:nth-child(even) td.apellido1 input[type="text"],
-body.dark-mode tbody tr:nth-child(even) td.apellido2 input[type="text"] {
-    background: #fff !important;
-    color: #000 !important;
-    border: 2px solid var(--color-primario) !important;
-    box-shadow: 0 2px 8px var(--color-shadow) !important;
-}
-
-/* Focus en inputs en modo oscuro */
-body.dark-mode td.nombre input[type="text"]:focus,
-body.dark-mode td.apellido1 input[type="text"]:focus,
-body.dark-mode td.apellido2 input[type="text"]:focus {
-    background: #263238 !important;
-    color: #fff !important;
-}
-
-/* Focus manejado por JavaScript para consistencia */
-
-/* Borde rojo uniforme en toda la fila cuando tiene focus */
-tr.fila-focus-activa {
-    outline: 3px solid #e74c3c !important;
-    outline-offset: -1px !important;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.7) !important;
-    position: relative !important;
-    z-index: 200 !important;
-}
-
-/* Ocultar bordes internos de celdas en fila activa */
-tr.fila-focus-activa td {
-    border-left: none !important;
-    border-right: none !important;
-}
-
-/* Solo mostrar bordes en los extremos de la fila activa */
-tr.fila-focus-activa td:first-child {
-    border-left: 1px solid var(--color-borde) !important;
-}
-
-tr.fila-focus-activa td:last-child {
-    border-right: 1px solid var(--color-borde) !important;
-}
-
-/* Asegurar que la columna sticky mantenga el borde y posición */
-tr.fila-focus-activa td.nombre {
-    z-index: 201 !important;
-    border-right: 3px solid var(--color-borde-sticky) !important;
-}
-
-/* ELIMINAR - Los colores zebra se manejarán por JavaScript para ser exactamente iguales */
-
-/* Hover uniforme en toda la fila - EXCEPTO COLUMNA NOMBRE */
-tbody tr:hover td:not(.nombre) {
-    background-color: var(--color-hover) !important;
-}
-
-/* Ocultar bordes internos en hover - EXCEPTO COLUMNA NOMBRE */
-tbody tr:hover td:not(.nombre) {
-    border-left: none !important;
-    border-right: none !important;
-}
-
-/* Solo mostrar bordes en los extremos en hover */
-tbody tr:hover td:first-child {
-    border-left: 1px solid var(--color-borde) !important;
-}
-
-tbody tr:hover td:last-child {
-    border-right: 1px solid var(--color-borde) !important;
-}
-
-/* Mantener borde sticky en hover y focus */
-tbody tr:hover td.nombre,
-tr.fila-focus-activa td.nombre {
-    border-right: 3px solid var(--color-borde-sticky) !important;
-}
-
-/* ===== SELECTORES DE ASISTENCIA CON COLORES ===== */
-.select-asistencia {
-    font-weight: 600 !important;
-    border: 2px solid transparent !important;
-    border-radius: 8px !important;
-    transition: all 0.3s ease !important;
-}
-
-/* Presente - Verde claro */
-.select-presente {
-    background: linear-gradient(135deg, #c8e6c9, #a5d6a7) !important;
-    color: #1b5e20 !important;
-    border-color: #4caf50 !important;
-}
-
-/* Ausente - Rojo claro */
-.select-ausente {
-    background: linear-gradient(135deg, #ffcdd2, #ef9a9a) !important;
-    color: #b71c1c !important;
-    border-color: #f44336 !important;
-}
-
-/* Tardía - Amarillo/Naranja */
-.select-tardía {
-    background: linear-gradient(135deg, #fff3e0, #ffcc02) !important;
-    color: #e65100 !important;
-    border-color: #ff9800 !important;
-}
-
-/* Escapada - Naranja intenso */
-.select-escapada {
-    background: linear-gradient(135deg, #ffe0b2, #ffab40) !important;
-    color: #bf360c !important;
-    border-color: #ff5722 !important;
-}
-
-/* Justificada - Azul claro */
-.select-justificada {
-    background: linear-gradient(135deg, #e3f2fd, #90caf9) !important;
-    color: #0d47a1 !important;
-    border-color: #2196f3 !important;
-}
-
-/* Hover effects */
-.select-presente:hover { box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important; }
-.select-ausente:hover { box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important; }
-.select-tardía:hover { box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important; }
-.select-escapada:hover { box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3) !important; }
-.select-justificada:hover { box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important; }
-
-/* Modo oscuro */
-body.dark-mode .select-presente {
-    background: linear-gradient(135deg, #2e7d32, #43a047) !important;
-    color: #c8e6c9 !important;
-}
-
-body.dark-mode .select-ausente {
-    background: linear-gradient(135deg, #c62828, #e53935) !important;
-    color: #ffcdd2 !important;
-}
-
-body.dark-mode .select-tardía {
-    background: linear-gradient(135deg, #f57600, #ff9800) !important;
-    color: #fff3e0 !important;
-}
-
-body.dark-mode .select-escapada {
-    background: linear-gradient(135deg, #d84315, #ff5722) !important;
-    color: #ffe0b2 !important;
-}
-
-body.dark-mode .select-justificada {
-    background: linear-gradient(135deg, #1565c0, #1976d2) !important;
-    color: #e3f2fd !important;
-}
-
-/* ===== COLUMNA NÚMERO DE ESTUDIANTE ===== */
-th.numero, td.numero {
-    min-width: 50px !important;
-    max-width: 60px !important;
-    width: 55px !important;
-    text-align: center !important;
-    font-weight: bold !important;
-    background: var(--color-header) !important;
-    color: var(--color-header-text) !important;
-}
-
-/* ===== COLUMNA NOMBRE STICKY - FALLBACK UNIVERSAL ===== */
 th.nombre, td.nombre {
-    /* CSS Sticky nativo (si es soportado) */
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    left: 55px !important; /* Después de la columna número */
-    z-index: 60 !important;
-    border-right: 3px solid var(--color-borde-sticky) !important;
-    /* Evitar superposiciones */
-    isolation: isolate !important;
-    will-change: transform !important;
-    /* Forzar hardware acceleration */
-    transform: translateZ(0) !important;
-    
-    /* Fallback para navegadores sin soporte sticky */
-    position: relative !important;
+    min-width: 160px;
+    position: sticky;
+    right: 0;
+    z-index: 20;
+    background: #fff;
+    box-shadow: -2px 0 8px var(--color-shadow);
 }
-
-/* Detectar si el navegador soporta sticky y aplicar si es posible */
-@supports (position: sticky) {
-    th.nombre, td.nombre {
-        position: sticky !important;
-    }
+body.dark-mode th.nombre, 
+body.dark-mode td.nombre {
+    background: #263238 !important;
 }
-
-@supports (position: -webkit-sticky) {
-    th.nombre, td.nombre {
-        position: -webkit-sticky !important;
-    }
-}
-
-/* Encabezado nombre sticky - DEBE SER DIFERENTE */
-th.nombre {
-    background: var(--color-primario) !important;
-    color: white !important;
-    font-weight: bold !important;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.2) !important;
-}
-
-/* Celdas nombre sticky en filas pares e impares - COLORES MUY VISIBLES */
-tbody tr:nth-child(even) td.nombre {
-    background: #d1d5db !important; /* Gris mucho más oscuro para mayor contraste */
-    box-shadow: 2px 0 4px rgba(0,0,0,0.1) !important;
-}
-
-tbody tr:nth-child(odd) td.nombre {
-    background: #ffffff !important; /* Blanco para impares */
-    box-shadow: 2px 0 4px rgba(0,0,0,0.1) !important;
-}
-
-/* Modo oscuro - zebra más visible */
-body.dark-mode tbody tr:nth-child(even) td.nombre {
-    background: #2d3436 !important;
-}
-
-body.dark-mode tbody tr:nth-child(odd) td.nombre {
-    background: #363a3d !important;
-}
-
-/* Inputs dentro de la columna nombre sticky */
-td.nombre input[type="text"] {
-    background: transparent !important;
-    border: 1px solid rgba(0,0,0,0.1) !important;
-}
-
-body.dark-mode td.nombre input[type="text"] {
-    background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    color: #ecf0f1 !important;
-}
-
-/* Hover para columna nombre sticky - MANTENER FONDO ZEBRA */
-tbody tr:hover td.nombre {
-    /* NO cambiar background - mantener zebra */
-    box-shadow: 2px 0 8px var(--color-shadow-hover) !important;
-    z-index: 65 !important;
-    /* Resaltar con borde en lugar de cambiar fondo */
-    outline: 2px solid var(--color-primario) !important;
-    outline-offset: -2px !important;
-}
-
-/* Focus para columna nombre sticky */
-tr.fila-focus-activa td.nombre {
-    background: var(--color-focus) !important;
-    z-index: 70 !important;
-}
-
-/* ===== COLUMNAS IGUALES (APELLIDOS Y NOMBRE) - MISMO ANCHO QUE CÉDULA ===== */
-th.apellido1, td.apellido1,
-th.apellido2, td.apellido2,
-th.nombre, td.nombre { 
-    min-width: 260px;
-    max-width: 380px;
-}
-
-/* ELIMINAR - Nombre se comporta exactamente igual que apellidos */
-
-th.cedula, td.cedula { 
-    min-width: 260px; 
-    max-width: 380px; 
-}
-
 /* Asegurar que la columna de acciones no sea sticky */
 th.th-resumen, td.th-resumen {
     position: static !important;
     right: auto !important;
     left: auto !important;
     box-shadow: none !important;
+}
+
+th.apellido1, td.apellido1,
+th.apellido2, td.apellido2 { min-width: 140px; }
+th.cedula, td.cedula { min-width: 260px; max-width: 380px; }
+
+/* Asegurar que el fondo de las columnas sticky se mantenga */
+tbody tr:nth-child(odd) td.nombre {
+    background: #f4f7fb !important;
+    color: #263238 !important;
+}
+
+tbody tr:nth-child(even) td.nombre {
+    background: #c2c8d6 !important;
+    color: #263238 !important;
+}
+
+body.dark-mode tbody tr:nth-child(odd) td.nombre {
+    background: #263238 !important;
+    color: #fff !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td.nombre {
+    background: #fff !important;
+    color: #000 !important;
+}
+
+/* Asegurar que los encabezados sticky tengan el fondo correcto */
+th.nombre {
+    background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%) !important;
+    color: #fff !important;
+    text-shadow: 0 2px 8px var(--color-shadow) !important;
+    position: sticky;
+    right: 0;
+    z-index: 20;
+    box-shadow: -2px 0 8px var(--color-shadow);
+}
+body.dark-mode th.nombre {
+    background: linear-gradient(90deg, #1565c0 0%, #90caf9 100%) !important;
+}
+
+/* Mejorar la experiencia de hover en la columna sticky */
+tbody tr:hover td.nombre {
+    background: var(--color-table-hover) !important;
+    box-shadow: -2px 0 8px var(--color-shadow-hover) !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
 }
 
 /* ===== ENCABEZADOS ===== */
@@ -754,24 +492,24 @@ th:hover {
     box-shadow: 0 4px 18px var(--color-shadow-hover);
 }
 
-/* ===== FILAS DE DATOS - ZEBRA MUY VISIBLE ===== */
+/* ===== FILAS DE DATOS ===== */
 tbody tr:nth-child(odd) td {
-    background: #ffffff !important; /* Blanco para impares */
-    color: #2c3e50 !important;
+    background: #f4f7fb !important;
+    color: #263238 !important;
 }
 
 tbody tr:nth-child(even) td {
-    background: #d1d5db !important; /* Gris mucho más oscuro para mayor contraste */
-    color: #2c3e50 !important;
+    background: #c2c8d6 !important;
+    color: #263238 !important;
 }
 
 body.dark-mode tbody tr:nth-child(odd) td {
-    background: #2d3436 !important;
-    color: #ecf0f1 !important;
+    background: #263238 !important;
+    color: #fff !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
-    background: #363a3d !important;
+    background: #fff !important;
     color: #000 !important;
     border: 2px solid var(--color-border) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
@@ -1200,4 +938,51 @@ body.dark-mode .btn-agregar-dia {
     margin-bottom: 5px;
 }
 
-/* ESTILOS DUPLICADOS ELIMINADOS - USAR SOLUCIÓN ÚNICA ARRIBA */
+th.nombre:hover {
+    background: linear-gradient(180deg, #dbe6f6 0%, var(--color-fondo) 100%) !important;
+    box-shadow: 0 4px 18px var(--color-shadow-hover) !important;
+    color: #263238 !important;
+    text-shadow: none !important;
+}
+body.dark-mode th.nombre:hover {
+    background: linear-gradient(180deg, #263238 0%, #1565c0 100%) !important;
+    color: #fff !important;
+}
+
+tr:has(td.nombre:focus-within),
+tr.fila-focus-activa,
+tr:hover {
+    outline: 2.5px solid #e74c3c !important;
+    outline-offset: -2px !important;
+    z-index: 100 !important;
+    position: relative !important;
+    background-clip: padding-box !important;
+}
+
+tr:has(td.nombre:focus-within) td.nombre,
+tr.fila-focus-activa td.nombre,
+tr:hover td.nombre {
+    overflow: visible !important;
+    z-index: 9999 !important;
+    position: sticky !important;
+    left: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: inherit !important;
+    position: relative !important;
+}
+
+tr:has(td.nombre:focus-within) td.nombre::before,
+tr.fila-focus-activa td.nombre::before,
+tr:hover td.nombre::before {
+    content: '';
+    position: absolute;
+    top: -2.5px; left: 0; bottom: -2.5px; right: -2.5px;
+    border-right: 2.5px solid #e74c3c !important;
+    pointer-events: none;
+    z-index: 10000 !important;
+    background: none !important;
+    border-radius: 0 8px 8px 0;
+    box-sizing: border-box;
+    display: block;
+}
