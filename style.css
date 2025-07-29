@@ -327,6 +327,9 @@ body.dark-mode header.scrolled {
     border-radius: var(--border-radius-lg);
     scroll-behavior: smooth;
     position: relative;
+    isolation: isolate;
+    contain: layout style paint;
+    overflow-y: visible;
 }
 
 /* Indicador visual de scroll horizontal */
@@ -381,10 +384,11 @@ table {
     background: var(--color-table-bg);
     box-shadow: 0 8px 32px var(--color-shadow);
     border-radius: var(--border-radius-lg);
-    overflow: hidden;
+    overflow: visible;
     color: var(--color-text);
     margin: 0;
     width: 100%;
+    position: relative;
 }
 
 th, td {
@@ -397,17 +401,85 @@ th, td {
 
 /* ===== COLUMNAS STICKY - SOLO NOMBRE ===== */
 th.nombre, td.nombre {
-    min-width: 160px;
-    position: sticky;
-    right: 0;
-    z-index: 20;
-    background: #fff;
-    box-shadow: -2px 0 8px var(--color-shadow);
+    min-width: 260px;
+    max-width: 380px;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    left: 55px !important;
+    z-index: 3 !important;
+    background: #fff !important;
+    border-right: 2px solid #bdbdbd !important;
+    box-shadow: 2px 0 6px rgba(0,0,0,0.04);
+    transition: none !important;
+    transform: none !important;
 }
-body.dark-mode th.nombre, 
+
+/* Zebra para sticky name en modo claro */
+tbody tr:nth-child(even) td.nombre {
+    background: #f3f6fa !important;
+}
+
+/* Encabezado sticky nombre */
+th.nombre {
+    background: #1976d2 !important;
+    color: #fff !important;
+    font-weight: bold;
+    border-right: 2px solid #bdbdbd !important;
+    z-index: 4 !important;
+}
+
+/* Borde rojo solo en celda sticky nombre al focus */
+td.nombre:focus-within {
+    outline: 2.5px solid #e74c3c !important;
+    outline-offset: -2px !important;
+    z-index: 10 !important;
+    background: #fffbe9 !important;
+}
+
+/* Inputs dentro de sticky nombre */
+td.nombre input[type="text"] {
+    background: transparent !important;
+    border: 1px solid #bdbdbd !important;
+    color: #222 !important;
+    transform: none !important;
+    transition: none !important;
+    position: static !important;
+}
+
+/* Dark mode styles for sticky name - CORREGIDO PARA QUE SEA IGUAL A LAS DEMÁS */
+body.dark-mode th.nombre {
+    background: #1565c0 !important;
+    color: #fff !important;
+}
+
 body.dark-mode td.nombre {
-    background: #263238 !important;
+    background: inherit !important;
+    color: inherit !important;
 }
+
+body.dark-mode tbody tr:nth-child(odd) td.nombre {
+    background: #2d3436 !important;
+    color: #fff !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td.nombre {
+    background: #404a4f !important;
+    color: #fff !important;
+}
+
+body.dark-mode td.nombre:focus-within {
+    background: #2d2a1e !important;
+    outline: 2.5px solid #e74c3c !important;
+}
+
+body.dark-mode td.nombre input[type="text"] {
+    background: transparent !important;
+    color: inherit !important;
+    border: 1px solid #444 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
 /* Asegurar que la columna de acciones no sea sticky */
 th.th-resumen, td.th-resumen {
     position: static !important;
@@ -417,50 +489,13 @@ th.th-resumen, td.th-resumen {
 }
 
 th.apellido1, td.apellido1,
-th.apellido2, td.apellido2 { min-width: 140px; }
-th.cedula, td.cedula { min-width: 260px; max-width: 380px; }
-
-/* Asegurar que el fondo de las columnas sticky se mantenga */
-tbody tr:nth-child(odd) td.nombre {
-    background: #f4f7fb !important;
-    color: #263238 !important;
+th.apellido2, td.apellido2 { 
+    min-width: 260px; 
+    max-width: 380px; 
 }
-
-tbody tr:nth-child(even) td.nombre {
-    background: #c2c8d6 !important;
-    color: #263238 !important;
-}
-
-body.dark-mode tbody tr:nth-child(odd) td.nombre {
-    background: #263238 !important;
-    color: #fff !important;
-}
-
-body.dark-mode tbody tr:nth-child(even) td.nombre {
-    background: #fff !important;
-    color: #000 !important;
-}
-
-/* Asegurar que los encabezados sticky tengan el fondo correcto */
-th.nombre {
-    background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%) !important;
-    color: #fff !important;
-    text-shadow: 0 2px 8px var(--color-shadow) !important;
-    position: sticky;
-    right: 0;
-    z-index: 20;
-    box-shadow: -2px 0 8px var(--color-shadow);
-}
-body.dark-mode th.nombre {
-    background: linear-gradient(90deg, #1565c0 0%, #90caf9 100%) !important;
-}
-
-/* Mejorar la experiencia de hover en la columna sticky */
-tbody tr:hover td.nombre {
-    background: var(--color-table-hover) !important;
-    box-shadow: -2px 0 8px var(--color-shadow-hover) !important;
-    transform: scale(1.02);
-    transition: all 0.2s ease;
+th.cedula, td.cedula { 
+    min-width: 260px; 
+    max-width: 380px; 
 }
 
 /* ===== ENCABEZADOS ===== */
@@ -492,34 +527,27 @@ th:hover {
     box-shadow: 0 4px 18px var(--color-shadow-hover);
 }
 
-/* ===== FILAS DE DATOS ===== */
+/* ===== FILAS DE DATOS - PATRÓN ZEBRA MEJORADO ===== */
 tbody tr:nth-child(odd) td {
-    background: #f4f7fb !important;
+    background: #ffffff !important;
     color: #263238 !important;
 }
 
 tbody tr:nth-child(even) td {
-    background: #c2c8d6 !important;
+    background: #e8eaed !important;
     color: #263238 !important;
 }
 
 body.dark-mode tbody tr:nth-child(odd) td {
-    background: #263238 !important;
+    background: #2d3436 !important;
     color: #fff !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
-    background: #fff !important;
-    color: #000 !important;
+    background: #404a4f !important;
+    color: #fff !important;
     border: 2px solid var(--color-border) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
-}
-
-tbody tr:hover {
-    outline: 3px solid var(--color-error);
-    outline-offset: -3px;
-    box-shadow: none;
-    z-index: 3;
 }
 
 /* ===== CELDA NUMERO ===== */
@@ -532,6 +560,9 @@ td.numero {
     border-left: 3px solid var(--color-secundario);
     box-shadow: 0 2px 12px var(--color-shadow);
     padding: 8px 0;
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
 }
 
 /* ===== INPUTS Y SELECTS ===== */
@@ -714,6 +745,73 @@ body.dark-mode .btn-agregar-dia {
     box-shadow: 0 2px 8px rgba(102,187,106,0.13);
 }
 
+/* ===== SELECTORES DE ASISTENCIA CON COLORES ===== */
+.select-presente {
+    background: #e8f5e8 !important;
+    color: #2e7d32 !important;
+    border-color: #4caf50 !important;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2) !important;
+}
+
+.select-ausente {
+    background: #ffebee !important;
+    color: #c62828 !important;
+    border-color: #f44336 !important;
+    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2) !important;
+}
+
+.select-tardia {
+    background: #fff3e0 !important;
+    color: #ef6c00 !important;
+    border-color: #ff9800 !important;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.2) !important;
+}
+
+.select-escapada {
+    background: #f3e5f5 !important;
+    color: #7b1fa2 !important;
+    border-color: #9c27b0 !important;
+    box-shadow: 0 2px 4px rgba(156, 39, 176, 0.2) !important;
+}
+
+.select-justificada {
+    background: #e3f2fd !important;
+    color: #1565c0 !important;
+    border-color: #2196f3 !important;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2) !important;
+}
+
+/* Dark mode para selectores */
+body.dark-mode .select-presente {
+    background: #1b5e20 !important;
+    color: #a5d6a7 !important;
+    border-color: #4caf50 !important;
+}
+
+body.dark-mode .select-ausente {
+    background: #b71c1c !important;
+    color: #ffcdd2 !important;
+    border-color: #f44336 !important;
+}
+
+body.dark-mode .select-tardia {
+    background: #e65100 !important;
+    color: #ffcc02 !important;
+    border-color: #ff9800 !important;
+}
+
+body.dark-mode .select-escapada {
+    background: #4a148c !important;
+    color: #ce93d8 !important;
+    border-color: #9c27b0 !important;
+}
+
+body.dark-mode .select-justificada {
+    background: #0d47a1 !important;
+    color: #90caf9 !important;
+    border-color: #2196f3 !important;
+}
+
 /* ===== ALERTAS MEJORADAS ===== */
 .alerta {
     position: fixed;
@@ -766,6 +864,40 @@ body.dark-mode .btn-agregar-dia {
     background: linear-gradient(90deg,#27ae60 0%,#43a047 100%) !important;
     transform: scale(1.06);
     box-shadow: 0 4px 16px rgba(39,174,96,0.13) !important;
+}
+
+/* ===== BORDE ROJO UNIFORME EN TODA LA FILA ===== */
+tbody tr:hover {
+    box-shadow: 0 0 0 3px #e74c3c !important;
+    z-index: 100 !important;
+    position: relative !important;
+}
+
+tbody tr:has(td.nombre:focus-within),
+tbody tr.fila-focus-activa {
+    box-shadow: 0 0 0 3px #e74c3c !important;
+    z-index: 100 !important;
+    position: relative !important;
+}
+
+/* Asegurar que la celda sticky mantenga su posición */
+tbody tr:hover td.nombre,
+tbody tr:has(td.nombre:focus-within) td.nombre,
+tbody tr.fila-focus-activa td.nombre {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    left: 55px !important;
+    z-index: 9999 !important;
+    background: inherit !important;
+}
+
+/* Dark mode para borde rojo - MÁS VISIBLE */
+body.dark-mode tbody tr:hover,
+body.dark-mode tbody tr:has(td.nombre:focus-within),
+body.dark-mode tbody tr.fila-focus-activa {
+    box-shadow: 0 0 0 4px #ff6b6b !important;
+    z-index: 100 !important;
+    position: relative !important;
 }
 
 /* ===== ANIMACIONES MEJORADAS ===== */
@@ -936,53 +1068,4 @@ body.dark-mode .btn-agregar-dia {
     white-space: nowrap;
     z-index: 1000;
     margin-bottom: 5px;
-}
-
-th.nombre:hover {
-    background: linear-gradient(180deg, #dbe6f6 0%, var(--color-fondo) 100%) !important;
-    box-shadow: 0 4px 18px var(--color-shadow-hover) !important;
-    color: #263238 !important;
-    text-shadow: none !important;
-}
-body.dark-mode th.nombre:hover {
-    background: linear-gradient(180deg, #263238 0%, #1565c0 100%) !important;
-    color: #fff !important;
-}
-
-tr:has(td.nombre:focus-within),
-tr.fila-focus-activa,
-tr:hover {
-    outline: 2.5px solid #e74c3c !important;
-    outline-offset: -2px !important;
-    z-index: 100 !important;
-    position: relative !important;
-    background-clip: padding-box !important;
-}
-
-tr:has(td.nombre:focus-within) td.nombre,
-tr.fila-focus-activa td.nombre,
-tr:hover td.nombre {
-    overflow: visible !important;
-    z-index: 9999 !important;
-    position: sticky !important;
-    left: 0 !important;
-    border-left: none !important;
-    border-right: none !important;
-    background: inherit !important;
-    position: relative !important;
-}
-
-tr:has(td.nombre:focus-within) td.nombre::before,
-tr.fila-focus-activa td.nombre::before,
-tr:hover td.nombre::before {
-    content: '';
-    position: absolute;
-    top: -2.5px; left: 0; bottom: -2.5px; right: -2.5px;
-    border-right: 2.5px solid #e74c3c !important;
-    pointer-events: none;
-    z-index: 10000 !important;
-    background: none !important;
-    border-radius: 0 8px 8px 0;
-    box-sizing: border-box;
-    display: block;
 }

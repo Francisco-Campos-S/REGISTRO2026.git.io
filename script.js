@@ -148,6 +148,9 @@ function renderAsistencia() {
     
     // Aplicar sticky después de renderizar
     setTimeout(implementarStickyManual, 100);
+    
+    // Configurar hover de filas después de renderizar
+    setTimeout(configurarHoverFilas, 200);
 }
 
 function limpiarEstudiantesVacios() {
@@ -235,7 +238,7 @@ function generarEncabezadoDia(diaIndex, ausentesDia) {
         </div>
         <br><div style='display:flex;align-items:center;gap:8px;margin-top:6px;'>
             <span style='font-size:12px;color:var(--color-primario);background:linear-gradient(90deg,#e3e9f7 0%,#fff 100%);padding:3px 12px;border-radius:8px;border:1.5px solid var(--color-primario);font-weight:600;box-shadow:0 2px 8px rgba(25,118,210,0.08);transition:background 0.18s;'>Lecciones</span>
-            <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;" onchange="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
+            <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;' onchange="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
         </div>
         <br><span style="font-size:11px;color:var(--color-error);font-weight:bold;">Ausentes: ${ausentesDia}</span>
         <br><button onclick="eliminarDia(${diaIndex})" class="btn-eliminar-dia" title="Eliminar este día" aria-label="Eliminar día">
@@ -744,88 +747,82 @@ function quitarBordeRojoFila(input) {
     console.log('Borde rojo uniforme removido');
 }
 
-// ===== STICKY UNIVERSAL - FUNCIONA EN TODOS LOS NAVEGADORES =====
-function implementarStickyManual() {
-    const tableContainer = document.querySelector('.table-responsive');
-    if (!tableContainer) {
-        console.warn('No se encontró .table-responsive');
-        return;
-    }
-
-    const tabla = tableContainer.querySelector('table');
-    if (!tabla) {
-        console.warn('No se encontró tabla');
-        return;
-    }
-
-    // Obtener todas las celdas de nombre (sticky)
-    const celdasNombre = tabla.querySelectorAll('th.nombre, td.nombre');
-    if (celdasNombre.length === 0) {
-        console.warn('No se encontraron celdas .nombre');
-        return;
-    }
-    
+// ===== MANEJO DE HOVER CON JAVASCRIPT =====
+function configurarHoverFilas() {
     // Remover listeners anteriores para evitar duplicados
-    tableContainer.removeEventListener('scroll', window.stickyScrollHandler);
-    
-    // Función para actualizar posición sticky
-    function actualizarSticky() {
-        const scrollLeft = tableContainer.scrollLeft;
-        
-        celdasNombre.forEach(celda => {
-            // Forzar sticky con múltiples métodos para compatibilidad
-            celda.style.transform = `translateX(${scrollLeft}px)`;
-            celda.style.position = 'relative';
-            celda.style.zIndex = '100';
-            
-            // Webkit específico
-            celda.style.webkitTransform = `translateX(${scrollLeft}px)`;
-            
-            // Mozilla específico
-            celda.style.mozTransform = `translateX(${scrollLeft}px)`;
-        });
-    }
-    
-    // Guardar referencia global para poder removerlo
-    window.stickyScrollHandler = actualizarSticky;
-    
-    // Aplicar en scroll con throttling para performance
-    let ticking = false;
-    tableContainer.addEventListener('scroll', function() {
-        if (!ticking) {
-            requestAnimationFrame(function() {
-                actualizarSticky();
-                ticking = false;
-            });
-            ticking = true;
-        }
+    const filasExistentes = document.querySelectorAll('tbody tr');
+    filasExistentes.forEach(fila => {
+        fila.removeEventListener('mouseenter', fila._mouseenterHandler);
+        fila.removeEventListener('mouseleave', fila._mouseleaveHandler);
     });
     
-    // Aplicar inicialmente
-    actualizarSticky();
+    const filas = document.querySelectorAll('tbody tr');
+    console.log(`Configurando hover para ${filas.length} filas`);
     
-    // Aplicar en resize para responsive
-    window.addEventListener('resize', actualizarSticky);
+    filas.forEach(fila => {
+        // Crear handlers únicos para cada fila
+        const mouseenterHandler = function() {
+            console.log('Mouse enter en fila');
+            // Limpiar bordes anteriores
+            document.querySelectorAll('tr').forEach(tr => {
+                tr.classList.remove('fila-focus-activa');
+            });
+            // Agregar borde a esta fila
+            this.classList.add('fila-focus-activa');
+        };
+        
+        const mouseleaveHandler = function() {
+            console.log('Mouse leave en fila');
+            // Solo quitar si no hay focus en el input de nombre
+            const inputNombre = this.querySelector('td.nombre input');
+            if (!inputNombre || document.activeElement !== inputNombre) {
+                this.classList.remove('fila-focus-activa');
+            }
+        };
+        
+        // Guardar referencia a los handlers para poder removerlos después
+        fila._mouseenterHandler = mouseenterHandler;
+        fila._mouseleaveHandler = mouseleaveHandler;
+        
+        // Agregar event listeners
+        fila.addEventListener('mouseenter', mouseenterHandler);
+        fila.addEventListener('mouseleave', mouseleaveHandler);
+    });
     
-    console.log(`Sticky universal activado para ${celdasNombre.length} celdas`);
+    console.log('Hover configurado correctamente');
+}
+
+// ===== STICKY CSS PURO - SIN JAVASCRIPT MANUAL =====
+function implementarStickyManual() {
+    // Ya no necesitamos JavaScript manual, CSS sticky funciona correctamente
+    // Solo asegurar que los estilos estén aplicados
+    console.log('Sticky CSS aplicado correctamente');
 }
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {
     inicializarAplicacion();
-    // Implementar sticky manual después de que se cargue la tabla
-    setTimeout(implementarStickyManual, 500);
+    // CSS sticky funciona automáticamente, no necesitamos JavaScript
+    console.log('Aplicación inicializada con CSS sticky');
     
-    // Re-implementar sticky cuando cambie el modo oscuro
+    // Configurar hover de filas después de que se renderice la tabla
+    setTimeout(configurarHoverFilas, 500);
+    
+    // Re-aplicar estilos cuando cambie el modo oscuro
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 if (mutation.target === document.body) {
-                    setTimeout(implementarStickyManual, 100);
+                    console.log('Modo oscuro cambiado, re-configurando hover');
+                    // Re-configurar hover después del cambio de modo
+                    setTimeout(configurarHoverFilas, 200);
                 }
             }
         });
     });
     
-    observer.observe(document.body, { attributes: true });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 });
