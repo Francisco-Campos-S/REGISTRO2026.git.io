@@ -744,20 +744,11 @@ function implementarStickyManual() {
         const scrollLeft = this.scrollLeft;
         
         celdasNombre.forEach(celda => {
+            // Solo sticky funcional, sin cambiar estilos visuales
             celda.style.transform = `translateX(${scrollLeft}px)`;
             celda.style.position = 'relative';
             celda.style.zIndex = '100';
-            
-            // Mantener el fondo correcto según el tipo de celda y modo
-            if (celda.tagName === 'TH') {
-                // Encabezado
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                celda.style.background = isDarkMode ? 'var(--color-fondo)' : 
-                    'linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%)';
-            } else {
-                // Datos - solo manejar el sticky, los colores los maneja CSS
-                // No aplicar estilos de color aquí, CSS se encarga de todo
-            }
+            // No tocar colores, fondos, bordes - CSS se encarga de todo
         });
     });
 }

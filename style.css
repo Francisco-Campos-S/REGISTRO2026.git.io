@@ -409,62 +409,23 @@ th, td {
 /* ===== COLUMNAS STICKY - SOLO NOMBRE ===== */
 /* ELIMINADO - REEMPLAZADO POR SOLUCIÓN DEFINITIVA AL FINAL */
 
-/* ===== SOLUCIÓN ÚNICA Y DEFINITIVA PARA COLUMNA NOMBRE ===== */
-/* Columna nombre - Solo propiedades sticky para datos */
-td.nombre {
-    /* Solo sticky y visual para datos */
-    position: relative !important;
-    z-index: 50 !important;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.2) !important;
-    border-right: 2px solid #e0e0e0 !important;
-}
+/* ===== STICKY SOLO PARA FUNCIONALIDAD (SIN ESTILOS VISUALES) ===== */
+/* Solo se aplicará por JavaScript cuando sea necesario */
 
-/* Encabezado nombre sin modificaciones especiales */
-th.nombre {
-    position: relative !important;
-    z-index: 50 !important;
-    border-right: 2px solid #e0e0e0 !important;
-}
-
-/* FILAS CLARAS - Nombre igual que otras columnas */
-tbody tr:nth-child(odd) td.nombre {
-    background: #f4f7fb !important;
-    color: #263238 !important;
-    border-right: 2px solid #e0e0e0 !important;
-}
-
-/* FILAS OSCURAS - Nombre igual que otras columnas */
-tbody tr:nth-child(even) td.nombre {
-    background: #c2c8d6 !important;
-    color: #263238 !important;
-    border-right: 2px solid #e0e0e0 !important;
-}
-
-/* MODO OSCURO - FILAS CLARAS */
-body.dark-mode tbody tr:nth-child(odd) td.nombre {
-    background: #263238 !important;
-    color: #fff !important;
-    border-right: 2px solid #90caf9 !important;
-}
-
-/* MODO OSCURO - FILAS OSCURAS (BLANCAS) - EXACTAMENTE IGUAL QUE OTRAS */
-body.dark-mode tbody tr:nth-child(even) td.nombre {
-    background: #fff !important;
-    color: #000 !important;
-    border: 2px solid var(--color-border) !important;
-    border-right: 2px solid #90caf9 !important;
-    box-shadow: 0 2px 8px var(--color-shadow), 2px 0 8px rgba(0,0,0,0.2) !important;
-}
+/* ELIMINAR - Nombre usa los mismos estilos generales que todas las demás columnas */
 
 /* ELIMINAR ESTILOS ESPECÍFICOS DEL ENCABEZADO NOMBRE */
 /* Los encabezados se manejan con las reglas generales de th */
 
 /* ESTILOS DUPLICADOS ELIMINADOS - SE USAN LOS DE ARRIBA */
 
-/* Inputs dentro de columna nombre - IGUAL QUE OTRAS COLUMNAS */
-td.nombre input[type="text"] {
-    width: 120px !important;
-    max-width: 120px !important;
+/* Inputs dentro de columnas iguales (nombre, apellido1, apellido2) - ANCHO COMO CÉDULA */
+td.nombre input[type="text"],
+td.apellido1 input[type="text"], 
+td.apellido2 input[type="text"] {
+    width: 90%;
+    min-width: 240px;
+    max-width: 360px;
     background: #fff !important;
     color: #263238 !important;
     border: 1.5px solid #b0bec5 !important;
@@ -476,25 +437,31 @@ td.nombre input[type="text"] {
 
 /* Focus se maneja por JavaScript para consistencia con otras columnas */
 
-/* Modo oscuro para inputs - EXACTAMENTE IGUAL QUE OTRAS COLUMNAS */
-/* Inputs en filas claras (oscuras) en modo oscuro - igual que otras columnas */
-body.dark-mode tbody tr:nth-child(odd) td.nombre input[type="text"] {
+/* Modo oscuro para inputs - TODAS LAS COLUMNAS IGUALES */
+/* Inputs en filas claras (oscuras) en modo oscuro */
+body.dark-mode tbody tr:nth-child(odd) td.nombre input[type="text"],
+body.dark-mode tbody tr:nth-child(odd) td.apellido1 input[type="text"],
+body.dark-mode tbody tr:nth-child(odd) td.apellido2 input[type="text"] {
     background: rgba(44,62,80,0.18) !important;
     color: #fff !important;
     border: 2px solid var(--color-primario) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
 }
 
-/* Inputs en filas blancas en modo oscuro - igual que otras columnas */
-body.dark-mode tbody tr:nth-child(even) td.nombre input[type="text"] {
+/* Inputs en filas blancas en modo oscuro */
+body.dark-mode tbody tr:nth-child(even) td.nombre input[type="text"],
+body.dark-mode tbody tr:nth-child(even) td.apellido1 input[type="text"],
+body.dark-mode tbody tr:nth-child(even) td.apellido2 input[type="text"] {
     background: #fff !important;
     color: #000 !important;
     border: 2px solid var(--color-primario) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
 }
 
-/* Focus en inputs nombre en modo oscuro */
-body.dark-mode td.nombre input[type="text"]:focus {
+/* Focus en inputs en modo oscuro */
+body.dark-mode td.nombre input[type="text"]:focus,
+body.dark-mode td.apellido1 input[type="text"]:focus,
+body.dark-mode td.apellido2 input[type="text"]:focus {
     background: #263238 !important;
     color: #fff !important;
 }
@@ -525,18 +492,15 @@ tbody tr:hover td.nombre {
     z-index: 55 !important;
 }
 
-/* ===== COLUMNAS NO STICKY ===== */
+/* ===== COLUMNAS IGUALES (APELLIDOS Y NOMBRE) - MISMO ANCHO QUE CÉDULA ===== */
 th.apellido1, td.apellido1,
-th.apellido2, td.apellido2 { 
-    min-width: 140px; 
+th.apellido2, td.apellido2,
+th.nombre, td.nombre { 
+    min-width: 260px;
+    max-width: 380px;
 }
 
-/* ===== COLUMNA NOMBRE - ANCHO FORZADO IGUAL QUE APELLIDOS ===== */
-th.nombre, td.nombre { 
-    min-width: 140px !important;
-    width: 140px !important;
-    max-width: 140px !important;
-}
+/* ELIMINAR - Nombre se comporta exactamente igual que apellidos */
 
 th.cedula, td.cedula { 
     min-width: 260px; 
