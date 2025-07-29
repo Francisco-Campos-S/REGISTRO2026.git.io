@@ -120,6 +120,35 @@
         </div>
     </div>
 
+    <!-- Sección de Trabajo Cotidiano -->
+    <div class="trabajo-cotidiano-container">
+        <h3>📋 Trabajo Cotidiano</h3>
+        <div class="trabajo-cotidiano-instructions">
+            <p><strong>💡 Instrucciones:</strong> EVALUACIÓN DIARIA POR ESTUDIANTE. PUEDE CONFIGURAR LA ESCALA DE EVALUACIÓN Y LAS FECHAS. LOS DATOS SE GUARDAN AUTOMÁTICAMENTE.</p>
+        </div>
+        
+        <div class="trabajo-cotidiano-actions">
+            <button onclick="agregarDiaTrabajo()" class="btn-agregar-dia-trabajo">
+                <span>📅</span> + Día
+            </button>
+            <button onclick="exportarTrabajoCotidiano()" class="btn-exportar-trabajo">
+                <span>📤</span> Exportar Trabajo Cotidiano
+            </button>
+            <div class="escala-config">
+                <label for="escalaMaximaInput">Escala máxima:</label>
+                <input type="number" id="escalaMaximaInput" min="1" max="10" value="3" step="1" title="Escala máxima de evaluación (ej: 3 para escala 0-3)">
+                <label for="valorTotalTrabajoInput">Valor total:</label>
+                <input type="number" id="valorTotalTrabajoInput" min="1" max="100" value="35" step="1" title="Valor total del trabajo cotidiano para calcular porcentaje final">
+            </div>
+        </div>
+
+        <div class="trabajo-cotidiano-table-container">
+            <div class="trabajo-cotidiano-table-responsive">
+                <div id="trabajo-cotidiano-app"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sección de Tareas -->
     <div class="tareas-container">
         <h3>📚 Evaluación de Tareas</h3>

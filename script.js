@@ -159,6 +159,9 @@ function cargarDatosGuardados() {
         estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
     }
     
+    // Cargar datos de trabajo cotidiano
+    cargarTrabajoCotidiano();
+    
     // Sincronizar input de alerta temprana después de cargar datos
     sincronizarInputAlerta();
     renderAsistencia();
@@ -859,6 +862,7 @@ function agregarEstudiante() {
     renderAsistencia();
     sincronizarEstudiantesEvaluacion();
     sincronizarEstudiantesTareas();
+    sincronizarEstudiantesTrabajoCotidiano();
 }
 
 function agregarDia() {
@@ -913,6 +917,7 @@ function eliminarEstudiante(idx) {
         renderAsistencia();
         sincronizarEstudiantesEvaluacion();
         sincronizarEstudiantesTareas();
+        sincronizarEstudiantesTrabajoCotidiano();
         mostrarAlerta('Estudiante eliminado', 'info');
     }
 }
@@ -1133,6 +1138,12 @@ function configurarEventos() {
             header.classList.remove('scrolled');
         }
     });
+    
+    // Configurar trabajo cotidiano después de que se cargue el DOM
+    setTimeout(() => {
+        configurarEscalaMaxima();
+        renderTrabajoCotidiano();
+    }, 200);
 }
 
 // ===== FUNCIONES DE BORDE ROJO UNIFORME EN TODA LA FILA =====
@@ -1226,6 +1237,12 @@ let tareas = [
     { nombre: 'II TAREA', puntosMaximos: 20, peso: 5 }
 ];
 let tareasEstudiantes = [];
+
+// Variables globales para trabajo cotidiano
+let diasTrabajo = [];
+let trabajoCotidianoEstudiantes = [];
+let escalaMaxima = 3;
+let valorTotalTrabajo = 35;
 
 // Función para renderizar la tabla de evaluación
 function renderEvaluacion() {
@@ -1810,7 +1827,653 @@ inicializarAplicacion = function() {
     cargarTareas();
     sincronizarEstudiantesTareas();
     renderTareas();
+    cargarTrabajoCotidiano();
+    sincronizarEstudiantesTrabajoCotidiano();
+    renderTrabajoCotidiano();
+    configurarEscalaMaxima();
 };
+
+// ===== FUNCIONES DE TRABAJO COTIDIANO =====
+function renderTrabajoCotidiano() {
+    const container = document.getElementById('trabajo-cotidiano-app');
+    if (!container) {
+        console.log('Container no encontrado');
+        return;
+    }
+    
+    console.log('Renderizando trabajo cotidiano...');
+    console.log('Días trabajo:', diasTrabajo);
+    console.log('Estudiantes:', estudiantes);
+    console.log('Trabajo cotidiano estudiantes:', trabajoCotidianoEstudiantes);
+    
+    let html = '<table class="trabajo-cotidiano-table">';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Estudiante</th>';
+    
+    if (diasTrabajo.length === 0) {
+        html += '<th colspan="1">No hay días configurados</th>';
+    } else {
+        diasTrabajo.forEach((dia, idx) => {
+            html += `<th colspan="1">Indicador ${idx + 1}</th>`;
+        });
+    }
+    
+    html += '<th colspan="1">TOTAL</th>';
+    html += '</tr><tr>';
+    html += '<th></th>';
+    
+    if (diasTrabajo.length > 0) {
+        diasTrabajo.forEach(dia => {
+            html += '<th>FECHA</th>';
+        });
+    } else {
+        html += '<th>FECHA</th>';
+    }
+    
+    html += '<th>% FINAL</th>';
+    html += '</tr></thead>';
+    
+    // Fila de configuración
+    html += '<tbody>';
+    html += '<tr class="config-row">';
+    html += '<td class="student-name">CONFIGURACIÓN</td>';
+    
+    if (diasTrabajo.length > 0) {
+        diasTrabajo.forEach((dia, idx) => {
+            html += `<td class="editable" style="position:relative;">
+                <input type="date" value="${dia.fecha}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:30px;width:150px;font-size:1.1em;">
+                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
+            </td>`;
+        });
+    } else {
+        html += '<td class="editable"><input type="date" value="" disabled title="Agregue un día primero"></td>';
+    }
+    
+    html += `<td class="calculated">${valorTotalTrabajo}</td>`;
+    html += '</tr>';
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return; // Saltar estudiantes vacíos
+        
+        html += '<tr>';
+        html += `<td class="student-name">${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}</td>`;
+        
+        if (diasTrabajo.length > 0) {
+            diasTrabajo.forEach((dia, diaIdx) => {
+                // Obtener nota directamente
+                let nota = null;
+                if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+                    nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
+                }
+                
+                console.log(`Estudiante ${estIdx}, Día ${diaIdx}, Nota:`, nota);
+                
+                // Crear input con ID único
+                const inputId = `nota_${estIdx}_${diaIdx}`;
+                html += `<td class="editable">
+                    <input id="${inputId}" type="number" value="${nota || ''}" min="0" max="${escalaMaxima}" step="0.1" 
+                           title="Nota del estudiante (0-${escalaMaxima})" 
+                           style="width: 80px; padding: 8px; border: 2px solid #ff9800; border-radius: 6px; text-align: center; background: #fff; color: #333;">
+                </td>`;
+            });
+        } else {
+            html += '<td class="editable"><input type="number" value="" disabled title="Agregue un día primero" style="width: 80px; padding: 8px; border: 2px solid #ccc; border-radius: 6px; text-align: center; background: #f5f5f5; color: #999;"></td>';
+        }
+        
+        // Calcular porcentaje final
+        let totalNotas = 0;
+        let diasConNota = 0;
+        
+        diasTrabajo.forEach((dia, diaIdx) => {
+            if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+                const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
+                if (nota !== null && nota !== undefined && nota >= 0) {
+                    totalNotas += nota;
+                    diasConNota++;
+                }
+            }
+        });
+        
+        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
+        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+        
+        console.log(`Estudiante ${estIdx}: totalNotas=${totalNotas}, diasConNota=${diasConNota}, promedio=${promedio}, porcentajeFinal=${porcentajeFinal}`);
+        
+        html += `<td class="calculated">${porcentajeFinal.toFixed(1) + '%'}</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    
+    console.log('Tabla renderizada');
+    
+    // Agregar eventos a los inputs después del renderizado
+    setTimeout(() => {
+        console.log('Agregando eventos a inputs...');
+        const inputs = container.querySelectorAll('input[type="number"]');
+        console.log('Inputs encontrados para eventos:', inputs.length);
+        
+        inputs.forEach((input, index) => {
+            const id = input.id;
+            const parts = id.split('_');
+            if (parts.length === 3) {
+                const estIdx = parseInt(parts[1]);
+                const diaIdx = parseInt(parts[2]);
+                
+                console.log(`Configurando evento para input ${id}: estudiante ${estIdx}, día ${diaIdx}`);
+                
+                input.addEventListener('input', function() {
+                    console.log(`Evento input disparado para ${id}:`, this.value);
+                    actualizarNotaTrabajo(estIdx, diaIdx, this.value);
+                });
+                
+                input.addEventListener('change', function() {
+                    console.log(`Evento change disparado para ${id}:`, this.value);
+                    actualizarNotaTrabajo(estIdx, diaIdx, this.value);
+                });
+            }
+        });
+        
+        console.log('Eventos agregados correctamente');
+        
+        // Forzar actualización de todos los cálculos al cargar
+        console.log('Forzando actualización inicial de cálculos...');
+        actualizarCalculosTrabajoCotidiano();
+    }, 100);
+}
+
+function obtenerNotaTrabajo(estIdx, diaIdx) {
+    if (!trabajoCotidianoEstudiantes[estIdx]) {
+        trabajoCotidianoEstudiantes[estIdx] = [];
+    }
+    if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+    }
+    return trabajoCotidianoEstudiantes[estIdx][diaIdx];
+}
+
+function actualizarFechaTrabajo(diaIdx, fecha) {
+    // Preservar datos antes de re-renderizar
+    preservarDatosInputs();
+    diasTrabajo[diaIdx].fecha = fecha;
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+}
+
+function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
+    console.log('=== ACTUALIZAR NOTA TRABAJO ===');
+    console.log('Parámetros:', estIdx, diaIdx, valor);
+    console.log('Tipo de valor:', typeof valor);
+    
+    const nota = parseFloat(valor) || null;
+    console.log('Nota parseada:', nota);
+    
+    // Asegurar que existe la estructura de datos
+    if (!trabajoCotidianoEstudiantes[estIdx]) {
+        trabajoCotidianoEstudiantes[estIdx] = [];
+        console.log('Creado array para estudiante', estIdx);
+    }
+    if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+        console.log('Creado objeto para día', diaIdx);
+    }
+    
+    // Guardar la nota
+    trabajoCotidianoEstudiantes[estIdx][diaIdx].nota = nota;
+    console.log('Nota guardada:', trabajoCotidianoEstudiantes[estIdx][diaIdx].nota);
+    
+    // Actualizar solo los cálculos sin re-renderizar toda la tabla
+    console.log('Llamando a actualizarCalculosTrabajoCotidiano...');
+    actualizarCalculosTrabajoCotidiano();
+    
+    guardarTrabajoCotidiano();
+}
+
+function preservarDatosInputs() {
+    console.log('Preservando datos de inputs...');
+    const container = document.getElementById('trabajo-cotidiano-app');
+    if (!container) {
+        console.log('Container no encontrado para preservar datos');
+        return;
+    }
+    
+    const inputs = container.querySelectorAll('input[type="number"]');
+    console.log(`Encontrados ${inputs.length} inputs para preservar`);
+    
+    inputs.forEach((input) => {
+        const id = input.id;
+        if (!id) {
+            console.log('Input sin ID, saltando...');
+            return;
+        }
+        
+        const parts = id.split('_');
+        if (parts.length === 3) {
+            const estIdx = parseInt(parts[1]);
+            const diaIdx = parseInt(parts[2]);
+            const valor = parseFloat(input.value) || null;
+            
+            console.log(`Procesando input ${id}: estudiante ${estIdx}, día ${diaIdx}, valor ${valor}`);
+            
+            // Asegurar que existe la estructura de datos
+            if (!trabajoCotidianoEstudiantes[estIdx]) {
+                trabajoCotidianoEstudiantes[estIdx] = [];
+                console.log(`Creado array para estudiante ${estIdx}`);
+            }
+            if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+                console.log(`Creado objeto para día ${diaIdx}`);
+            }
+            
+            // Guardar el valor del input
+            trabajoCotidianoEstudiantes[estIdx][diaIdx].nota = valor;
+            console.log(`Preservado: estudiante ${estIdx}, día ${diaIdx}, valor ${valor}`);
+        } else {
+            console.log(`ID inválido: ${id}, partes:`, parts);
+        }
+    });
+    
+    guardarTrabajoCotidiano();
+    console.log('Datos preservados y guardados');
+}
+
+function actualizarCalculosTrabajoCotidiano() {
+    console.log('=== ACTUALIZANDO CÁLCULOS ===');
+    
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        let totalNotas = 0;
+        let diasConNota = 0;
+        
+        console.log(`Calculando para estudiante ${estIdx}:`);
+        
+        diasTrabajo.forEach((dia, diaIdx) => {
+            if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+                const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
+                console.log(`  Día ${diaIdx}: nota = ${nota}`);
+                if (nota !== null && nota !== undefined && nota >= 0) {
+                    totalNotas += nota;
+                    diasConNota++;
+                }
+            }
+        });
+        
+        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
+        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+        
+        console.log(`  Total notas: ${totalNotas}, Días con nota: ${diasConNota}`);
+        console.log(`  Promedio: ${promedio}, Porcentaje final: ${porcentajeFinal}`);
+        
+        // Buscar la fila del estudiante
+        const container = document.getElementById('trabajo-cotidiano-app');
+        if (!container) {
+            console.log('  Container no encontrado');
+            return;
+        }
+        
+        const rows = container.querySelectorAll('tbody tr');
+        const studentRow = rows[estIdx + 1]; // +1 por la fila de configuración
+        
+        console.log(`  Buscando fila para estudiante ${estIdx}:`);
+        console.log(`  Total filas en tbody: ${rows.length}`);
+        console.log(`  Índice de fila buscada: ${estIdx + 1}`);
+        
+        if (studentRow) {
+            const cells = studentRow.querySelectorAll('td');
+            console.log(`  Celdas encontradas: ${cells.length}`);
+            
+            // La última celda es el % Final (no hay columna promedio)
+            const porcentajeCell = cells[cells.length - 1];
+            
+            if (porcentajeCell) {
+                const valorPorcentaje = porcentajeFinal.toFixed(1) + '%';
+                porcentajeCell.textContent = valorPorcentaje;
+                console.log(`  Porcentaje actualizado en celda: ${valorPorcentaje}`);
+            } else {
+                console.log(`  No se encontró celda de porcentaje`);
+            }
+        } else {
+            console.log(`  No se encontró la fila del estudiante ${estIdx}`);
+        }
+    });
+}
+
+function actualizarAsistenciaTrabajo(estIdx, diaIdx, valor) {
+    const asistencia = valor === 'true' || valor === true;
+    obtenerNotaTrabajo(estIdx, diaIdx);
+    trabajoCotidianoEstudiantes[estIdx][diaIdx].asistencia = asistencia;
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+}
+
+function agregarDiaTrabajo() {
+    // Preservar datos de inputs antes de re-renderizar
+    preservarDatosInputs();
+    
+    const fechaActual = new Date().toISOString().split('T')[0];
+    diasTrabajo.push({
+        fecha: fechaActual
+    });
+    
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!trabajoCotidianoEstudiantes[estIdx]) {
+            trabajoCotidianoEstudiantes[estIdx] = [];
+        }
+        trabajoCotidianoEstudiantes[estIdx].push({ nota: null });
+    });
+    
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+    mostrarAlerta(`Día ${diasTrabajo.length} agregado`, 'exito');
+}
+
+function eliminarDiaTrabajo(diaIdx) {
+    // Preservar datos de inputs antes de re-renderizar
+    preservarDatosInputs();
+    
+    // Eliminar el día de la lista
+    diasTrabajo.splice(diaIdx, 1);
+    
+    // Eliminar las notas de todos los estudiantes para ese día
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (trabajoCotidianoEstudiantes[estIdx]) {
+            trabajoCotidianoEstudiantes[estIdx].splice(diaIdx, 1);
+        }
+    });
+    
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+    mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
+}
+
+function configurarEscalaMaxima() {
+    const input = document.getElementById('escalaMaximaInput');
+    if (input) {
+        input.value = escalaMaxima;
+        input.onchange = function() {
+            console.log('Escala cambiada de', escalaMaxima, 'a', this.value);
+            // Preservar datos antes de cambiar
+            preservarDatosInputs();
+            escalaMaxima = parseInt(this.value) || 3;
+            guardarTrabajoCotidiano();
+            // Solo actualizar cálculos, no re-renderizar toda la tabla
+            actualizarCalculosTrabajoCotidiano();
+        };
+    }
+    
+    const inputValorTotal = document.getElementById('valorTotalTrabajoInput');
+    if (inputValorTotal) {
+        inputValorTotal.value = valorTotalTrabajo;
+        inputValorTotal.onchange = function() {
+            console.log('Valor total cambiado de', valorTotalTrabajo, 'a', this.value);
+            // Preservar datos antes de cambiar
+            preservarDatosInputs();
+            valorTotalTrabajo = parseInt(this.value) || 35;
+            guardarTrabajoCotidiano();
+            // Solo actualizar cálculos, no re-renderizar toda la tabla
+            actualizarCalculosTrabajoCotidiano();
+        };
+    }
+}
+
+function exportarTrabajoCotidiano() {
+    const wb = XLSX.utils.book_new();
+    
+    // Hoja de configuración
+    const configData = [
+        ['CONFIGURACIÓN DE TRABAJO COTIDIANO'],
+        ['Escala máxima', escalaMaxima],
+        ['Valor total', valorTotalTrabajo],
+        [''],
+        ['Día', 'Fecha']
+    ];
+    
+    diasTrabajo.forEach((dia, idx) => {
+        configData.push([`Día ${idx + 1}`, dia.fecha]);
+    });
+    
+    const wsConfig = XLSX.utils.aoa_to_sheet(configData);
+    XLSX.utils.book_append_sheet(wb, wsConfig, 'Configuración');
+    
+    // Hoja de resultados
+    const datos = [
+        ['Estudiante', ...diasTrabajo.flatMap((dia, idx) => [`Indicador Fecha`]), '% Final']
+    ];
+    
+    // Fila de configuración
+    const configRow = ['CONFIGURACIÓN'];
+    diasTrabajo.forEach(dia => {
+        configRow.push(dia.fecha, '-------');
+    });
+    configRow.push(valorTotalTrabajo);
+    datos.push(configRow);
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
+        let totalNotas = 0;
+        let diasConNota = 0;
+        
+        diasTrabajo.forEach((dia, diaIdx) => {
+            const datosEstudiante = obtenerNotaTrabajo(estIdx, diaIdx);
+            const nota = datosEstudiante.nota;
+            
+            if (nota !== null && nota !== undefined) {
+                totalNotas += nota;
+                diasConNota++;
+            }
+            
+            row.push(dia.fecha);
+        });
+        
+        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
+        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+        row.push(porcentajeFinal.toFixed(1) + '%');
+        datos.push(row);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'Trabajo Cotidiano');
+    
+    XLSX.writeFile(wb, 'trabajo_cotidiano.xlsx');
+    mostrarAlerta('Trabajo cotidiano exportado correctamente', 'exito');
+}
+
+function guardarTrabajoCotidiano() {
+    const datos = {
+        diasTrabajo: diasTrabajo,
+        trabajoCotidianoEstudiantes: trabajoCotidianoEstudiantes,
+        escalaMaxima: escalaMaxima,
+        valorTotalTrabajo: valorTotalTrabajo
+    };
+    localStorage.setItem('trabajoCotidiano', JSON.stringify(datos));
+}
+
+function cargarTrabajoCotidiano() {
+    const datos = localStorage.getItem('trabajoCotidiano');
+    if (datos) {
+        try {
+            const parsed = JSON.parse(datos);
+            diasTrabajo = parsed.diasTrabajo || [];
+            trabajoCotidianoEstudiantes = parsed.trabajoCotidianoEstudiantes || [];
+            escalaMaxima = parsed.escalaMaxima || 3;
+            valorTotalTrabajo = parsed.valorTotalTrabajo || 35;
+        } catch (error) {
+            console.error('Error al cargar trabajo cotidiano:', error);
+        }
+    }
+}
+
+function sincronizarEstudiantesTrabajoCotidiano() {
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!trabajoCotidianoEstudiantes[estIdx]) {
+            trabajoCotidianoEstudiantes[estIdx] = [];
+        }
+        
+        while (trabajoCotidianoEstudiantes[estIdx].length < diasTrabajo.length) {
+            trabajoCotidianoEstudiantes[estIdx].push({ nota: null });
+        }
+    });
+    
+    trabajoCotidianoEstudiantes = trabajoCotidianoEstudiantes.slice(0, estudiantes.length);
+    
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+}
+
+// Función de prueba para verificar que los inputs funcionan
+function probarInputsTrabajoCotidiano() {
+    console.log('=== PRUEBA DE INPUTS ===');
+    console.log('Días trabajo:', diasTrabajo.length);
+    console.log('Estudiantes:', estudiantes.length);
+    console.log('Datos guardados:', trabajoCotidianoEstudiantes);
+    
+    // Buscar todos los inputs numéricos en la tabla
+    const inputs = document.querySelectorAll('#trabajo-cotidiano-app input[type="number"]');
+    console.log('Inputs encontrados:', inputs.length);
+    
+    inputs.forEach((input, index) => {
+        console.log(`Input ${index}:`, input);
+        console.log(`  - ID: ${input.id}`);
+        console.log(`  - Valor: ${input.value}`);
+        console.log(`  - Disabled: ${input.disabled}`);
+        console.log(`  - Oninput: ${input.oninput}`);
+    });
+    
+    // Probar actualizar una nota manualmente
+    if (inputs.length > 0 && !inputs[0].disabled) {
+        console.log('Probando actualizar primera nota...');
+        actualizarNotaTrabajo(0, 0, 2.5);
+    }
+}
+
+// Función de prueba para verificar los cálculos
+function probarCalculosTrabajoCotidiano() {
+    console.log('=== PRUEBA DE CÁLCULOS ===');
+    console.log('Escala máxima:', escalaMaxima);
+    console.log('Valor total:', valorTotalTrabajo);
+    
+    // Simular algunas notas
+    if (!trabajoCotidianoEstudiantes[0]) trabajoCotidianoEstudiantes[0] = [];
+    if (!trabajoCotidianoEstudiantes[0][0]) trabajoCotidianoEstudiantes[0][0] = { nota: null };
+    if (!trabajoCotidianoEstudiantes[0][1]) trabajoCotidianoEstudiantes[0][1] = { nota: null };
+    
+    trabajoCotidianoEstudiantes[0][0].nota = 2.5;
+    trabajoCotidianoEstudiantes[0][1].nota = 3.0;
+    
+    console.log('Notas simuladas:', trabajoCotidianoEstudiantes[0]);
+    
+    // Ejecutar cálculos
+    actualizarCalculosTrabajoCotidiano();
+}
+
+// Función para probar la preservación de datos
+function probarPreservacionDatos() {
+    console.log('=== PRUEBA DE PRESERVACIÓN DE DATOS ===');
+    console.log('Estado antes de preservar:', JSON.stringify(trabajoCotidianoEstudiantes));
+    preservarDatosInputs();
+    console.log('Estado después de preservar:', JSON.stringify(trabajoCotidianoEstudiantes));
+    console.log('=====================================');
+}
+
+// Función para probar el cálculo del % final específicamente
+function probarCalculoPorcentajeFinal() {
+    console.log('=== PRUEBA DE CÁLCULO % FINAL ===');
+    console.log('Escala máxima:', escalaMaxima);
+    console.log('Valor total trabajo:', valorTotalTrabajo);
+    
+    // Simular datos de prueba
+    const notasPrueba = [2.5, 3.0, 2.0, 2.8];
+    const totalNotas = notasPrueba.reduce((sum, nota) => sum + nota, 0);
+    const diasConNota = notasPrueba.length;
+    const promedio = totalNotas / diasConNota;
+    const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+    
+    console.log('Notas de prueba:', notasPrueba);
+    console.log('Total notas:', totalNotas);
+    console.log('Días con nota:', diasConNota);
+    console.log('Promedio:', promedio);
+    console.log('Porcentaje final:', porcentajeFinal.toFixed(1) + '%');
+    
+    // Verificar el cálculo manual
+    const promedioManual = 10.3 / 4; // 2.575
+    const porcentajeManual = (2.575 / 3) * 35; // 30.04%
+    console.log('Verificación manual:');
+    console.log('  Promedio esperado: 2.575');
+    console.log('  % Final esperado: 30.0%');
+    console.log('  Promedio calculado:', promedio);
+    console.log('  % Final calculado:', porcentajeFinal.toFixed(1) + '%');
+    
+    console.log('================================');
+}
+
+// Función para verificar el cálculo real de un estudiante específico
+function verificarCalculoEstudiante(estIdx = 0) {
+    console.log(`=== VERIFICACIÓN CÁLCULO ESTUDIANTE ${estIdx} ===`);
+    
+    if (!estudiantes[estIdx]) {
+        console.log('Estudiante no encontrado');
+        return;
+    }
+    
+    const estudiante = estudiantes[estIdx];
+    console.log('Estudiante:', estudiante.nombre, estudiante.apellido1);
+    console.log('Días trabajo:', diasTrabajo.length);
+    console.log('Escala máxima:', escalaMaxima);
+    console.log('Valor total:', valorTotalTrabajo);
+    
+    let totalNotas = 0;
+    let diasConNota = 0;
+    const notasDetalladas = [];
+    
+    diasTrabajo.forEach((dia, diaIdx) => {
+        if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+            const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
+            console.log(`  Día ${diaIdx}: nota = ${nota}`);
+            
+            if (nota !== null && nota !== undefined && nota >= 0) {
+                totalNotas += nota;
+                diasConNota++;
+                notasDetalladas.push(nota);
+            }
+        } else {
+            console.log(`  Día ${diaIdx}: sin datos`);
+        }
+    });
+    
+    const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
+    const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+    
+    console.log('Resultados:');
+    console.log('  Notas válidas:', notasDetalladas);
+    console.log('  Total notas:', totalNotas);
+    console.log('  Días con nota:', diasConNota);
+    console.log('  Promedio:', promedio);
+    console.log('  Porcentaje final:', porcentajeFinal.toFixed(1) + '%');
+    
+    // Verificar en la tabla
+    const container = document.getElementById('trabajo-cotidiano-app');
+    if (container) {
+        const rows = container.querySelectorAll('tbody tr');
+        const studentRow = rows[estIdx + 1];
+        if (studentRow) {
+            const cells = studentRow.querySelectorAll('td');
+            const porcentajeCell = cells[cells.length - 1];
+            if (porcentajeCell) {
+                console.log('  % Final en tabla:', porcentajeCell.textContent);
+            }
+        }
+    }
+    
+    console.log('========================================');
+}
 
 // ===== INICIALIZACIÓN =====
 esperarDOMListo();
