@@ -1228,20 +1228,33 @@ function actualizarPuntos(estIdx, pruebaIdx, valor) {
     renderEvaluacion();
 }
 
+// Función para obtener nombre de prueba según posición
+function obtenerNombrePrueba(posicion) {
+    const nombres = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    if (posicion <= nombres.length) {
+        return `${nombres[posicion - 1]} PRUEBA`;
+    } else {
+        return `${posicion}ª PRUEBA`;
+    }
+}
+
+// Función para actualizar nombres de todas las pruebas
+function actualizarNombresPruebas() {
+    pruebas.forEach((prueba, index) => {
+        prueba.nombre = obtenerNombrePrueba(index + 1);
+    });
+}
+
 // Función para agregar nueva prueba
 function agregarPrueba() {
-    const numeroPrueba = pruebas.length + 1;
-    const nombrePrueba = numeroPrueba === 1 ? 'I PRUEBA' : 
-                        numeroPrueba === 2 ? 'II PRUEBA' : 
-                        numeroPrueba === 3 ? 'III PRUEBA' : 
-                        numeroPrueba === 4 ? 'IV PRUEBA' : 
-                        `${numeroPrueba}ª PRUEBA`;
-    
     pruebas.push({
-        nombre: nombrePrueba,
+        nombre: '', // Se actualizará automáticamente
         puntosMaximos: 30,
         peso: 10
     });
+    
+    // Actualizar nombres de todas las pruebas
+    actualizarNombresPruebas();
     
     // Agregar evaluaciones para todos los estudiantes existentes
     estudiantes.forEach((estudiante, estIdx) => {
@@ -1253,7 +1266,7 @@ function agregarPrueba() {
     
     guardarEvaluacion();
     renderEvaluacion();
-    mostrarAlerta(`Prueba "${nombrePrueba}" agregada`, 'exito');
+    mostrarAlerta(`Prueba "${pruebas[pruebas.length - 1].nombre}" agregada`, 'exito');
 }
 
 // Función para eliminar prueba
@@ -1263,7 +1276,9 @@ function eliminarPrueba(pruebaIdx) {
         return;
     }
     
-    if (confirm(`¿Seguro que deseas eliminar la prueba "${pruebas[pruebaIdx].nombre}"? Esta acción no se puede deshacer.`)) {
+    const nombrePrueba = pruebas[pruebaIdx].nombre;
+    
+    if (confirm(`¿Seguro que deseas eliminar la prueba "${nombrePrueba}"? Esta acción no se puede deshacer.`)) {
         pruebas.splice(pruebaIdx, 1);
         
         // Eliminar evaluaciones de esa prueba para todos los estudiantes
@@ -1273,9 +1288,12 @@ function eliminarPrueba(pruebaIdx) {
             }
         });
         
+        // Actualizar nombres de todas las pruebas
+        actualizarNombresPruebas();
+        
         guardarEvaluacion();
         renderEvaluacion();
-        mostrarAlerta('Prueba eliminada', 'info');
+        mostrarAlerta(`Prueba "${nombrePrueba}" eliminada`, 'info');
     }
 }
 
@@ -1339,6 +1357,9 @@ function cargarEvaluacion() {
             const parsed = JSON.parse(datos);
             pruebas = parsed.pruebas || pruebas;
             evaluacionesEstudiantes = parsed.evaluaciones || [];
+            
+            // Actualizar nombres de pruebas al cargar
+            actualizarNombresPruebas();
         } catch (error) {
             console.error('Error al cargar evaluación:', error);
         }
