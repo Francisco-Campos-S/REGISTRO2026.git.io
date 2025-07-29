@@ -1209,3 +1209,45 @@ body.dark-mode .referencia-table tbody tr:nth-child(even) {
 body.dark-mode .referencia-table tbody tr:hover {
     background: #1976d2;
 }
+
+/* ===== CELDAS DE ASISTENCIA MÚLTIPLE ===== */
+.celda-asistencia-multiple {
+    min-height: 60px;
+    transition: all 0.3s ease;
+}
+
+.celda-asistencia-multiple:hover {
+    background: rgba(0,0,0,0.02);
+    border-radius: 6px;
+    padding: 4px;
+}
+
+/* Hacer que las celdas se expandan dinámicamente */
+td:has(.celda-asistencia-multiple) {
+    min-width: 140px !important;
+    max-width: 200px !important;
+    transition: all 0.3s ease;
+}
+
+/* Estilos para los botones de agregar/eliminar */
+.celda-asistencia-multiple button {
+    transition: all 0.2s ease;
+}
+
+.celda-asistencia-multiple button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Modo oscuro para celdas múltiples */
+body.dark-mode .celda-asistencia-multiple:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+body.dark-mode .celda-asistencia-multiple button {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .celda-asistencia-multiple button:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}

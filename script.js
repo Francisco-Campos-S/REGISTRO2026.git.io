@@ -347,30 +347,54 @@ function generarFilasEstudiantes() {
 }
 
 function generarCeldaAsistencia(estIndex, diaIndex, dia) {
+    // Convertir formato antiguo a nuevo si es necesario
     if (typeof dia === 'string') {
         let tipo = 'Ausente';
         if (dia === 'Tardía') tipo = 'Tardía';
         if (dia === 'Escapada') tipo = 'Escapada';
-        dia = { tipo: tipo, cantidad: 1 };
+        dia = { ausencias: [{ tipo: tipo, cantidad: 1 }] };
         estudiantes[estIndex].asistenciaDias[diaIndex] = dia;
     }
     
-    if (!dia.tipo) dia.tipo = 'Ausente';
-    if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
-    
-    let html = `<td style="min-width:130px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};vertical-align:middle;">`;
-    html += `<div style="display:flex;align-items:center;justify-content:${dia.tipo === 'Presente' ? 'flex-start' : 'center'};gap:8px;">`;
-    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" class="select-asistencia select-${dia.tipo === 'Tardía' ? 'tardia' : dia.tipo.toLowerCase()}" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
-    html += `<option value="Presente"${dia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
-    html += `<option value="Ausente"${dia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
-    html += `<option value="Tardía"${dia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
-    html += `<option value="Escapada"${dia.tipo === 'Escapada' ? ' selected' : ''}>Escapada</option>`;
-    html += `<option value="Justificada"${dia.tipo === 'Justificada' ? ' selected' : ''}>Justificada</option>`;
-    html += `</select>`;
-    
-    if (dia.tipo !== 'Presente') {
-        html += `<input type="number" min="0" value="${dia.cantidad || 0}" style="width:54px;padding:6px 4px;font-size:1em;" onchange="actualizarAsistenciaCantidad(${estIndex},${diaIndex},this.value)" aria-label="Cantidad asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
+    // Si es formato antiguo (solo un tipo), convertir a nuevo formato
+    if (dia.tipo && !dia.ausencias) {
+        dia = { ausencias: [{ tipo: dia.tipo, cantidad: dia.cantidad || 0 }] };
+        estudiantes[estIndex].asistenciaDias[diaIndex] = dia;
     }
+    
+    // Asegurar que existe el array de ausencias
+    if (!dia.ausencias) {
+        dia.ausencias = [{ tipo: 'Presente', cantidad: 0 }];
+    }
+    
+    let html = `<td style="min-width:130px;text-align:center;vertical-align:middle;">`;
+    html += `<div class="celda-asistencia-multiple" style="display:flex;flex-direction:column;gap:4px;align-items:center;">`;
+    
+    // Mostrar cada ausencia
+    dia.ausencias.forEach((ausencia, ausenciaIndex) => {
+        html += `<div style="display:flex;align-items:center;gap:4px;">`;
+        html += `<select onchange="actualizarAsistenciaTipoMultiple(${estIndex},${diaIndex},${ausenciaIndex},this.value)" class="select-asistencia select-${ausencia.tipo === 'Tardía' ? 'tardia' : ausencia.tipo.toLowerCase()}" style="width:100px;padding:4px 6px;font-size:0.9em;text-align:center;" aria-label="Tipo ausencia ${ausenciaIndex+1} estudiante ${estIndex+1} día ${diaIndex+1}">`;
+        html += `<option value="Presente"${ausencia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
+        html += `<option value="Ausente"${ausencia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
+        html += `<option value="Tardía"${ausencia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
+        html += `<option value="Escapada"${ausencia.tipo === 'Escapada' ? ' selected' : ''}>Escapada</option>`;
+        html += `<option value="Justificada"${ausencia.tipo === 'Justificada' ? ' selected' : ''}>Justificada</option>`;
+        html += `</select>`;
+        
+        if (ausencia.tipo !== 'Presente') {
+            html += `<input type="number" min="0" value="${ausencia.cantidad || 0}" style="width:45px;padding:4px 2px;font-size:0.9em;" onchange="actualizarAsistenciaCantidadMultiple(${estIndex},${diaIndex},${ausenciaIndex},this.value)" aria-label="Cantidad ausencia ${ausenciaIndex+1} estudiante ${estIndex+1} día ${diaIndex+1}">`;
+        }
+        
+        // Botón eliminar ausencia (solo si hay más de una)
+        if (dia.ausencias.length > 1) {
+            html += `<button onclick="eliminarAusencia(${estIndex},${diaIndex},${ausenciaIndex})" style="background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.8em;cursor:pointer;" title="Eliminar ausencia">×</button>`;
+        }
+        
+        html += `</div>`;
+    });
+    
+    // Botón agregar nueva ausencia
+    html += `<button onclick="agregarAusencia(${estIndex},${diaIndex})" style="background:#2ed573;color:white;border:none;border-radius:4px;padding:4px 8px;font-size:0.9em;cursor:pointer;margin-top:4px;" title="Agregar ausencia">+</button>`;
     
     html += `</div></td>`;
     return html;
@@ -381,26 +405,39 @@ function calcularTotalesEstudiante(estudiante) {
     
     for (let d = 0; d < dias.length; d++) {
         let dia = estudiante.asistenciaDias[d];
+        
+        // Convertir formato antiguo si es necesario
         if (typeof dia === 'string') {
             let tipo = 'Ausente';
             if (dia === 'Tardía') tipo = 'Tardía';
             if (dia === 'Escapada') tipo = 'Escapada';
-            dia = { tipo: tipo, cantidad: 1 };
+            dia = { ausencias: [{ tipo: tipo, cantidad: 1 }] };
             estudiante.asistenciaDias[d] = dia;
         }
         
-        if (!dia.tipo) dia.tipo = 'Ausente';
-        if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
-        
-        if (dia.tipo === 'Ausente') {
-            totalAusente += Number(dia.cantidad || 0);
-        } else if (dia.tipo === 'Tardía') {
-            totalTarde += Number(dia.cantidad || 0);
-        } else if (dia.tipo === 'Escapada') {
-            totalEscapada += Number(dia.cantidad || 0);
-        } else if (dia.tipo === 'Justificada') {
-            totalJustificada += Number(dia.cantidad || 0);
+        // Si es formato antiguo (solo un tipo), convertir a nuevo formato
+        if (dia.tipo && !dia.ausencias) {
+            dia = { ausencias: [{ tipo: dia.tipo, cantidad: dia.cantidad || 0 }] };
+            estudiante.asistenciaDias[d] = dia;
         }
+        
+        // Asegurar que existe el array de ausencias
+        if (!dia.ausencias) {
+            dia.ausencias = [{ tipo: 'Presente', cantidad: 0 }];
+        }
+        
+        // Sumar todas las ausencias del día
+        dia.ausencias.forEach(ausencia => {
+            if (ausencia.tipo === 'Ausente') {
+                totalAusente += Number(ausencia.cantidad || 0);
+            } else if (ausencia.tipo === 'Tardía') {
+                totalTarde += Number(ausencia.cantidad || 0);
+            } else if (ausencia.tipo === 'Escapada') {
+                totalEscapada += Number(ausencia.cantidad || 0);
+            } else if (ausencia.tipo === 'Justificada') {
+                totalJustificada += Number(ausencia.cantidad || 0);
+            }
+        });
     }
     
     let totalLecciones = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
@@ -552,6 +589,59 @@ function actualizarAsistenciaCantidad(estIdx, diaIdx, valor) {
     renderAsistencia();
 }
 
+// Nuevas funciones para múltiples ausencias
+function actualizarAsistenciaTipoMultiple(estIdx, diaIdx, ausenciaIdx, valor) {
+    if (!estudiantes[estIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx].ausencias) return;
+    
+    estudiantes[estIdx].asistenciaDias[diaIdx].ausencias[ausenciaIdx].tipo = valor;
+    guardarDatos();
+    renderAsistencia();
+}
+
+function actualizarAsistenciaCantidadMultiple(estIdx, diaIdx, ausenciaIdx, valor) {
+    if (!estudiantes[estIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx].ausencias) return;
+    
+    estudiantes[estIdx].asistenciaDias[diaIdx].ausencias[ausenciaIdx].cantidad = Number(valor) || 0;
+    guardarDatos();
+    renderAsistencia();
+}
+
+function agregarAusencia(estIdx, diaIdx) {
+    if (!estudiantes[estIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx]) return;
+    
+    // Asegurar que existe el array de ausencias
+    if (!estudiantes[estIdx].asistenciaDias[diaIdx].ausencias) {
+        estudiantes[estIdx].asistenciaDias[diaIdx].ausencias = [];
+    }
+    
+    // Agregar nueva ausencia
+    estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.push({
+        tipo: 'Ausente',
+        cantidad: 1
+    });
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
+function eliminarAusencia(estIdx, diaIdx, ausenciaIdx) {
+    if (!estudiantes[estIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx].ausencias) return;
+    
+    // Eliminar la ausencia específica
+    estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.splice(ausenciaIdx, 1);
+    
+    // Si no quedan ausencias, agregar una por defecto
+    if (estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.length === 0) {
+        estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.push({
+            tipo: 'Presente',
+            cantidad: 0
+        });
+    }
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
 function actualizarFechaDia(idx, fecha) {
     dias[idx].fecha = fecha;
     guardarDatos();
@@ -591,7 +681,7 @@ function agregarEstudiante() {
         nombre: '',
         apellido1: '',
         apellido2: '',
-        asistenciaDias: Array.from({ length: dias.length }, () => ({ tipo: 'Presente', cantidad: 0 }))
+        asistenciaDias: Array.from({ length: dias.length }, () => ({ ausencias: [{ tipo: 'Presente', cantidad: 0 }] }))
     });
     
     guardarDatos();
@@ -606,7 +696,7 @@ function agregarDia() {
     
     dias.push({ fecha: '', nombre: `Día ${dias.length + 1}`, lecciones: 0 });
     estudiantes.forEach(est => {
-        est.asistenciaDias.push({ tipo: 'Presente', cantidad: 0 });
+        est.asistenciaDias.push({ ausencias: [{ tipo: 'Presente', cantidad: 0 }] });
     });
     
     guardarDatos();
