@@ -185,10 +185,10 @@ function generarEncabezadoTabla() {
     html += `<table border="1" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
-        '<th rowspan="2" class="cedula">Cédula</th>' +
+        '<th rowspan="2" class="nombre">Nombre</th>' +
         '<th rowspan="2" class="apellido1">Primer apellido</th>' +
         '<th rowspan="2" class="apellido2">Segundo apellido</th>' +
-        '<th rowspan="2" class="nombre">Nombre</th>' +
+        '<th rowspan="2" class="cedula">Cédula</th>' +
         `<th colspan="${dias.length}"><span style="font-size:1em;font-weight:600;color:var(--color-primario);"><svg style="vertical-align:middle;margin-right:4px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="4"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Asistencia por día</span></th>` +
         '<th rowspan="2" class="th-resumen">Ausencias</th>' +
         '<th rowspan="2" class="th-resumen">Justificadas</th>' +
@@ -252,10 +252,10 @@ function generarFilasEstudiantes() {
         const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
         
         html += `<tr>`;
-        html += `<td class="cedula"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
+        html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" onfocus="agregarBordeRojoFila(this)" onblur="quitarBordeRojoFila(this)" placeholder="Nombre" aria-label="Nombre"></td>`;
         html += `<td class="apellido1"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
         html += `<td class="apellido2"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
-        html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
+        html += `<td class="cedula"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
         
         for (let d = 0; d < dias.length; d++) {
             html += generarCeldaAsistencia(i, d, estudiante.asistenciaDias[d]);
@@ -705,5 +705,79 @@ function configurarEventos() {
     });
 }
 
+// ===== FUNCIONES DE BORDE ROJO UNIFORME EN TODA LA FILA =====
+function agregarBordeRojoFila(input) {
+    // Limpiar bordes rojos anteriores
+    document.querySelectorAll('tr').forEach(tr => {
+        tr.classList.remove('fila-focus-activa');
+    });
+    
+    // Encontrar la fila padre y agregar clase
+    const fila = input.closest('tr');
+    if (fila) {
+        fila.classList.add('fila-focus-activa');
+        console.log('Borde rojo uniforme aplicado a toda la fila via CSS');
+    }
+}
+
+function quitarBordeRojoFila(input) {
+    // Quitar clase de todas las filas
+    document.querySelectorAll('tr').forEach(tr => {
+        tr.classList.remove('fila-focus-activa');
+    });
+    console.log('Borde rojo uniforme removido');
+}
+
+// ===== STICKY MANUAL PARA COLUMNA NOMBRE (FUNCIONA EN TODOS LOS NAVEGADORES) =====
+function implementarStickyManual() {
+    const tableContainer = document.querySelector('.table-responsive');
+    if (!tableContainer) return;
+
+    // Crear columna sticky manualmente
+    const tabla = tableContainer.querySelector('table');
+    if (!tabla) return;
+
+    // Obtener todas las celdas de nombre
+    const celdasNombre = tabla.querySelectorAll('th.nombre, td.nombre');
+    
+    tableContainer.addEventListener('scroll', function() {
+        const scrollLeft = this.scrollLeft;
+        
+        celdasNombre.forEach(celda => {
+            celda.style.transform = `translateX(${scrollLeft}px)`;
+            celda.style.position = 'relative';
+            celda.style.zIndex = '100';
+            
+            // Mantener el fondo correcto según el tipo de celda y modo
+            if (celda.tagName === 'TH') {
+                // Encabezado
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                celda.style.background = isDarkMode ? 'var(--color-fondo)' : 
+                    'linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%)';
+            } else {
+                // Datos - solo manejar el sticky, los colores los maneja CSS
+                // No aplicar estilos de color aquí, CSS se encarga de todo
+            }
+        });
+    });
+}
+
 // ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', inicializarAplicacion);
+document.addEventListener('DOMContentLoaded', function() {
+    inicializarAplicacion();
+    // Implementar sticky manual después de que se cargue la tabla
+    setTimeout(implementarStickyManual, 500);
+    
+    // Re-implementar sticky cuando cambie el modo oscuro
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                if (mutation.target === document.body) {
+                    setTimeout(implementarStickyManual, 100);
+                }
+            }
+        });
+    });
+    
+    observer.observe(document.body, { attributes: true });
+});
