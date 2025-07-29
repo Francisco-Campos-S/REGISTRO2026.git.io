@@ -1,292 +1,153 @@
-// Inicialización global de estudiantes y dias para el sistema de asistencia
-window.estudiantes = window.estudiantes || [];
-window.dias = window.dias || [{fecha: '', nombre: 'Día 1', lecciones: 0}];
-window.VERSION = window.VERSION || '1.0';
-// script.js - Lógica para el registro
-
-const form = document.getElementById('formulario');
-const registrosDiv = document.getElementById('registros');
-
-function mostrarMensaje(texto, tipo = 'info') {
-  let mensaje = document.querySelector('.mensaje');
-  if (mensaje) mensaje.remove();
-  mensaje = document.createElement('div');
-  mensaje.className = 'mensaje';
-  mensaje.textContent = texto;
-  if (tipo === 'error') mensaje.style.background = '#ffcdd2', mensaje.style.color = '#b71c1c';
-  if (tipo === 'success') mensaje.style.background = '#c8e6c9', mensaje.style.color = '#388e3c';
-  form.parentNode.insertBefore(mensaje, form.nextSibling);
-  setTimeout(() => mensaje.remove(), 3000);
-}
-
-function mostrarRegistros() {
-  let registros = JSON.parse(localStorage.getItem('registros') || '[]');
-  localStorage.setItem('registros', JSON.stringify(registros));
-  registrosDiv.innerHTML = '';
-  // Campo de alerta temprana SIEMPRE visible
-  let alertaContainer = document.getElementById('alerta-temprana-registros');
-  if (alertaContainer) alertaContainer.remove();
-  alertaContainer = document.createElement('div');
-  alertaContainer.id = 'alerta-temprana-registros';
-  alertaContainer.style = 'margin-bottom:14px;display:flex;align-items:center;gap:12px;';
-  alertaContainer.innerHTML = `<label for="input-alerta-temprana-registros" style="font-weight:600;color:#1976d2;font-size:1.08em;">Valor alerta temprana (%)</label>
-    <input type="number" id="input-alerta-temprana-registros" min="0" max="100" value="${window.valorExtra}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid #1976d2;font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;">
-    <span style="color:#888;font-size:0.98em;">(La alerta se activa si 10% - %Asistencia ≥ valor ingresado)</span>`;
-  if (registrosDiv && registrosDiv.parentNode) {
-    registrosDiv.parentNode.insertBefore(alertaContainer, registrosDiv);
-  } else if (form && form.parentNode) {
-    form.parentNode.insertBefore(alertaContainer, form);
-  } else {
-    document.body.insertBefore(alertaContainer, document.body.firstChild);
-  }
-  document.getElementById('input-alerta-temprana-registros').addEventListener('input', function() {
-    let val = Number(this.value);
-    if (isNaN(val) || val < 0) val = 0;
-    if (val > 100) val = 100;
-    window.valorExtra = val;
-    let inputTabla = document.getElementById('input-alerta-temprana');
-    if (inputTabla) inputTabla.value = val;
-    mostrarRegistros();
-    renderAsistencia();
-  });
-
-  // SIEMPRE mostrar el campo, aunque no haya registros
-  if (registros.length === 0) {
-    registrosDiv.innerHTML = '<div class="mensaje">No hay registros aún.</div>';
-    return;
-  }
-
-  registros.forEach((reg, idx) => {
-    const div = document.createElement('div');
-    div.className = 'registro';
-    let porcentajeAsistencia = 0;
-    let totalLecciones = 10; // Puedes ajustar esto según tu lógica
-    let totalAusente = Number(reg.ausente || 0);
-    let totalTarde = Number(reg.tarde || 0);
-    let totalEscapada = Number(reg.escapada || 0);
-    if (totalLecciones > 0) {
-      let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
-      let porcentajeAusencia = (totalAusencias / totalLecciones) * 100;
-      porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
-      if (porcentajeAusencia > 100) porcentajeAsistencia = 0;
-      if (porcentajeAusencia < 1) porcentajeAsistencia = 10;
-      else if (porcentajeAusencia < 10) porcentajeAsistencia = 9;
-      else if (porcentajeAusencia < 20) porcentajeAsistencia = 8;
-      else if (porcentajeAusencia < 30) porcentajeAsistencia = 7;
-      else if (porcentajeAusencia < 40) porcentajeAsistencia = 6;
-      else if (porcentajeAusencia < 50) porcentajeAsistencia = 5;
-      else if (porcentajeAusencia < 60) porcentajeAsistencia = 4;
-      else if (porcentajeAusencia < 70) porcentajeAsistencia = 3;
-      else if (porcentajeAusencia < 80) porcentajeAsistencia = 2;
-      else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
-      else porcentajeAsistencia = 0;
-    }
-    let accionHtml = '';
-    let diferencia = 10 - porcentajeAsistencia;
-    if (
-      porcentajeAsistencia >= 0 && porcentajeAsistencia < 10 &&
-      diferencia >= window.valorExtra &&
-      reg.cedula && reg.cedula.trim() !== '' &&
-      reg.nombre && reg.nombre.trim() !== '' &&
-      reg.apellido1 && reg.apellido1.trim() !== ''
-    ) {
-      accionHtml = `<span style='background:#ffeaea;color:#222;border-radius:6px;padding:4px 10px;font-weight:bold;border:2px solid #e74c3c;'>Alerta temprana</span>`;
-    }
-    if (reg.editando) {
-      div.innerHTML = `
-        <strong>#${idx+1}</strong>
-        <input type="text" id="edit-nombre-${idx}" value="${reg.nombre || ''}" placeholder="Nombre">
-        <input type="text" id="edit-cedula-${idx}" value="${reg.cedula || ''}" placeholder="Cédula">
-        <input type="text" id="edit-apellido1-${idx}" value="${reg.apellido1 || ''}" placeholder="Apellido 1">
-        <input type="text" id="edit-apellido2-${idx}" value="${reg.apellido2 || ''}" placeholder="Apellido 2">
-        <input type="email" id="edit-email-${idx}" value="${reg.email || ''}" placeholder="Email">
-        <input type="number" id="edit-edad-${idx}" value="${reg.edad || ''}" placeholder="Edad">
-        <button onclick="guardarEdicionDesdeUI(${idx})">Guardar</button>
-        <div style='margin-top:8px;'>${accionHtml}</div>
-      `;
-    } else {
-      div.innerHTML = `
-        <strong>#${idx+1}</strong>
-        <div><b>Nombre:</b> ${reg.nombre || ''}</div>
-        <div><b>Cédula:</b> ${reg.cedula || ''}</div>
-        <div><b>Apellido 1:</b> ${reg.apellido1 || ''}</div>
-        <div><b>Apellido 2:</b> ${reg.apellido2 || ''}</div>
-        <div><b>Email:</b> ${reg.email || ''}</div>
-        <div><b>Edad:</b> ${reg.edad || ''}</div>
-        <button onclick="editarRegistro(${idx})">Editar</button>
-        <button onclick="eliminarRegistro(${idx})">Eliminar</button>
-        <div style='margin-top:8px;'>${accionHtml}</div>
-      `;
-    }
-    registrosDiv.appendChild(div);
-  });
-
-// Función para eliminar registro manualmente
-function eliminarRegistro(idx) {
-  let registros = JSON.parse(localStorage.getItem('registros') || '[]');
-  if (!registros[idx]) return;
-  registros.splice(idx, 1);
-  localStorage.setItem('registros', JSON.stringify(registros));
-  mostrarRegistros();
-}
-}
-
-// Función para guardar edición desde el formulario en línea
-function guardarEdicionDesdeUI(idx) {
-  const datos = {
-    nombre: document.getElementById(`edit-nombre-${idx}`).value.trim(),
-    cedula: document.getElementById(`edit-cedula-${idx}`).value.trim(),
-    apellido1: document.getElementById(`edit-apellido1-${idx}`).value.trim(),
-    apellido2: document.getElementById(`edit-apellido2-${idx}`).value.trim(),
-    email: document.getElementById(`edit-email-${idx}`).value.trim(),
-    edad: document.getElementById(`edit-edad-${idx}`).value.trim()
-  };
-  guardarEdicion(idx, datos);
-}
-
-// Función para editar un registro
-function editarRegistro(idx) {
-  let registros = JSON.parse(localStorage.getItem('registros') || '[]');
-  if (!registros[idx]) return;
-  registros[idx].editando = true;
-  localStorage.setItem('registros', JSON.stringify(registros));
-  mostrarRegistros();
-}
-
-// Función para guardar cambios y salir de edición
-function guardarEdicion(idx, datos) {
-  let registros = JSON.parse(localStorage.getItem('registros') || '[]');
-  if (!registros[idx]) return;
-  // Solo actualiza los datos y sale del modo edición, nunca elimina automáticamente
-  Object.assign(registros[idx], datos);
-  registros[idx].editando = false;
-  localStorage.setItem('registros', JSON.stringify(registros));
-  mostrarRegistros();
-}
-
-
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  const nombre = form.nombre.value.trim();
-  const cedula = form.cedula ? form.cedula.value.trim() : '';
-  const apellido1 = form.apellido1 ? form.apellido1.value.trim() : '';
-  const apellido2 = form.apellido2 ? form.apellido2.value.trim() : '';
-  const email = form.email.value.trim();
-  const edad = form.edad.value.trim();
-  // Validación visual
-  [form.nombre, form.email, form.edad].forEach(input => {
-    input.style.borderColor = input.value.trim() ? '#1976d2' : '#b71c1c';
-  });
-  if (!nombre || !email || !edad) {
-    mostrarMensaje('Por favor, completa todos los campos.', 'error');
-    return;
-  }
-  if (!/^\S+@\S+\.\S+$/.test(email)) {
-    mostrarMensaje('El correo no es válido.', 'error');
-    form.email.style.borderColor = '#b71c1c';
-    return;
-  }
-  if (isNaN(edad) || edad < 1 || edad > 120) {
-    mostrarMensaje('La edad debe ser entre 1 y 120.', 'error');
-    form.edad.style.borderColor = '#b71c1c';
-    return;
-  }
-  const registros = JSON.parse(localStorage.getItem('registros') || '[]');
-  registros.push({ nombre, cedula, apellido1, apellido2, email, edad, estado: 'Presente' });
-  localStorage.setItem('registros', JSON.stringify(registros));
-  form.reset();
-  mostrarMensaje('¡Registro guardado exitosamente!', 'success');
-  mostrarRegistros();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  renderAsistencia();
-  mostrarRegistros();
-});
-
-// Valor de alerta temprana (porcentaje)
-// Valor de alerta temprana (porcentaje)
+// ===== CONFIGURACIÓN GLOBAL =====
+const VERSION = '2.2';
+const STORAGE_KEY = 'registroAsistencia_v2';
 const STORAGE_KEY_ALERTA = 'valorExtraAlertaTemprana';
+const maxEstudiantes = 50;
+
+// ===== VARIABLES GLOBALES =====
+let estudiantes = [];
+let dias = [
+    { fecha: '', nombre: 'Día 1', lecciones: 0 },
+    { fecha: '', nombre: 'Día 2', lecciones: 0 },
+    { fecha: '', nombre: 'Día 3', lecciones: 0 },
+    { fecha: '', nombre: 'Día 4', lecciones: 0 },
+    { fecha: '', nombre: 'Día 5', lecciones: 0 }
+];
+
+// Valor de alerta temprana
 window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseFloat(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
 
-// Sincroniza el input de la barra de acciones con la lógica de alerta temprana
-function sincronizarInputAlertaTemprana() {
-  const input = document.getElementById('alertaTempranaInput');
-  if (!input) return;
-  // Inicializa el valor del input con window.valorExtra
-  input.value = window.valorExtra;
-  input.min = 0;
-  input.max = 10;
-  // Al cambiar el input, actualiza window.valorExtra, guarda en localStorage y refresca la tabla
-  input.addEventListener('input', function() {
-    let val = Number(this.value);
-    if (isNaN(val) || val < 0) val = 0;
-    if (val > 10) val = 10;
-    window.valorExtra = val;
-    localStorage.setItem(STORAGE_KEY_ALERTA, val);
-    // Si existe el otro input (de la tabla), sincronízalo
-    let inputTabla = document.getElementById('input-alerta-temprana');
-    if (inputTabla) inputTabla.value = val;
+// Plantilla de ejemplo
+const plantillaEjemplo = [
+    { cedula: "207890123", nombre: "Juan", apellido1: "Pérez", apellido2: "González", asistenciaDias: Array(dias.length).fill({ tipo: 'Presente', cantidad: 0 }) },
+    { cedula: "208901234", nombre: "María", apellido1: "Rodríguez", apellido2: "López", asistenciaDias: Array(dias.length).fill({ tipo: 'Presente', cantidad: 0 }) },
+    { cedula: "209012345", nombre: "Carlos", apellido1: "Sánchez", apellido2: "Jiménez", asistenciaDias: Array(dias.length).fill({ tipo: 'Presente', cantidad: 0 }) }
+];
+
+// ===== FUNCIONES DE INICIALIZACIÓN =====
+function inicializarAplicacion() {
+    cargarDatosGuardados();
+    sincronizarInputAlerta();
+    configurarModoOscuro();
+    configurarEventos();
     renderAsistencia();
-    mostrarRegistros();
-  });
 }
 
-// Al cargar la página, sincronizar el input de la barra de acciones
-document.addEventListener('DOMContentLoaded', function() {
-  sincronizarInputAlertaTemprana();
-});
-
-// Renderiza el campo para ingresar el valor de alerta temprana
-function renderCampoAlertaTemprana() {
-  let container = document.getElementById('alerta-temprana-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'alerta-temprana-container';
-    container.style = 'margin-bottom:14px;display:flex;align-items:center;gap:12px;';
-    container.innerHTML = `<label for="input-alerta-temprana" style="font-weight:600;color:var(--color-primario);font-size:1.08em;">Valor alerta temprana (%)</label>
-      <input type="number" id="input-alerta-temprana" min="0" max="10" value="${window.valorExtra}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;">
-      <span style="color:#888;font-size:0.98em;">(La alerta se activa si 10% - %Asistencia ≥ valor ingresado)</span>`;
-    // Insertar el campo antes del elemento 'app'
-    const app = document.getElementById('app');
-    if (app && app.parentNode) {
-      const anterior = document.getElementById('alerta-temprana-container');
-      if (anterior) anterior.remove();
-      app.parentNode.insertBefore(container, app);
+function cargarDatosGuardados() {
+    const datosGuardados = localStorage.getItem(STORAGE_KEY);
+    if (datosGuardados) {
+        try {
+            let datos = JSON.parse(datosGuardados);
+            if (Array.isArray(datos)) {
+                // Compatibilidad con versiones anteriores
+                estudiantes = datos;
+            } else {
+                estudiantes = datos.estudiantes || [];
+                if (Array.isArray(datos.dias)) {
+                    dias = datos.dias.map((dia, idx) => ({
+                        fecha: dia.fecha || '',
+                        nombre: dia.nombre || `Día ${idx + 1}`,
+                        lecciones: typeof dia.lecciones === 'number' ? dia.lecciones : 0
+                    }));
+                }
+            }
+            sincronizarAsistenciaDias();
+            mostrarAlerta('Datos cargados correctamente', 'exito');
+        } catch (error) {
+            console.error('Error al cargar datos:', error);
+            estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
+        }
+    } else {
+        estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
     }
-    document.getElementById('input-alerta-temprana').addEventListener('input', function() {
-      let val = Number(this.value);
-      if (isNaN(val) || val < 0) val = 0;
-      if (val > 10) val = 10;
-      window.valorExtra = val;
-      localStorage.setItem(STORAGE_KEY_ALERTA, val);
-      let inputBarra = document.getElementById('alertaTempranaInput');
-      if (inputBarra) inputBarra.value = val;
-      renderAsistencia();
-      mostrarRegistros();
+    renderAsistencia();
+}
+
+function sincronizarAsistenciaDias() {
+    estudiantes.forEach(est => {
+        if (!est.asistenciaDias) {
+            est.asistenciaDias = Array.from({ length: dias.length }, () => ({ tipo: 'Presente', cantidad: 0 }));
+        } else if (est.asistenciaDias.length < dias.length) {
+            est.asistenciaDias = est.asistenciaDias.concat(
+                Array.from({ length: dias.length - est.asistenciaDias.length }, () => ({ tipo: 'Presente', cantidad: 0 }))
+            );
+        } else if (est.asistenciaDias.length > dias.length) {
+            est.asistenciaDias = est.asistenciaDias.slice(0, dias.length);
+        }
     });
-  } else {
-    document.getElementById('input-alerta-temprana').value = window.valorExtra;
-  }
 }
 
-// Función para renderizar la asistencia
-function renderAsistencia() {
-    // Renderizar el campo de alerta temprana SIEMPRE antes de la tabla
-    setTimeout(renderCampoAlertaTemprana, 0);
-    // Leer el valor actual del input de alerta temprana de la barra de acciones
-    let alertaInput = document.getElementById('alertaTempranaInput');
-    let valorAlerta = window.valorExtra;
-    if (alertaInput) {
-        let val = Number(alertaInput.value);
-        if (isNaN(val) || val < 0) val = 0;
-        if (val > 10) val = 10;
-        valorAlerta = val;
-        window.valorExtra = val;
+// ===== FUNCIONES DE MODO OSCURO =====
+function configurarModoOscuro() {
+    const modoOscuro = localStorage.getItem('modoOscuro') === '1';
+    aplicarModoOscuro(modoOscuro);
+    
+    document.getElementById('btnModoOscuro').addEventListener('mouseenter', mostrarTooltipModoOscuro);
+    document.getElementById('btnModoOscuro').addEventListener('mouseleave', ocultarTooltipModoOscuro);
+}
+
+function aplicarModoOscuro(valor) {
+    if (valor) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('btnModoOscuro').innerHTML = '☀️';
+        document.getElementById('tooltipModoOscuro').textContent = 'Modo claro';
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('btnModoOscuro').innerHTML = '🌙';
+        document.getElementById('tooltipModoOscuro').textContent = 'Modo oscuro';
     }
-    // Usar window.estudiantes y window.dias
-    const estudiantes = window.estudiantes;
-    const dias = window.dias;
+}
+
+function toggleModoOscuro() {
+    const esOscuro = !document.body.classList.contains('dark-mode');
+    aplicarModoOscuro(esOscuro);
+    localStorage.setItem('modoOscuro', esOscuro ? '1' : '0');
+}
+
+function mostrarTooltipModoOscuro() {
+    document.getElementById('tooltipModoOscuro').style.display = 'block';
+}
+
+function ocultarTooltipModoOscuro() {
+    document.getElementById('tooltipModoOscuro').style.display = 'none';
+}
+
+// ===== FUNCIONES DE ALERTA TEMPRANA =====
+function sincronizarInputAlerta() {
+    const input = document.getElementById('alertaTempranaInput');
+    if (input) {
+        input.value = window.valorExtra;
+        input.min = 0;
+        input.max = 10;
+        input.addEventListener('input', function() {
+            let val = Number(this.value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 10) val = 10;
+            window.valorExtra = val;
+            localStorage.setItem(STORAGE_KEY_ALERTA, val);
+            renderAsistencia();
+        });
+    }
+}
+
+// ===== FUNCIONES DE RENDERIZADO =====
+function renderAsistencia() {
+    limpiarEstudiantesVacios();
+    
+    if (!estudiantes || estudiantes.length === 0) {
+        renderTablaVacia();
+        return;
+    }
+    
+    let html = generarEncabezadoTabla();
+    html += generarFilasEstudiantes();
+    html += '</tbody></table>';
+    
+    document.getElementById('app').innerHTML = html;
+    actualizarContador();
+}
+
+function limpiarEstudiantesVacios() {
     if (Array.isArray(estudiantes)) {
         let vacios = estudiantes.filter(e => !e.cedula && !e.nombre && !e.apellido1 && !e.apellido2);
         if (vacios.length > 1) {
@@ -299,32 +160,29 @@ function renderAsistencia() {
             }
         }
     }
-    if (!estudiantes || estudiantes.length === 0) {
-        let html = `<div class="version-mensaje" style="margin-bottom:10px;font-size:1.08em;color:var(--color-primario);font-weight:500;">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-        html += `<div style="width:100%;display:flex;justify-content:flex-end;margin:0 0 12px 0;"></div>`;
-        html += `<table border="1" aria-label="Tabla de asistencia" style="border-collapse:collapse;background:var(--color-table-bg);">`;
-        html += '<thead>';
-        html += '<tr>' +
-            '<th>#</th>' +
-            '<th class="cedula">Cédula</th>' +
-            '<th class="apellido1">Primer apellido</th>' +
-            '<th class="apellido2">Segundo apellido</th>' +
-            '<th class="nombre">Nombre</th>';
-        for (let d = 0; d < dias.length; d++) {
-            html += `<th><input type="date" value="${dias[d].fecha}" style="width:110px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia" style="font-size:12px;color:#fff !important;text-shadow:0 2px 8px #222 !important;">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
-        }
-        html += '<th class="th-resumen">Acciones</th>';
-        html += '</tr>';
-        html += '</thead>';
-        html += '<tbody>';
-        html += `<tr><td colspan="${5 + dias.length + 1}" style="text-align:center;color:#888;font-size:1.08em;padding:18px 0;background:none;border:none;">No hay estudiantes registrados.</td></tr>`;
-        html += '</tbody></table>';
-        document.getElementById('app').innerHTML = html;
-        actualizarContador();
-        return;
+}
+
+function renderTablaVacia() {
+    let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
+    html += `<table border="1" aria-label="Tabla de asistencia">`;
+    html += '<thead><tr>';
+    html += '<th>#</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th><th class="nombre">Nombre</th>';
+    
+    for (let d = 0; d < dias.length; d++) {
+        html += `<th><input type="date" value="${dias[d].fecha}" style="width:110px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
     }
-    let html = `<div class="version-mensaje" style="margin-bottom:10px;font-size:1.08em;color:var(--color-primario);font-weight:500;">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-    html += `<table border="1" aria-label="Tabla de asistencia" style="border-collapse:collapse;background:var(--color-table-bg);">`;
+    
+    html += '<th class="th-resumen">Acciones</th></tr></thead><tbody>';
+    html += `<tr><td colspan="${5 + dias.length + 1}" style="text-align:center;color:#888;font-size:1.08em;padding:18px 0;background:none;border:none;">No hay estudiantes registrados.</td></tr>`;
+    html += '</tbody></table>';
+    
+    document.getElementById('app').innerHTML = html;
+    actualizarContador();
+}
+
+function generarEncabezadoTabla() {
+    let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
+    html += `<table border="1" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
         '<th rowspan="2">#</th>' +
@@ -343,121 +201,495 @@ function renderAsistencia() {
         `<th rowspan="2" class="th-resumen" title="Porcentaje de ausencias injustificadas del total de lecciones impartidas:\n0% a <1% = 10\n1% a <10% = 9\n10% a <20% = 8\n20% a <30% = 7\n30% a <40% = 6\n40% a <50% = 5\n50% a <60% = 4\n60% a <70% = 3\n70% a <80% = 2\n80% a <90% = 1\n90% a 100% = 0">% Asistencia</th>` +
         '<th rowspan="2" class="th-resumen">Acciones</th>' +
         '</tr>';
+    
     html += '<tr>';
     for (let d = 0; d < dias.length; d++) {
-        let ausentesDia = 0;
-        for (let i = 0; i < estudiantes.length; i++) {
-            let dia = estudiantes[i].asistenciaDias[d];
-            if (typeof dia === 'object' && dia.tipo === 'Ausente' && dia.cantidad > 0) ausentesDia++;
-        }
-        html += `<th>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-                <input type="date" value="${dias[d].fecha}" onchange="actualizarFechaDia(${d}, this.value)" style="width:110px;align-self:flex-start;" aria-label="Fecha del día ${d+1}">
-                <div style="width:100%;display:flex;align-items:center;justify-content:space-between;">
-                    <span class="label-dia" style="font-size:12px;color:#fff !important;text-shadow:0 2px 8px #222 !important;">${dias[d].nombre}</span>
-                    ${d === dias.length - 1 ? `<button onclick=\"agregarDia()\" class=\"btn-agregar-dia\" style=\"padding:6px 18px;font-size:1em;border-radius:8px;background:linear-gradient(90deg,#43a047 60%,#27ae60 100%);color:#fff;border:none;box-shadow:0 2px 8px rgba(67,160,71,0.13);font-weight:600;line-height:1;min-width:54px;max-width:90px;margin-left:8px;display:inline-block;\" title=\"Agregar día\">+ Día</button>` : ''}
-                </div>
+        let ausentesDia = contarAusentesDia(d);
+        html += generarEncabezadoDia(d, ausentesDia);
+    }
+    html += '</tr></thead><tbody>';
+    
+    return html;
+}
+
+function contarAusentesDia(diaIndex) {
+    let ausentesDia = 0;
+    for (let i = 0; i < estudiantes.length; i++) {
+        let dia = estudiantes[i].asistenciaDias[diaIndex];
+        if (typeof dia === 'object' && dia.tipo === 'Ausente' && dia.cantidad > 0) ausentesDia++;
+    }
+    return ausentesDia;
+}
+
+function generarEncabezadoDia(diaIndex, ausentesDia) {
+    let html = `<th>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+            <input type="date" value="${dias[diaIndex].fecha}" onchange="actualizarFechaDia(${diaIndex}, this.value)" style="width:110px;align-self:flex-start;" aria-label="Fecha del día ${diaIndex+1}">
+            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;">
+                <span class="label-dia">${dias[diaIndex].nombre}</span>
+                ${diaIndex === dias.length - 1 ? `<button onclick="agregarDia()" class="btn-agregar-dia" title="Agregar día">+ Día</button>` : ''}
             </div>
-        `;
-        html += `<br><div style='display:flex;align-items:center;gap:8px;margin-top:6px;'>
+        </div>
+        <br><div style='display:flex;align-items:center;gap:8px;margin-top:6px;'>
             <span style='font-size:12px;color:var(--color-primario);background:linear-gradient(90deg,#e3e9f7 0%,#fff 100%);padding:3px 12px;border-radius:8px;border:1.5px solid var(--color-primario);font-weight:600;box-shadow:0 2px 8px rgba(25,118,210,0.08);transition:background 0.18s;'>Lecciones</span>
-            <input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;" onchange="actualizarLeccionesDia(${d}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${d+1}">
-        </div>`;
-        html += `<br><span style="font-size:11px;color:var(--color-error);font-weight:bold;">Ausentes: ${ausentesDia}</span>`;
-        html += `<br><button onclick="eliminarDia(${d})" class="btn-eliminar-dia" title="Eliminar este día" aria-label="Eliminar día" style="display:flex;align-items:center;gap:8px;padding:8px 22px;font-size:1.08em;font-weight:600;border-radius:10px;background:linear-gradient(90deg,#e74c3c 60%,#c0392b 100%);color:#fff;border:none;box-shadow:0 4px 16px rgba(231,76,60,0.13);transition:background 0.18s,box-shadow 0.18s,transform 0.18s;">
+            <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;" onchange="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
+        </div>
+        <br><span style="font-size:11px;color:var(--color-error);font-weight:bold;">Ausentes: ${ausentesDia}</span>
+        <br><button onclick="eliminarDia(${diaIndex})" class="btn-eliminar-dia" title="Eliminar este día" aria-label="Eliminar día">
             <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;'><polyline points='3 6 5 6 21 6'/><path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2'/><line x1='10' y1='11' x2='10' y2='17'/><line x1='14' y1='11' x2='14' y2='17'/></svg>
             Eliminar día
-        </button>`;
-        html += `</th>`;
-    }
-    html += '</tr>';
+        </button>
+    </th>`;
+    return html;
+}
+
+function generarFilasEstudiantes() {
+    let html = '';
     let num = 1;
+    
     for (let i = 0; i < estudiantes.length; i++) {
         const estudiante = estudiantes[i];
-        let totalAusente = 0, totalTarde = 0, totalEscapada = 0, totalJustificada = 0;
+        const totales = calcularTotalesEstudiante(estudiante);
+        const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
+        
         html += `<tr>`;
         html += `<td class="numero sticky">${num++}</td>`;
         html += `<td class="cedula sticky"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
         html += `<td class="apellido1 sticky"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
         html += `<td class="apellido2 sticky"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
         html += `<td class="nombre sticky"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
+        
         for (let d = 0; d < dias.length; d++) {
-            let dia = estudiante.asistenciaDias[d];
-            if (typeof dia === 'string') {
-                let tipo = 'Ausente';
-                if (dia === 'Tardía') tipo = 'Tardía';
-                if (dia === 'Escapada') tipo = 'Escapada';
-                dia = { tipo: tipo, cantidad: 1 };
-                estudiante.asistenciaDias[d] = dia;
-            }
-            if (!dia.tipo) dia.tipo = 'Ausente';
-            if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
-            if (dia.tipo === 'Ausente') totalAusente += Number(dia.cantidad || 0);
-            if (dia.tipo === 'Tardía') totalTarde += Number(dia.cantidad || 0);
-            if (dia.tipo === 'Escapada') totalEscapada += Number(dia.cantidad || 0);
-            if (dia.tipo === 'Justificada') totalJustificada += Number(dia.cantidad || 0);
-            html += `<td style="min-width:130px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};vertical-align:middle;">`;
-            html += `<div style="display:flex;align-items:center;justify-content:${dia.tipo === 'Presente' ? 'flex-start' : 'center'};gap:8px;">`;
-            html += `<select onchange="actualizarAsistenciaTipo(${i},${d},this.value)" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${num-1} día ${d+1}">`;
-            html += `<option value="Presente"${dia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
-            html += `<option value="Ausente"${dia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
-            html += `<option value="Tardía"${dia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
-            html += `<option value="Escapada"${dia.tipo === 'Escapada' ? ' selected' : ''}>Escapada</option>`;
-            html += `<option value="Justificada"${dia.tipo === 'Justificada' ? ' selected' : ''}>Justificada</option>`;
-            html += `</select>`;
-            if (dia.tipo !== 'Presente') {
-                html += `<input type="number" min="0" value="${dia.cantidad || 0}" style="width:54px;padding:6px 4px;font-size:1em;" onchange="actualizarAsistenciaCantidad(${i},${d},this.value)" aria-label="Cantidad asistencia estudiante ${num-1} día ${d+1}">`;
-            }
-            html += `</div>`;
-            html += `</td>`;
+            html += generarCeldaAsistencia(i, d, estudiante.asistenciaDias[d]);
         }
-        let totalLecciones = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
-        let porcentajeAsistencia = 0;
-        if (totalLecciones > 0) {
-            let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
-            let porcentajeAusencia = (totalAusencias / totalLecciones) * 100;
-            porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
-            if (porcentajeAusencia > 100) porcentajeAsistencia = 0;
-            if (porcentajeAusencia < 1) porcentajeAsistencia = 10;
-            else if (porcentajeAusencia < 10) porcentajeAsistencia = 9;
-            else if (porcentajeAusencia < 20) porcentajeAsistencia = 8;
-            else if (porcentajeAusencia < 30) porcentajeAsistencia = 7;
-            else if (porcentajeAusencia < 40) porcentajeAsistencia = 6;
-            else if (porcentajeAusencia < 50) porcentajeAsistencia = 5;
-            else if (porcentajeAusencia < 60) porcentajeAsistencia = 4;
-            else if (porcentajeAusencia < 70) porcentajeAsistencia = 3;
-            else if (porcentajeAusencia < 80) porcentajeAsistencia = 2;
-            else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
-            else porcentajeAsistencia = 0;
-        }
-        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totalAusente}</td>`;
-        html += `<td style="font-weight:bold;color:#1976d2;text-align:center;">${totalJustificada}</td>`;
-        let totalLeccionesPresentes = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
-        let totalAusenciasPresentes = totalAusente + (totalTarde * 0.5) + totalEscapada;
-        let totalPresentes = totalLeccionesPresentes - totalAusenciasPresentes;
-        html += `<td style="font-weight:bold;color:#43a047;text-align:center;">${totalPresentes}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-alerta);text-align:center;">${totalTarde}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${totalEscapada}</td>`;
-        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totalAusente + (totalTarde * 0.5) + totalEscapada}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-primario);text-align:center;">${totalLecciones}</td>`;
+        
+        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totales.ausente}</td>`;
+        html += `<td style="font-weight:bold;color:#1976d2;text-align:center;">${totales.justificada}</td>`;
+        html += `<td style="font-weight:bold;color:#43a047;text-align:center;">${totales.presente}</td>`;
+        html += `<td style="font-weight:bold;color:var(--color-alerta);text-align:center;">${totales.tarde}</td>`;
+        html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${totales.escapada}</td>`;
+        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totales.totalAusencias}</td>`;
+        html += `<td style="font-weight:bold;color:var(--color-primario);text-align:center;">${totales.totalLecciones}</td>`;
         html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${porcentajeAsistencia}</td>`;
-        let diferencia = 10 - porcentajeAsistencia;
-        let accionHtml = '';
-        // Alerta temprana: se activa si 10% - %Asistencia >= valorAlerta
-        if (
-            porcentajeAsistencia < 10 &&
-            (10 - porcentajeAsistencia) >= valorAlerta &&
-            totalLecciones > 0 &&
-            estudiante.cedula && estudiante.cedula.trim() !== '' &&
-            estudiante.nombre && estudiante.nombre.trim() !== '' &&
-            estudiante.apellido1 && estudiante.apellido1.trim() !== ''
-        ) {
-            accionHtml = `<span style='background:#ffeaea;color:#222;border-radius:6px;padding:4px 10px;font-weight:bold;border:2px solid #e74c3c;'>Alerta temprana</span>`;
-        }
-        html += `<td style='font-size:0.92em;padding:2px 0;'>${accionHtml}</td>`;
+        
+        const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
+        html += `<td style='font-size:1em;padding:2px 0;text-align:center;'>${accionHtml}</td>`;
         html += `</tr>`;
     }
-    html += '</tbody></table>';
-    document.getElementById('app').innerHTML = html;
-    actualizarContador();
+    
+    return html;
 }
+
+function generarCeldaAsistencia(estIndex, diaIndex, dia) {
+    if (typeof dia === 'string') {
+        let tipo = 'Ausente';
+        if (dia === 'Tardía') tipo = 'Tardía';
+        if (dia === 'Escapada') tipo = 'Escapada';
+        dia = { tipo: tipo, cantidad: 1 };
+        estudiantes[estIndex].asistenciaDias[diaIndex] = dia;
+    }
+    
+    if (!dia.tipo) dia.tipo = 'Ausente';
+    if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
+    
+    let html = `<td style="min-width:130px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};vertical-align:middle;">`;
+    html += `<div style="display:flex;align-items:center;justify-content:${dia.tipo === 'Presente' ? 'flex-start' : 'center'};gap:8px;">`;
+    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
+    html += `<option value="Presente"${dia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
+    html += `<option value="Ausente"${dia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
+    html += `<option value="Tardía"${dia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
+    html += `<option value="Escapada"${dia.tipo === 'Escapada' ? ' selected' : ''}>Escapada</option>`;
+    html += `<option value="Justificada"${dia.tipo === 'Justificada' ? ' selected' : ''}>Justificada</option>`;
+    html += `</select>`;
+    
+    if (dia.tipo !== 'Presente') {
+        html += `<input type="number" min="0" value="${dia.cantidad || 0}" style="width:54px;padding:6px 4px;font-size:1em;" onchange="actualizarAsistenciaCantidad(${estIndex},${diaIndex},this.value)" aria-label="Cantidad asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
+    }
+    
+    html += `</div></td>`;
+    return html;
+}
+
+function calcularTotalesEstudiante(estudiante) {
+    let totalAusente = 0, totalTarde = 0, totalEscapada = 0, totalJustificada = 0;
+    
+    for (let d = 0; d < dias.length; d++) {
+        let dia = estudiante.asistenciaDias[d];
+        if (typeof dia === 'string') {
+            let tipo = 'Ausente';
+            if (dia === 'Tardía') tipo = 'Tardía';
+            if (dia === 'Escapada') tipo = 'Escapada';
+            dia = { tipo: tipo, cantidad: 1 };
+            estudiante.asistenciaDias[d] = dia;
+        }
+        
+        if (!dia.tipo) dia.tipo = 'Ausente';
+        if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
+        
+        if (dia.tipo === 'Ausente') totalAusente += Number(dia.cantidad || 0);
+        if (dia.tipo === 'Tardía') totalTarde += Number(dia.cantidad || 0);
+        if (dia.tipo === 'Escapada') totalEscapada += Number(dia.cantidad || 0);
+        if (dia.tipo === 'Justificada') totalJustificada += Number(dia.cantidad || 0);
+    }
+    
+    let totalLecciones = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
+    let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
+    let totalPresentes = totalLecciones - totalAusencias;
+    
+    return {
+        ausente: totalAusente,
+        tarde: totalTarde,
+        escapada: totalEscapada,
+        justificada: totalJustificada,
+        presente: totalPresentes,
+        totalAusencias: totalAusencias,
+        totalLecciones: totalLecciones
+    };
+}
+
+function calcularPorcentajeAsistencia(totales) {
+    if (totales.totalLecciones <= 0) return 0;
+    
+    let totalAusencias = totales.ausente + (totales.tarde * 0.5) + totales.escapada;
+    let porcentajeAusencia = (totalAusencias / totales.totalLecciones) * 100;
+    porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
+    
+    if (porcentajeAusencia > 100) return 0;
+    if (porcentajeAusencia < 1) return 10;
+    if (porcentajeAusencia < 10) return 9;
+    if (porcentajeAusencia < 20) return 8;
+    if (porcentajeAusencia < 30) return 7;
+    if (porcentajeAusencia < 40) return 6;
+    if (porcentajeAusencia < 50) return 5;
+    if (porcentajeAusencia < 60) return 4;
+    if (porcentajeAusencia < 70) return 3;
+    if (porcentajeAusencia < 80) return 2;
+    if (porcentajeAusencia < 90) return 1;
+    return 0;
+}
+
+function generarAccionAlerta(porcentajeAsistencia, estudiante) {
+    let diferencia = 10 - porcentajeAsistencia;
+    let accionHtml = '';
+    
+    if (diferencia >= window.valorExtra && 
+        estudiante.cedula && estudiante.cedula.trim() !== '' &&
+        estudiante.nombre && estudiante.nombre.trim() !== '' &&
+        estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
+        accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
+    }
+    
+    return accionHtml;
+}
+
+// ===== FUNCIONES DE ACTUALIZACIÓN =====
+function actualizarEstudiante(idx, campo, valor) {
+    estudiantes[idx][campo] = valor;
+    const est = estudiantes[idx];
+    const esVacio = !est.cedula && !est.nombre && !est.apellido1 && !est.apellido2;
+    
+    if (esVacio) {
+        const vacios = estudiantes.filter(e => !e.cedula && !e.nombre && !e.apellido1 && !e.apellido2);
+        if (vacios.length > 1) {
+            estudiantes.splice(idx, 1);
+        }
+    }
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
+function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
+    if (typeof estudiantes[estIdx].asistenciaDias[diaIdx] !== 'object') {
+        estudiantes[estIdx].asistenciaDias[diaIdx] = { tipo: valor, cantidad: 0 };
+    } else {
+        estudiantes[estIdx].asistenciaDias[diaIdx].tipo = valor;
+    }
+    guardarDatos();
+    renderAsistencia();
+}
+
+function actualizarAsistenciaCantidad(estIdx, diaIdx, valor) {
+    if (typeof estudiantes[estIdx].asistenciaDias[diaIdx] !== 'object') {
+        estudiantes[estIdx].asistenciaDias[diaIdx] = { tipo: 'Ausente', cantidad: 0 };
+    }
+    estudiantes[estIdx].asistenciaDias[diaIdx].cantidad = Number(valor);
+    guardarDatos();
+    renderAsistencia();
+}
+
+function actualizarFechaDia(idx, fecha) {
+    dias[idx].fecha = fecha;
+    guardarDatos();
+    renderAsistencia();
+}
+
+function actualizarLeccionesDia(idx, valor) {
+    dias[idx].lecciones = Number(valor);
+    guardarDatos();
+    renderAsistencia();
+}
+
+// ===== FUNCIONES DE GESTIÓN =====
+function agregarEstudiante() {
+    if (!Array.isArray(estudiantes)) estudiantes = [];
+    if (estudiantes.length >= maxEstudiantes) {
+        mostrarAlerta('No se pueden agregar más de 50 estudiantes', 'error');
+        return;
+    }
+    
+    estudiantes.push({
+        cedula: '',
+        nombre: '',
+        apellido1: '',
+        apellido2: '',
+        asistenciaDias: Array.from({ length: dias.length }, () => ({ tipo: 'Presente', cantidad: 0 }))
+    });
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
+function agregarDia() {
+    if (dias.length >= 100) {
+        mostrarAlerta('No se pueden agregar más de 100 días', 'error');
+        return;
+    }
+    
+    dias.push({ fecha: '', nombre: `Día ${dias.length + 1}`, lecciones: 0 });
+    estudiantes.forEach(est => {
+        est.asistenciaDias.push({ tipo: 'Presente', cantidad: 0 });
+    });
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
+function eliminarDia(idx) {
+    if (dias.length <= 1) {
+        mostrarAlerta('Debe haber al menos un día', 'error');
+        return;
+    }
+    
+    if (confirm('¿Seguro que deseas eliminar este día? Esta acción no se puede deshacer.')) {
+        dias.splice(idx, 1);
+        estudiantes.forEach(est => {
+            est.asistenciaDias.splice(idx, 1);
+        });
+        
+        // Ordenar días por fecha ascendente si tienen fecha válida
+        dias.sort((a, b) => {
+            if (!a.fecha) return 1;
+            if (!b.fecha) return -1;
+            return new Date(a.fecha) - new Date(b.fecha);
+        });
+        
+        // Renombrar días consecutivamente
+        dias.forEach((dia, i) => {
+            dia.nombre = `Día ${i + 1}`;
+        });
+        
+        guardarDatos();
+        renderAsistencia();
+        mostrarAlerta('Día eliminado', 'info');
+    }
+}
+
+function eliminarEstudiante(idx) {
+    if (confirm('¿Seguro que deseas eliminar este estudiante? Esta acción no se puede deshacer.')) {
+        estudiantes.splice(idx, 1);
+        guardarDatos();
+        renderAsistencia();
+        mostrarAlerta('Estudiante eliminado', 'info');
+    }
+}
+
+function eliminarEstudiantePorNumero() {
+    const input = document.getElementById('inputEliminarEst');
+    let num = parseInt(input.value);
+    
+    if (isNaN(num) || num < 1 || num > estudiantes.length) {
+        mostrarAlerta('Número inválido', 'error');
+        return;
+    }
+    
+    eliminarEstudiante(num - 1);
+    input.value = '';
+}
+
+function ordenarEstudiantesManual() {
+    if (!estudiantes || estudiantes.length === 0) {
+        mostrarAlerta('No hay estudiantes para ordenar.', 'error');
+        return;
+    }
+    
+    estudiantes.sort((a, b) => {
+        const aVacio = !(a.cedula || a.nombre || a.apellido1 || a.apellido2);
+        const bVacio = !(b.cedula || b.nombre || b.apellido1 || b.apellido2);
+        
+        if (aVacio && !bVacio) return 1;
+        if (!aVacio && bVacio) return -1;
+        if (aVacio && bVacio) return 0;
+        
+        const ap1 = (a.apellido1 || '').toLowerCase();
+        const ap2 = (b.apellido1 || '').toLowerCase();
+        
+        if (ap1 < ap2) return -1;
+        if (ap1 > ap2) return 1;
+        return 0;
+    });
+    
+    guardarDatos();
+    renderAsistencia();
+}
+
+// ===== FUNCIONES DE PERSISTENCIA =====
+function guardarDatos() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ estudiantes, dias }));
+}
+
+function guardarDatosManual() {
+    guardarDatos();
+    mostrarAlerta('Datos guardados manualmente', 'exito');
+}
+
+function actualizarContador() {
+    document.getElementById('contadorEstudiantes').textContent = `Cantidad de estudiantes: ${estudiantes.length}`;
+}
+
+// ===== FUNCIONES DE ALERTAS =====
+function mostrarAlerta(mensaje, tipo) {
+    let alerta = document.createElement('div');
+    alerta.className = 'alerta ' + tipo;
+    
+    let icon = '';
+    if (tipo === 'exito') icon = '✅';
+    else if (tipo === 'error') icon = '❌';
+    else if (tipo === 'info') icon = 'ℹ️';
+    
+    alerta.innerHTML = `<span style="margin-right:8px;">${icon}</span>${mensaje}`;
+    alerta.setAttribute('role', 'alert');
+    alerta.setAttribute('aria-live', 'assertive');
+    
+    document.body.appendChild(alerta);
+    
+    setTimeout(() => {
+        alerta.remove();
+    }, 2200);
+}
+
+// ===== FUNCIONES DE IMPORTACIÓN/EXPORTACIÓN =====
+function descargarPlantilla() {
+    const wb = XLSX.utils.book_new();
+    const ws_data = [
+        ["Cédula", "Primer apellido", "Segundo apellido", "Nombre", ...dias.map(d => d.nombre)]
+    ];
+    
+    plantillaEjemplo.forEach(est => {
+        ws_data.push([
+            est.cedula,
+            est.apellido1,
+            est.apellido2,
+            est.nombre,
+            ...est.asistenciaDias
+        ]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
+    XLSX.writeFile(wb, "Plantilla_Registro2026.xlsx");
+}
+
+function cargarPlantilla(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const ws = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+            
+            if (rows.length < 2) {
+                mostrarAlerta('El archivo está vacío o no tiene formato válido', 'error');
+                return;
+            }
+            
+            const encabezado = rows[0];
+            const numDias = dias.length;
+            
+            rows.slice(1).forEach(row => {
+                const asistenciaDias = [];
+                for (let i = 0; i < numDias; i++) {
+                    asistenciaDias.push({ tipo: 'Presente', cantidad: 0 });
+                }
+                
+                estudiantes.push({
+                    cedula: row[0] || '',
+                    apellido1: row[1] || '',
+                    apellido2: row[2] || '',
+                    nombre: row[3] || '',
+                    asistenciaDias
+                });
+            });
+            
+            limpiarEstudiantesVacios();
+            guardarDatos();
+            renderAsistencia();
+            mostrarAlerta('Datos importados y agregados correctamente', 'exito');
+            
+        } catch (error) {
+            console.error('Error al importar:', error);
+            mostrarAlerta('Error al importar el archivo', 'error');
+        }
+    };
+    
+    reader.readAsArrayBuffer(file);
+}
+
+function exportarDatos() {
+    const wb = XLSX.utils.book_new();
+    const ws_data = [
+        ["Cédula", "Primer apellido", "Segundo apellido", "Nombre", ...dias.map(d => d.nombre)]
+    ];
+    
+    estudiantes.forEach(est => {
+        ws_data.push([
+            est.cedula,
+            est.apellido1,
+            est.apellido2,
+            est.nombre,
+            ...est.asistenciaDias
+        ]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
+    XLSX.writeFile(wb, "Registro2026.xlsx");
+    mostrarAlerta('Datos exportados correctamente', 'exito');
+}
+
+// ===== FUNCIONES DE CONFIGURACIÓN =====
+function configurarEventos() {
+    // Scroll horizontal con mouse cerca del borde
+    const tableContainer = document.querySelector('.table-responsive');
+    if (tableContainer) {
+        tableContainer.addEventListener('mousemove', function(e) {
+            const rect = tableContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const scrollSpeed = 18;
+            
+            if (x < 30) {
+                tableContainer.scrollLeft -= scrollSpeed;
+            }
+            if (x > rect.width - 30) {
+                tableContainer.scrollLeft += scrollSpeed;
+            }
+        });
+    }
+}
+
+// ===== INICIALIZACIÓN =====
+document.addEventListener('DOMContentLoaded', inicializarAplicacion);
