@@ -17,6 +17,8 @@ let dias = [
 // Valor de alerta temprana
 window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseFloat(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
 
+console.log('🔧 VALOR INICIAL DE ALERTA:', window.valorExtra);
+
 // Plantilla de ejemplo
 const plantillaEjemplo = [
     { cedula: "207890123", nombre: "Juan", apellido1: "Pérez", apellido2: "González", asistenciaDias: Array(dias.length).fill({ tipo: 'Presente', cantidad: 0 }) },
@@ -26,11 +28,13 @@ const plantillaEjemplo = [
 
 // ===== FUNCIONES DE INICIALIZACIÓN =====
 function inicializarAplicacion() {
+    console.log('🚀 Iniciando aplicación...');
     cargarDatosGuardados();
     sincronizarInputAlerta();
     configurarModoOscuro();
     configurarEventos();
     renderAsistencia();
+    console.log('✅ Aplicación iniciada correctamente');
 }
 
 function cargarDatosGuardados() {
@@ -121,20 +125,34 @@ function ocultarTooltipModoOscuro() {
 
 // ===== FUNCIONES DE ALERTA TEMPRANA =====
 function sincronizarInputAlerta() {
-    const input = document.getElementById('alertaTempranaInput');
-    if (input) {
-        input.value = window.valorExtra;
-        input.min = 0;
-        input.max = 10;
-        input.addEventListener('input', function() {
-            let val = Number(this.value);
-            if (isNaN(val) || val < 0) val = 0;
-            if (val > 10) val = 10;
-            window.valorExtra = val;
-            localStorage.setItem(STORAGE_KEY_ALERTA, val);
-            renderAsistencia();
-        });
+    let input = document.getElementById('alertaTempranaInput');
+    if (!input) {
+        console.log('❌ No se encontró el input de alerta temprana');
+        return;
     }
+    
+    console.log('✅ Input de alerta temprana encontrado');
+    
+    // Configurar el input para aceptar valores enteros de 0 a 10
+    input.min = 0;
+    input.max = 10;
+    input.step = 1; // Solo valores enteros
+    
+    // Establecer valor inicial directamente desde el HTML
+    window.valorExtra = parseInt(input.value) || 2;
+    console.log('🔧 Valor inicial establecido:', window.valorExtra);
+    
+    // Validar y actualizar el valor
+    input.oninput = function() {
+        let val = parseInt(this.value) || 0; // Usar parseInt para valores enteros
+        if (val < 0) val = 0;
+        if (val > 10) val = 10;
+        window.valorExtra = val;
+        this.value = val;
+        localStorage.setItem(STORAGE_KEY_ALERTA, val);
+        console.log('🔄 Alerta temprana configurada en:', val, '(escala 0-10, entero)');
+        renderAsistencia(); // Re-renderizar para actualizar alertas
+    };
 }
 
 // ===== FUNCIÓN DE VERIFICACIÓN DE DATOS =====
@@ -423,18 +441,58 @@ function calcularPorcentajeAsistencia(totales) {
     if (porcentajeAsistencia > 100) porcentajeAsistencia = 100;
     if (porcentajeAsistencia < 0) porcentajeAsistencia = 0;
     
-    return porcentajeAsistencia;
+    // Convertir a escala de 0 a 10
+    let escala10 = (porcentajeAsistencia / 100) * 10;
+    escala10 = Math.round(escala10 * 100) / 100; // Redondear a 2 decimales
+    
+    return escala10;
 }
 
 function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     let accionHtml = '';
     
-    // Mostrar alerta temprana si el porcentaje de asistencia es menor al 80%
-    if (porcentajeAsistencia < 80 && 
+    // Forzar un valor de prueba para verificar que funcione
+    let valorAlerta = window.valorExtra || 2;
+    
+    // Calcular la diferencia: 10 - %asistencia
+    let diferencia = 10 - porcentajeAsistencia;
+    
+    // Debug: mostrar valores para comparación
+    console.log('=== DEBUG ALERTA TEMPRANA ===');
+    console.log('Estudiante:', estudiante.nombre || 'Sin nombre');
+    console.log('Porcentaje asistencia (escala 0-10):', porcentajeAsistencia, 'tipo:', typeof porcentajeAsistencia);
+    console.log('Valor alerta configurado (escala 0-10):', valorAlerta, 'tipo:', typeof valorAlerta);
+    console.log('Diferencia (10 - %asistencia):', diferencia);
+    console.log('¿Debería mostrar alerta?', diferencia > valorAlerta);
+    console.log('Datos del estudiante:', {
+        cedula: estudiante.cedula && estudiante.cedula.trim() !== '',
+        nombre: estudiante.nombre && estudiante.nombre.trim() !== '',
+        apellido1: estudiante.apellido1 && estudiante.apellido1.trim() !== ''
+    });
+    console.log('=============================');
+    
+    // Mostrar alerta temprana si la diferencia es mayor al valor configurado
+    // Se activa cuando (10 - %asistencia) > valor_alerta
+    if (diferencia > valorAlerta && 
         estudiante.cedula && estudiante.cedula.trim() !== '' &&
         estudiante.nombre && estudiante.nombre.trim() !== '' &&
         estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
         accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
+        console.log('✅ ALERTA ACTIVADA para estudiante:', estudiante.nombre);
+    } else {
+        console.log('❌ NO se activa alerta para estudiante:', estudiante.nombre);
+        if (diferencia <= valorAlerta) {
+            console.log('   - Razón: Diferencia <= Valor alerta');
+        }
+        if (!estudiante.cedula || !estudiante.cedula.trim()) {
+            console.log('   - Razón: Sin cédula');
+        }
+        if (!estudiante.nombre || !estudiante.nombre.trim()) {
+            console.log('   - Razón: Sin nombre');
+        }
+        if (!estudiante.apellido1 || !estudiante.apellido1.trim()) {
+            console.log('   - Razón: Sin primer apellido');
+        }
     }
     
     return accionHtml;
