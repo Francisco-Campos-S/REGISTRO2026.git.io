@@ -19,6 +19,15 @@ window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseInt(localSto
 
 console.log('🔧 VALOR INICIAL DE ALERTA:', window.valorExtra);
 
+// Detectar si estamos en Live Server
+function detectarLiveServer() {
+    const esLiveServer = window.location.href.includes('127.0.0.1:5501') || 
+                        window.location.href.includes('localhost:5501') ||
+                        window.location.href.includes('live-server');
+    console.log('🌐 Detectado Live Server:', esLiveServer);
+    return esLiveServer;
+}
+
 // Función temporal para probar alertas
 function probarAlertas() {
     console.log('=== PRUEBA DE ALERTAS ===');
@@ -45,7 +54,15 @@ const plantillaEjemplo = [
 
 // ===== FUNCIONES DE INICIALIZACIÓN =====
 function inicializarAplicacion() {
+    // Evitar inicializaciones múltiples
+    if (window.aplicacionInicializada) {
+        console.log('⚠️ Aplicación ya inicializada, saltando...');
+        return;
+    }
+    
     console.log('🚀 Iniciando aplicación...');
+    window.aplicacionInicializada = true;
+    
     cargarDatosGuardados();
     configurarModoOscuro();
     configurarEventos();
@@ -83,11 +100,28 @@ function inicializarAplicacion() {
 
 // Función para verificar que el DOM esté listo
 function esperarDOMListo() {
+    console.log('🔄 Estado del DOM:', document.readyState);
+    console.log('🌐 URL actual:', window.location.href);
+    
+    const esLiveServer = detectarLiveServer();
+    
     if (document.readyState === 'loading') {
+        console.log('⏳ DOM cargando, esperando DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', inicializarAplicacion);
     } else {
+        console.log('✅ DOM ya está listo, inicializando...');
         inicializarAplicacion();
     }
+    
+    // Fallback adicional para Live Server
+    const tiempoFallback = esLiveServer ? 3000 : 2000;
+    setTimeout(() => {
+        if (!window.aplicacionInicializada) {
+            console.log(`⚠️ Fallback ${esLiveServer ? 'para Live Server' : 'general'} - inicializando...`);
+            window.aplicacionInicializada = true;
+            inicializarAplicacion();
+        }
+    }, tiempoFallback);
 }
 
 function cargarDatosGuardados() {
@@ -183,13 +217,16 @@ function ocultarTooltipModoOscuro() {
 function sincronizarInputAlerta() {
     let input = document.getElementById('alertaTempranaInput');
     if (!input) {
-        console.log('❌ No se encontró el input de alerta temprana - Reintentando en 50ms...');
+        const esLiveServer = detectarLiveServer();
+        const tiempoReintento = esLiveServer ? 100 : 50;
+        console.log(`❌ No se encontró el input de alerta temprana - Reintentando en ${tiempoReintento}ms...`);
         // Reintentar si el input no está disponible
-        setTimeout(sincronizarInputAlerta, 50);
+        setTimeout(sincronizarInputAlerta, tiempoReintento);
         return;
     }
     
     console.log('✅ Input de alerta temprana encontrado en:', input);
+    console.log('📍 Ubicación del input:', input.offsetParent ? 'visible' : 'no visible');
     
     // Configurar el input para aceptar valores enteros de 0 a 10
     input.min = 0;
@@ -226,6 +263,15 @@ function sincronizarInputAlerta() {
         console.log('🔄 Alerta temprana configurada (onchange):', val);
         renderAsistencia();
     };
+    
+    // Verificar que el input esté realmente configurado
+    setTimeout(() => {
+        if (input.value !== valorInicial.toString()) {
+            console.log('⚠️ Input no se configuró correctamente, reintentando...');
+            input.value = valorInicial;
+            window.valorExtra = valorInicial;
+        }
+    }, 100);
 }
 
 // ===== FUNCIÓN DE VERIFICACIÓN DE DATOS =====
