@@ -98,32 +98,7 @@ body.dark-mode tbody tr:nth-child(even) td select {
     box-shadow:0 2px 8px rgba(44,62,80,0.18);
     z-index:30;
     pointer-events:none;
-    opacity:0;
-    transition:opacity 0.2s;
-}
-#tooltipModoOscuro.visible {
-    display:block;
-    opacity:1;
-}
-body {
-    font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 20px;
-    background: linear-gradient(120deg, var(--color-secundario) 0%, var(--color-fondo) 100%);
-    color: var(--color-text);
-    animation: fadeBodyIn 1.2s cubic-bezier(.77,0,.18,1) 0s;
-}
-@keyframes fadeBodyIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-header {
-    text-align: center;
-    margin-bottom: 25px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    /* <link rel="stylesheet" href="style.css"> */
     background: linear-gradient(90deg, #fffde4 0%, #e3e9f7 100%);
     box-shadow: 0 8px 32px rgba(44,62,80,0.13);
     padding: 32px 0 24px 0;
@@ -160,51 +135,7 @@ header {
     border: none;
     border-radius: 14px;
     padding: 14px 32px;
-    font-weight: 600;
-    box-shadow: 0 6px 24px rgba(25,118,210,0.16);
-    transition: background 0.22s, box-shadow 0.22s, transform 0.22s;
-    position: relative;
-    letter-spacing: 0.5px;
-    outline: none;
-}
-.actions-bar button:hover, .actions-bar button:focus {
-    background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%);
-    transform: scale(1.09) translateY(-2px);
-    box-shadow: 0 12px 36px rgba(25,118,210,0.22);
-}
-.actions-bar button:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(25,118,210,0.10);
-}
-.actions-bar button[title]:hover:after {
-    content: attr(title);
-    position: absolute;
-    left: 50%;
-    top: -32px;
-    transform: translateX(-50%);
-    background: #fff;
-    color: #263238;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.95em;
-    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
-    white-space: nowrap;
-    z-index: 100;
-}
-.actions-bar svg {
-    width: 20px;
-    height: 20px;
-    vertical-align: middle;
-    fill: #fff;
-    transition: transform 0.22s;
-}
-.actions-bar button:hover svg {
-    transform: rotate(-8deg) scale(1.15);
-}
-.table-responsive {
-    overflow-x: auto;
-    border-radius: 10px;
-    position: relative;
+    /* <script src="script.js"></script> */
     width: 100%;
 }
 table {
@@ -614,29 +545,34 @@ th[colspan] span, th[colspan] svg {
         <p>📤 Para importar datos desde Excel, usa <b>Importar Excel</b>.</p>
     </div>
     <div class="actions-bar" style="margin-bottom:15px;">
-        <button onclick="descargarPlantilla()" title="Descarga una plantilla de ejemplo en Excel">
-            <span style="font-size:1.3em;">📄</span> Descargar plantilla
-        </button>
-        <input type="file" id="inputExcel" accept=".xlsx" style="display:none" onchange="cargarPlantilla(event)">
-        <button onclick="document.getElementById('inputExcel').click()" title="Importa datos desde un archivo Excel (.xlsx)">
-            <span style="font-size:1.3em;">📥</span> Importar Excel
-        </button>
-        <button onclick="exportarDatos()" title="Exporta los datos actuales to Excel">
-            <span style="font-size:1.3em;">📤</span> Exportar Excel
-        </button>
-        <button onclick="guardarDatosManual()" title="Guarda los datos manualmente">
-            <span style="font-size:1.3em;">💾</span> Guardar datos
-        </button>
-        <button onclick="agregarEstudiante()" title="Guarda los datos manualmente">
-            <span style="font-size:1.3em;">📝</span> Agregar estudiante
-        </button>
-        <button onclick="ordenarEstudiantesManual()" title="Ordena la lista de estudiantes por primer apellido" class="btn-agregar-est">
-            <span style="font-size:1.3em;">🔤</span> Ordenar estudiantes
-        </button>
-        <div style="display:flex;align-items:center;gap:8px;margin-left:18px;">
-            <input type="number" id="inputEliminarEst" min="1" max="50" placeholder="N° estudiante" style="width:90px;padding:7px 10px;border-radius:7px;border:1px solid #cfd8dc;font-size:1em;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <input type="number" id="inputEliminarEst" min="1" max="50" placeholder="N° estu" style="width:90px;padding:7px 10px;border-radius:7px;border:1px solid #cfd8dc;font-size:1em;">
             <button onclick="eliminarEstudiantePorNumero()" class="btn-eliminar-est" title="Eliminar estudiante por número" style="padding:8px 18px;">
                 <span style="font-size:1.3em;">🗑️</span> Eliminar estudiante
+            </button>
+            <label for="alertaTempranaInput" style="font-weight:bold;color:#1976d2;margin-left:18px;">% Alerta temprana:</label>
+            <input type="number" id="alertaTempranaInput" min="0" max="10" value="2" style="width:70px;padding:7px 10px;border-radius:7px;border:1px solid #cfd8dc;font-size:1em;">
+        </div>
+        <div style="flex:1;"></div>
+        <div style="display:flex;align-items:center;gap:18px;">
+            <button onclick="descargarPlantilla()" title="Descarga una plantilla de ejemplo en Excel">
+                <span style="font-size:1.3em;">📄</span> Descargar plantilla
+            </button>
+            <input type="file" id="inputExcel" accept=".xlsx" style="display:none" onchange="cargarPlantilla(event)">
+            <button onclick="document.getElementById('inputExcel').click()" title="Importa datos desde un archivo Excel (.xlsx)">
+                <span style="font-size:1.3em;">📥</span> Importar Excel
+            </button>
+            <button onclick="exportarDatos()" title="Exporta los datos actuales to Excel">
+                <span style="font-size:1.3em;">📤</span> Exportar Excel
+            </button>
+            <button onclick="guardarDatosManual()" title="Guarda los datos manualmente">
+                <span style="font-size:1.3em;">💾</span> Guardar datos
+            </button>
+            <button onclick="agregarEstudiante()" title="Agrega un nuevo estudiante">
+                <span style="font-size:1.3em;">📝</span> Agregar estudiante
+            </button>
+            <button onclick="ordenarEstudiantesManual()" title="Ordena la lista de estudiantes por primer apellido" class="btn-agregar-est">
+                <span style="font-size:1.3em;">🔤</span> <span style="font-size:1.3em;">📋</span> Ordenar estudiantes
             </button>
         </div>
     </div>
@@ -649,6 +585,26 @@ th[colspan] span, th[colspan] svg {
         </div>
     </div>
     <script>
+// --- Sincronía de alerta temprana (input barra de acciones <-> window.valorExtra <-> localStorage) ---
+const STORAGE_KEY_ALERTA = 'valorExtraAlertaTemprana';
+window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseFloat(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
+function sincronizarInputAlerta() {
+    const input = document.getElementById('alertaTempranaInput');
+    if (input) {
+        input.value = window.valorExtra;
+        input.min = 0;
+        input.max = 10;
+        input.addEventListener('input', function() {
+            let val = Number(this.value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 10) val = 10;
+            window.valorExtra = val;
+            localStorage.setItem(STORAGE_KEY_ALERTA, val);
+            renderAsistencia();
+        });
+    }
+}
+document.addEventListener('DOMContentLoaded', sincronizarInputAlerta);
 // Modo oscuro manual
 function aplicarModoOscuro(valor) {
     if (valor) {
@@ -692,6 +648,13 @@ function ocultarTooltipModoOscuro() {
 }
 
 function renderAsistencia() {
+        // Log visual de depuración en la tabla para el estudiante Juan
+        let debugInfo = '';
+        if ((estudiante.nombre || '').toLowerCase() === 'juan') {
+            debugInfo = `<div style='font-size:0.85em;color:#e74c3c;background:#fff3f3;border-radius:4px;margin-top:2px;padding:2px 4px;'>DEBUG: dif=${diferencia} | alerta=${valorAlerta} | lecciones=${totalLecciones} | %Asist=${porcentajeAsistencia}</div>`;
+            // También alert visual si quieres forzar la atención
+            // alert(`DEBUG Juan: dif=${diferencia} | alerta=${valorAlerta} | lecciones=${totalLecciones} | %Asist=${porcentajeAsistencia}`);
+        }
     // Eliminar estudiantes sin datos antes de renderizar
     if (Array.isArray(estudiantes)) {
         // Solo elimina si hay más de una vacía
@@ -706,32 +669,13 @@ function renderAsistencia() {
             }
         }
     }
-    // Si no hay estudiantes, agregar una fila vacía y mostrar % asistencia y Acciones
-    if (!estudiantes || estudiantes.length === 0) {
-        let html = `<div class="version-mensaje" style="margin-bottom:10px;font-size:1.08em;color:var(--color-primario);font-weight:500;">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-        html += `<div style="width:100%;display:flex;justify-content:flex-end;margin:0 0 12px 0;"></div>`;
-        html += `<table border="1" aria-label="Tabla de asistencia" style="border-collapse:collapse;background:var(--color-table-bg);">`;
-        html += '<thead>';
-        html += '<tr>' +
-            '<th>#</th>' +
-            '<th class="cedula">Cédula</th>' +
-            '<th class="apellido1">Primer apellido</th>' +
-            '<th class="apellido2">Segundo apellido</th>' +
-            '<th class="nombre">Nombre</th>';
-        for (let d = 0; d < dias.length; d++) {
-            html += `<th><input type="date" value="${dias[d].fecha}" style="width:110px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia" style="font-size:12px;color:#fff !important;text-shadow:0 2px 8px #222 !important;">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
-        }
-        html += '</tr>';
-        html += '</thead>';
-        html += '<tbody>';
-        html += `<tr><td colspan="${5 + dias.length + 2}" style="text-align:center;color:#888;font-size:1.08em;padding:18px 0;background:none;border:none;">No hay estudiantes registrados.</td></tr>`;
-        html += '</tbody></table>';
-        document.getElementById('app').innerHTML = html;
-        actualizarContador();
-        return;
-    }
     // Encabezados y orden de columnas
     let html = `<div class="version-mensaje" style="margin-bottom:10px;font-size:1.08em;color:var(--color-primario);font-weight:500;">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
+    // Campo de alerta temprana SIEMPRE visible
+    html += `<div style="margin-bottom:12px;padding:8px 14px;background:#ffeaea;border-radius:8px;max-width:320px;">
+        <label for="alertaTempranaInput" style="color:#e74c3c;font-weight:bold;">% Para alerta temprana por ausentismo (%):</label>
+        <input type="number" id="alertaTempranaInput" min="0" max="10" step="1" value="${window.valorExtra}" style="width:70px;margin-left:8px;font-weight:bold;color:#222;background:#fff;border:2px solid #e74c3c;border-radius:6px;" onchange="window.valorExtra=parseInt(this.value)||0;localStorage.setItem('valorExtraAlertaTemprana',window.valorExtra);renderAsistencia();">
+    </div>`;
     html += `<table border="1" aria-label="Tabla de asistencia" style="border-collapse:collapse;background:var(--color-table-bg);">`;
     html += '<thead>';
     html += '<tr>' +
@@ -827,7 +771,7 @@ function renderAsistencia() {
             let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
             let porcentajeAusencia = (totalAusencias / totalLecciones) * 100;
             porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
-            if (porcentajeAusencia > 100) porcentajeAsistencia = 0;
+            if (isNaN(porcentajeAusencia) || porcentajeAusencia < 0) porcentajeAusencia = 0;
             if (porcentajeAusencia < 1) porcentajeAsistencia = 10;
             else if (porcentajeAusencia < 10) porcentajeAsistencia = 9;
             else if (porcentajeAusencia < 20) porcentajeAsistencia = 8;
@@ -839,6 +783,8 @@ function renderAsistencia() {
             else if (porcentajeAusencia < 80) porcentajeAsistencia = 2;
             else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
             else porcentajeAsistencia = 0;
+        } else {
+            porcentajeAsistencia = 0;
         }
         html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totalAusente}</td>`;
         html += `<td style="font-weight:bold;color:#1976d2;text-align:center;">${totalJustificada}</td>`;
@@ -852,19 +798,23 @@ function renderAsistencia() {
         html += `<td style="font-weight:bold;color:var(--color-primario);text-align:center;">${totalLecciones}</td>`;
         html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${porcentajeAsistencia}</td>`;
         // Mostrar aviso solo en columna Acciones
+        // Tomar SIEMPRE el valor actual del input de alerta temprana y sincronizar window.valorExtra
+        let inputAlerta = document.getElementById('alertaTempranaInput');
+        let valorAlerta = window.valorExtra;
+        if (inputAlerta) {
+            let val = Number(inputAlerta.value);
+            if (isNaN(val) || val < 0) val = 0;
+            if (val > 10) val = 10;
+            valorAlerta = val;
+            window.valorExtra = val;
+        }
+        // Mostrar alerta solo si la lógica de alerta temprana se cumple, sin depender de los datos del estudiante
         let diferencia = 10 - porcentajeAsistencia;
         let accionHtml = '';
-        if (
-            porcentajeAsistencia >= 0 && porcentajeAsistencia < 10 &&
-            diferencia > window.valorExtra &&
-            totalLecciones > 0 &&
-            estudiante.cedula && estudiante.cedula.trim() !== '' &&
-            estudiante.nombre && estudiante.nombre.trim() !== '' &&
-            estudiante.apellido1 && estudiante.apellido1.trim() !== ''
-        ) {
-            accionHtml = `<span style='background:#ffeaea;color:#222;border-radius:6px;padding:4px 10px;font-weight:bold;border:2px solid #e74c3c;'>Alerta temprana</span>`;
+        if (diferencia >= valorAlerta) {
+            accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
         }
-        html += `<td style='font-size:0.92em;padding:2px 0;'>${accionHtml}</td>`;
+        html += `<td style='font-size:1em;padding:2px 0;text-align:center;'>${accionHtml}</td>`;
         html += `</tr>`;
     }
     html += '</tbody></table>';
@@ -1106,20 +1056,12 @@ function agregarEstudiante() {
         html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totalAusente + (totalTarde * 0.5) + totalEscapada}</td>`;
         html += `<td style="font-weight:bold;color:var(--color-primario);text-align:center;">${totalLecciones}</td>`;
         html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${porcentajeAsistencia}</td>`;
-        // Mostrar aviso solo en columna Acciones
         let diferencia = 10 - porcentajeAsistencia;
         let accionHtml = '';
-        if (
-            porcentajeAsistencia >= 0 && porcentajeAsistencia < 10 &&
-            diferencia > window.valorExtra &&
-            totalLecciones > 0 &&
-            estudiante.cedula && estudiante.cedula.trim() !== '' &&
-            estudiante.nombre && estudiante.nombre.trim() !== '' &&
-            estudiante.apellido1 && estudiante.apellido1.trim() !== ''
-        ) {
-            accionHtml = `<span style='background:#ffeaea;color:#222;border-radius:6px;padding:4px 10px;font-weight:bold;border:2px solid #e74c3c;'>Alerta temprana</span>`;
+        if (diferencia >= window.valorExtra) {
+            accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
         }
-        html += `<td style='font-size:0.92em;padding:2px 0;'>${accionHtml}</td>`;
+        html += `<td style='font-size:1em;padding:2px 0;text-align:center;'>${accionHtml}</td>`;
         html += `</tr>`;
     }
     html += '</tbody></table>';
@@ -1258,6 +1200,13 @@ function ordenarEstudiantesManual() {
         return;
     }
     estudiantes.sort((a, b) => {
+        // Si ambos están vacíos, no importa el orden
+        const aVacio = !(a.cedula || a.nombre || a.apellido1 || a.apellido2);
+        const bVacio = !(b.cedula || b.nombre || b.apellido1 || b.apellido2);
+        if (aVacio && !bVacio) return 1; // a vacío va abajo
+        if (!aVacio && bVacio) return -1; // b vacío va abajo
+        if (aVacio && bVacio) return 0; // ambos vacíos
+        // Ambos tienen datos, ordenar por primer apellido
         const ap1 = (a.apellido1 || '').toLowerCase();
         const ap2 = (b.apellido1 || '').toLowerCase();
         if (ap1 < ap2) return -1;
@@ -1421,30 +1370,4 @@ if (!localStorage.getItem(STORAGE_KEY)) {
     </script>
 </body>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Usuarios</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <h1>Registro de Usuarios</h1>
-  </header>
-  <main>
-    <form id="formulario" autocomplete="off">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" name="nombre" required>
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-      <label for="edad">Edad:</label>
-      <input type="number" id="edad" name="edad" required min="1" max="120">
-      <button type="submit">Registrar</button>
-    </form>
-    <section id="registros" aria-live="polite"></section>
-  </main>
-  <script src="script.js"></script>
-</body>
-</html>
+<!-- Eliminado bloque duplicado y formulario de usuarios -->
