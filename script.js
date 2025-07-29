@@ -404,16 +404,19 @@ function calcularTotalesEstudiante(estudiante) {
     }
     
     let totalLecciones = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
+    // Las ausencias justificadas NO cuentan para el cálculo de presentes
     let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
     let totalPresente = totalLecciones - totalAusencias;
     
     // Debug: mostrar información en consola
     console.log('=== DEBUG CALCULO TOTALES ===');
+    console.log('Estudiante:', estudiante.nombre || 'Sin nombre');
     console.log('Días:', dias.map(d => ({ nombre: d.nombre, lecciones: d.lecciones })));
     console.log('Total lecciones:', totalLecciones);
     console.log('Ausente:', totalAusente, 'Tardía:', totalTarde, 'Escapada:', totalEscapada, 'Justificada:', totalJustificada);
-    console.log('Total ausencias:', totalAusencias);
+    console.log('Total ausencias (sin justificadas):', totalAusencias);
     console.log('Total presente:', totalPresente);
+    console.log('Fórmula: Presentes =', totalLecciones, '-', totalAusencias, '=', totalPresente);
     console.log('=============================');
     
     return {
