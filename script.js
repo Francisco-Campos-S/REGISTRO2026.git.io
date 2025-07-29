@@ -47,11 +47,18 @@ function cargarDatosGuardados() {
                     dias = datos.dias.map((dia, idx) => ({
                         fecha: dia.fecha || '',
                         nombre: dia.nombre || `Día ${idx + 1}`,
-                        lecciones: typeof dia.lecciones === 'number' ? dia.lecciones : 0
+                        lecciones: Number(dia.lecciones) || 0
                     }));
                 }
             }
             sincronizarAsistenciaDias();
+            
+            // Debug: mostrar datos cargados
+            console.log('=== DATOS CARGADOS ===');
+            console.log('Días cargados:', dias);
+            console.log('Total lecciones cargadas:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
+            console.log('=====================');
+            
             mostrarAlerta('Datos cargados correctamente', 'exito');
         } catch (error) {
             console.error('Error al cargar datos:', error);
@@ -130,8 +137,29 @@ function sincronizarInputAlerta() {
     }
 }
 
+// ===== FUNCIÓN DE VERIFICACIÓN DE DATOS =====
+function verificarDatosLecciones() {
+    console.log('=== VERIFICACIÓN DE DATOS LECCIONES ===');
+    console.log('Array de días:', dias);
+    console.log('Días individuales:');
+    dias.forEach((dia, index) => {
+        console.log(`  Día ${index + 1} (${dia.nombre}): ${dia.lecciones} lecciones (tipo: ${typeof dia.lecciones})`);
+    });
+    
+    let sumaManual = 0;
+    dias.forEach(dia => {
+        sumaManual += Number(dia.lecciones) || 0;
+    });
+    console.log('Suma manual de lecciones:', sumaManual);
+    
+    let sumaReduce = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
+    console.log('Suma con reduce:', sumaReduce);
+    console.log('=====================================');
+}
+
 // ===== FUNCIONES DE RENDERIZADO =====
 function renderAsistencia() {
+    verificarDatosLecciones(); // Agregar verificación
     limpiarEstudiantesVacios();
     
     if (!estudiantes || estudiantes.length === 0) {
@@ -222,9 +250,26 @@ function contarAusentesDia(diaIndex) {
     let ausentesDia = 0;
     for (let i = 0; i < estudiantes.length; i++) {
         let dia = estudiantes[i].asistenciaDias[diaIndex];
-        if (typeof dia === 'object' && dia.tipo === 'Ausente' && dia.cantidad > 0) ausentesDia++;
+        if (typeof dia === 'string') {
+            let tipo = 'Ausente';
+            if (dia === 'Tardía') tipo = 'Tardía';
+            if (dia === 'Escapada') tipo = 'Escapada';
+            dia = { tipo: tipo, cantidad: 1 };
+            estudiantes[i].asistenciaDias[diaIndex] = dia;
+        }
+        
+        if (!dia.tipo) dia.tipo = 'Ausente';
+        if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
+        
+        if (dia.tipo === 'Ausente') {
+            ausentesDia += Number(dia.cantidad || 0);
+        } else if (dia.tipo === 'Tardía') {
+            ausentesDia += Number(dia.cantidad || 0) * 0.5; // Tardía cuenta como 0.5 ausencias
+        } else if (dia.tipo === 'Escapada') {
+            ausentesDia += Number(dia.cantidad || 0);
+        }
     }
-    return ausentesDia;
+    return Math.round(ausentesDia * 100) / 100; // Redondear a 2 decimales
 }
 
 function generarEncabezadoDia(diaIndex, ausentesDia) {
@@ -238,7 +283,7 @@ function generarEncabezadoDia(diaIndex, ausentesDia) {
         </div>
         <br><div style='display:flex;align-items:center;gap:8px;margin-top:6px;'>
             <span style='font-size:12px;color:var(--color-primario);background:linear-gradient(90deg,#e3e9f7 0%,#fff 100%);padding:3px 12px;border-radius:8px;border:1.5px solid var(--color-primario);font-weight:600;box-shadow:0 2px 8px rgba(25,118,210,0.08);transition:background 0.18s;'>Lecciones</span>
-            <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;' onchange="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
+            <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;' onchange="actualizarLeccionesDia(${diaIndex}, this.value)" oninput="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
         </div>
         <br><span style="font-size:11px;color:var(--color-error);font-weight:bold;">Ausentes: ${ausentesDia}</span>
         <br><button onclick="eliminarDia(${diaIndex})" class="btn-eliminar-dia" title="Eliminar este día" aria-label="Eliminar día">
@@ -300,7 +345,7 @@ function generarCeldaAsistencia(estIndex, diaIndex, dia) {
     
     let html = `<td style="min-width:130px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};vertical-align:middle;">`;
     html += `<div style="display:flex;align-items:center;justify-content:${dia.tipo === 'Presente' ? 'flex-start' : 'center'};gap:8px;">`;
-    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" class="select-asistencia select-${dia.tipo.toLowerCase()}" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
+    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" class="select-asistencia select-${dia.tipo === 'Tardía' ? 'tardia' : dia.tipo.toLowerCase()}" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
     html += `<option value="Presente"${dia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
     html += `<option value="Ausente"${dia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
     html += `<option value="Tardía"${dia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
@@ -332,22 +377,36 @@ function calcularTotalesEstudiante(estudiante) {
         if (!dia.tipo) dia.tipo = 'Ausente';
         if (typeof dia.cantidad !== 'number') dia.cantidad = 0;
         
-        if (dia.tipo === 'Ausente') totalAusente += Number(dia.cantidad || 0);
-        if (dia.tipo === 'Tardía') totalTarde += Number(dia.cantidad || 0);
-        if (dia.tipo === 'Escapada') totalEscapada += Number(dia.cantidad || 0);
-        if (dia.tipo === 'Justificada') totalJustificada += Number(dia.cantidad || 0);
+        if (dia.tipo === 'Ausente') {
+            totalAusente += Number(dia.cantidad || 0);
+        } else if (dia.tipo === 'Tardía') {
+            totalTarde += Number(dia.cantidad || 0);
+        } else if (dia.tipo === 'Escapada') {
+            totalEscapada += Number(dia.cantidad || 0);
+        } else if (dia.tipo === 'Justificada') {
+            totalJustificada += Number(dia.cantidad || 0);
+        }
     }
     
     let totalLecciones = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
     let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
-    let totalPresentes = totalLecciones - totalAusencias;
+    let totalPresente = totalLecciones - totalAusencias;
+    
+    // Debug: mostrar información en consola
+    console.log('=== DEBUG CALCULO TOTALES ===');
+    console.log('Días:', dias.map(d => ({ nombre: d.nombre, lecciones: d.lecciones })));
+    console.log('Total lecciones:', totalLecciones);
+    console.log('Ausente:', totalAusente, 'Tardía:', totalTarde, 'Escapada:', totalEscapada, 'Justificada:', totalJustificada);
+    console.log('Total ausencias:', totalAusencias);
+    console.log('Total presente:', totalPresente);
+    console.log('=============================');
     
     return {
         ausente: totalAusente,
         tarde: totalTarde,
         escapada: totalEscapada,
         justificada: totalJustificada,
-        presente: totalPresentes,
+        presente: totalPresente,
         totalAusencias: totalAusencias,
         totalLecciones: totalLecciones
     };
@@ -356,29 +415,22 @@ function calcularTotalesEstudiante(estudiante) {
 function calcularPorcentajeAsistencia(totales) {
     if (totales.totalLecciones <= 0) return 0;
     
-    let totalAusencias = totales.ausente + (totales.tarde * 0.5) + totales.escapada;
-    let porcentajeAusencia = (totalAusencias / totales.totalLecciones) * 100;
-    porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
+    // Calcular porcentaje de asistencia basado en lecciones presentes
+    let porcentajeAsistencia = (totales.presente / totales.totalLecciones) * 100;
+    porcentajeAsistencia = Math.round(porcentajeAsistencia * 100) / 100;
     
-    if (porcentajeAusencia > 100) return 0;
-    if (porcentajeAusencia < 1) return 10;
-    if (porcentajeAusencia < 10) return 9;
-    if (porcentajeAusencia < 20) return 8;
-    if (porcentajeAusencia < 30) return 7;
-    if (porcentajeAusencia < 40) return 6;
-    if (porcentajeAusencia < 50) return 5;
-    if (porcentajeAusencia < 60) return 4;
-    if (porcentajeAusencia < 70) return 3;
-    if (porcentajeAusencia < 80) return 2;
-    if (porcentajeAusencia < 90) return 1;
-    return 0;
+    // Asegurar que el porcentaje esté entre 0 y 100
+    if (porcentajeAsistencia > 100) porcentajeAsistencia = 100;
+    if (porcentajeAsistencia < 0) porcentajeAsistencia = 0;
+    
+    return porcentajeAsistencia;
 }
 
 function generarAccionAlerta(porcentajeAsistencia, estudiante) {
-    let diferencia = 10 - porcentajeAsistencia;
     let accionHtml = '';
     
-    if (diferencia >= window.valorExtra && 
+    // Mostrar alerta temprana si el porcentaje de asistencia es menor al 80%
+    if (porcentajeAsistencia < 80 && 
         estudiante.cedula && estudiante.cedula.trim() !== '' &&
         estudiante.nombre && estudiante.nombre.trim() !== '' &&
         estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
@@ -415,7 +467,8 @@ function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
     // Actualizar clase CSS del select para cambiar color
     const selectElement = event.target;
     if (selectElement) {
-        selectElement.className = `select-asistencia select-${valor.toLowerCase()}`;
+        let className = `select-asistencia select-${valor === 'Tardía' ? 'tardia' : valor.toLowerCase()}`;
+        selectElement.className = className;
     }
     
     guardarDatos();
@@ -438,7 +491,21 @@ function actualizarFechaDia(idx, fecha) {
 }
 
 function actualizarLeccionesDia(idx, valor) {
+    console.log(`=== ACTUALIZANDO LECCIONES DÍA ${idx + 1} ===`);
+    console.log('Valor recibido:', valor, 'tipo:', typeof valor);
+    console.log('Valor convertido a Number:', Number(valor));
+    
     dias[idx].lecciones = Number(valor);
+    
+    console.log('Día actualizado:', dias[idx]);
+    console.log('Array completo después de actualizar:', dias);
+    
+    // Debug: mostrar actualización de lecciones
+    console.log('=== ACTUALIZACIÓN LECCIONES ===');
+    console.log(`Día ${idx + 1} (${dias[idx].nombre}): ${dias[idx].lecciones} lecciones`);
+    console.log('Total lecciones actual:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
+    console.log('================================');
+    
     guardarDatos();
     renderAsistencia();
 }
@@ -558,6 +625,12 @@ function ordenarEstudiantesManual() {
 
 // ===== FUNCIONES DE PERSISTENCIA =====
 function guardarDatos() {
+    // Debug: mostrar datos antes de guardar
+    console.log('=== GUARDANDO DATOS ===');
+    console.log('Días a guardar:', dias);
+    console.log('Total lecciones a guardar:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
+    console.log('=======================');
+    
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ estudiantes, dias }));
 }
 

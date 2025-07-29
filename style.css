@@ -391,6 +391,17 @@ table {
     position: relative;
 }
 
+/* Dark mode para tabla - sin bordes */
+body.dark-mode table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+body.dark-mode th, 
+body.dark-mode td {
+    border: none !important;
+}
+
 th, td {
     border: 1px solid var(--color-fondo);
     padding: 12px 14px;
@@ -436,17 +447,19 @@ td.nombre:focus-within {
     background: #fffbe9 !important;
 }
 
-/* Inputs dentro de sticky nombre */
+/* Inputs dentro de sticky nombre - IGUAL A INPUTS NORMALES */
 td.nombre input[type="text"] {
-    background: transparent !important;
-    border: 1px solid #bdbdbd !important;
-    color: #222 !important;
-    transform: none !important;
-    transition: none !important;
-    position: static !important;
+    background: #fff !important;
+    color: #263238 !important;
+    box-shadow: 0 2px 8px var(--color-shadow) !important;
+    border: 1.5px solid var(--color-border) !important;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: var(--transition);
+    padding: 8px 12px;
 }
 
-/* Dark mode styles for sticky name - CORREGIDO PARA QUE SEA IGUAL A LAS DEMÁS */
+/* Dark mode styles for sticky name - IGUAL A PRIMER APELLIDO */
 body.dark-mode th.nombre {
     background: #1565c0 !important;
     color: #fff !important;
@@ -463,7 +476,7 @@ body.dark-mode tbody tr:nth-child(odd) td.nombre {
 }
 
 body.dark-mode tbody tr:nth-child(even) td.nombre {
-    background: #404a4f !important;
+    background: #4a5568 !important;
     color: #fff !important;
 }
 
@@ -472,12 +485,30 @@ body.dark-mode td.nombre:focus-within {
     outline: 2.5px solid #e74c3c !important;
 }
 
+/* Inputs de nombre iguales a inputs normales en modo oscuro */
 body.dark-mode td.nombre input[type="text"] {
-    background: transparent !important;
-    color: inherit !important;
-    border: 1px solid #444 !important;
-    transform: none !important;
-    transition: none !important;
+    background: rgba(44,62,80,0.18) !important;
+    color: #fff !important;
+    border: 2px solid var(--color-primario) !important;
+    box-shadow: 0 2px 8px var(--color-shadow) !important;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: var(--transition);
+    padding: 8px 12px;
+}
+
+/* Focus igual a inputs normales */
+body.dark-mode td.nombre input[type="text"]:focus {
+    background: #263238 !important;
+    border: 2px solid var(--color-primario) !important;
+    box-shadow: 0 4px 16px rgba(25,118,210,0.13) !important;
+    outline: none;
+}
+
+/* Texto negro en inputs de filas pares (blancas) en modo oscuro - IGUAL A INPUTS NORMALES */
+body.dark-mode tbody tr:nth-child(even) td.nombre input[type="text"] {
+    color: #000 !important;
+    background: #fff !important;
 }
 
 /* Asegurar que la columna de acciones no sea sticky */
@@ -541,13 +572,15 @@ tbody tr:nth-child(even) td {
 body.dark-mode tbody tr:nth-child(odd) td {
     background: #2d3436 !important;
     color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
-    background: #404a4f !important;
+    background: #4a5568 !important;
     color: #fff !important;
-    border: 2px solid var(--color-border) !important;
-    box-shadow: 0 2px 8px var(--color-shadow) !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* ===== CELDA NUMERO ===== */
@@ -563,6 +596,13 @@ td.numero {
     width: 55px;
     min-width: 55px;
     max-width: 55px;
+}
+
+/* Dark mode para celda número - sin bordes */
+body.dark-mode td.numero {
+    border-right: none !important;
+    border-left: none !important;
+    box-shadow: none !important;
 }
 
 /* ===== INPUTS Y SELECTS ===== */
@@ -795,8 +835,8 @@ body.dark-mode .select-ausente {
 }
 
 body.dark-mode .select-tardia {
-    background: #e65100 !important;
-    color: #ffcc02 !important;
+    background: #f57f17 !important;
+    color: #fff3e0 !important;
     border-color: #ff9800 !important;
 }
 
@@ -873,7 +913,6 @@ tbody tr:hover {
     position: relative !important;
 }
 
-tbody tr:has(td.nombre:focus-within),
 tbody tr.fila-focus-activa {
     box-shadow: 0 0 0 3px #e74c3c !important;
     z-index: 100 !important;
@@ -882,7 +921,6 @@ tbody tr.fila-focus-activa {
 
 /* Asegurar que la celda sticky mantenga su posición */
 tbody tr:hover td.nombre,
-tbody tr:has(td.nombre:focus-within) td.nombre,
 tbody tr.fila-focus-activa td.nombre {
     position: -webkit-sticky !important;
     position: sticky !important;
@@ -893,7 +931,6 @@ tbody tr.fila-focus-activa td.nombre {
 
 /* Dark mode para borde rojo - MÁS VISIBLE */
 body.dark-mode tbody tr:hover,
-body.dark-mode tbody tr:has(td.nombre:focus-within),
 body.dark-mode tbody tr.fila-focus-activa {
     box-shadow: 0 0 0 4px #ff6b6b !important;
     z-index: 100 !important;
