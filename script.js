@@ -858,6 +858,7 @@ function agregarEstudiante() {
     guardarDatos();
     renderAsistencia();
     sincronizarEstudiantesEvaluacion();
+    sincronizarEstudiantesTareas();
 }
 
 function agregarDia() {
@@ -911,6 +912,7 @@ function eliminarEstudiante(idx) {
         guardarDatos();
         renderAsistencia();
         sincronizarEstudiantesEvaluacion();
+        sincronizarEstudiantesTareas();
         mostrarAlerta('Estudiante eliminado', 'info');
     }
 }
@@ -971,7 +973,12 @@ function guardarDatosManual() {
 }
 
 function actualizarContador() {
-    document.getElementById('contadorEstudiantes').textContent = `Cantidad de estudiantes: ${estudiantes.length}`;
+    // Contar solo estudiantes que tienen nombre
+    const estudiantesConNombre = estudiantes.filter(est => 
+        est.nombre && est.nombre.trim() !== ''
+    ).length;
+    
+    document.getElementById('contadorEstudiantes').textContent = `Cantidad de estudiantes: ${estudiantesConNombre}`;
 }
 
 // ===== FUNCIONES DE ALERTAS MEJORADAS =====
@@ -1213,6 +1220,13 @@ let pruebas = [
 
 let evaluacionesEstudiantes = [];
 
+// Variables globales para tareas
+let tareas = [
+    { nombre: 'I TAREA', puntosMaximos: 20, peso: 5 },
+    { nombre: 'II TAREA', puntosMaximos: 20, peso: 5 }
+];
+let tareasEstudiantes = [];
+
 // Función para renderizar la tabla de evaluación
 function renderEvaluacion() {
     const container = document.getElementById('evaluacion-app');
@@ -1251,14 +1265,10 @@ function renderEvaluacion() {
         html += '<td class="calculated">-------</td>';
         
         // Celda de peso con botón eliminar integrado
-        if (pruebas.length > 1) {
-            html += `<td class="editable" style="position:relative;">
-                <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:30px;width:80px;">
-                <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
-            </td>`;
-        } else {
-            html += `<td class="editable"><input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="width:80px;"></td>`;
-        }
+        html += `<td class="editable" style="position:relative;">
+            <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:30px;width:80px;">
+            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
+        </td>`;
     });
     
     // Calcular la suma total de los pesos
@@ -1401,11 +1411,6 @@ function agregarPrueba() {
 
 // Función para eliminar prueba
 function eliminarPrueba(pruebaIdx) {
-    if (pruebas.length <= 1) {
-        mostrarAlerta('Debe haber al menos una prueba', 'error');
-        return;
-    }
-    
     const nombrePrueba = pruebas[pruebaIdx].nombre;
     
     if (confirm(`¿Seguro que deseas eliminar la prueba "${nombrePrueba}"? Esta acción no se puede deshacer.`)) {
@@ -1517,6 +1522,284 @@ function sincronizarEstudiantesEvaluacion() {
     renderEvaluacion();
 }
 
+// ===== FUNCIONES DE TAREAS =====
+function renderTareas() {
+    const container = document.getElementById('tareas-app');
+    if (!container) return;
+
+    let html = '<table class="tareas-table">';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Estudiante</th>';
+    
+    tareas.forEach(tarea => {
+        html += `<th colspan="3">${tarea.nombre}</th>`;
+    });
+    
+    html += '<th>TOTAL</th>';
+    html += '</tr><tr>';
+    html += '<th></th>';
+    
+    tareas.forEach(tarea => {
+        html += '<th>PTS</th>';
+        html += '<th>NOTA</th>';
+        html += '<th>%</th>';
+    });
+    
+    html += '<th>%</th>';
+    html += '</tr></thead>';
+    
+    // Fila de configuración
+    html += '<tbody>';
+    html += '<tr class="config-row">';
+    html += '<td class="student-name">CONFIGURACIÓN</td>';
+    
+    tareas.forEach((tarea, idx) => {
+        html += `<td class="editable"><input type="number" value="${tarea.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosTarea(${idx}, this.value)" title="Puntos máximos de la tarea"></td>`;
+        html += '<td class="calculated">-------</td>';
+        
+        // Celda de peso con botón eliminar integrado
+        html += `<td class="editable" style="position:relative;">
+            <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" title="% de peso de la tarea" style="padding-right:30px;width:80px;">
+            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
+        </td>`;
+    });
+    
+    // Calcular la suma total de los pesos
+    const totalPeso = tareas.reduce((sum, tarea) => sum + tarea.peso, 0);
+    const totalClass = totalPeso > 100 ? 'total-excedido' : '';
+    html += `<td class="calculated ${totalClass}">${totalPeso}%</td>`;
+    html += '</tr>';
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return; // Saltar estudiantes vacíos
+        
+        html += '<tr>';
+        html += `<td class="student-name">${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}</td>`;
+        
+        let totalPorcentaje = 0;
+        
+        tareas.forEach((tarea, tareaIdx) => {
+            const tareaEstudiante = obtenerTarea(estIdx, tareaIdx);
+            const nota = calcularNota(tareaEstudiante.puntos, tarea.puntosMaximos);
+            const porcentaje = calcularPorcentaje(tareaEstudiante.puntos, tarea.puntosMaximos);
+            const porcentajePonderado = (nota * tarea.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            html += `<td class="editable"><input type="number" value="${tareaEstudiante.puntos}" min="0" max="${tarea.puntosMaximos}" step="0.1" onchange="actualizarPuntosTarea(${estIdx}, ${tareaIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="calculated">${nota.toFixed(1)}</td>`;
+            html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
+        });
+        
+        html += `<td class="calculated">${totalPorcentaje.toFixed(1)}%</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function obtenerTarea(estIdx, tareaIdx) {
+    if (!tareasEstudiantes[estIdx]) {
+        tareasEstudiantes[estIdx] = [];
+    }
+    if (!tareasEstudiantes[estIdx][tareaIdx]) {
+        tareasEstudiantes[estIdx][tareaIdx] = { puntos: 0 };
+    }
+    return tareasEstudiantes[estIdx][tareaIdx];
+}
+
+function actualizarPuntosMaximosTarea(tareaIdx, valor) {
+    tareas[tareaIdx].puntosMaximos = parseInt(valor);
+    guardarTareas();
+    renderTareas();
+}
+
+function actualizarPesoTarea(tareaIdx, valor) {
+    const peso = parseInt(valor);
+    if (peso < 0 || peso > 100) {
+        mostrarAlerta('El peso debe estar entre 0 y 100', 'error');
+        return;
+    }
+    
+    tareas[tareaIdx].peso = peso;
+    
+    // Verificar si el total excede 100%
+    const totalPeso = tareas.reduce((sum, tarea) => sum + tarea.peso, 0);
+    if (totalPeso > 100) {
+        mostrarAlerta(`¡Atención! El total de pesos es ${totalPeso}%, que excede el 100%`, 'info');
+    }
+    
+    guardarTareas();
+    renderTareas();
+}
+
+function actualizarPuntosTarea(estIdx, tareaIdx, valor) {
+    const puntos = parseFloat(valor) || 0;
+    obtenerTarea(estIdx, tareaIdx).puntos = puntos;
+    guardarTareas();
+    renderTareas();
+}
+
+function obtenerNombreTarea(posicion) {
+    const nombres = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    if (posicion <= nombres.length) {
+        return `${nombres[posicion - 1]} TAREA`;
+    } else {
+        return `${posicion}ª TAREA`;
+    }
+}
+
+function actualizarNombresTareas() {
+    tareas.forEach((tarea, index) => {
+        tarea.nombre = obtenerNombreTarea(index + 1);
+    });
+}
+
+function agregarTarea() {
+    tareas.push({
+        nombre: '',
+        puntosMaximos: 20,
+        peso: 5
+    });
+    
+    actualizarNombresTareas();
+    
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!tareasEstudiantes[estIdx]) {
+            tareasEstudiantes[estIdx] = [];
+        }
+        tareasEstudiantes[estIdx].push({ puntos: 0 });
+    });
+    
+    guardarTareas();
+    renderTareas();
+    mostrarAlerta(`Tarea "${tareas[tareas.length - 1].nombre}" agregada`, 'exito');
+}
+
+function eliminarTarea(tareaIdx) {
+    const nombreTarea = tareas[tareaIdx].nombre;
+    
+    if (confirm(`¿Seguro que deseas eliminar la tarea "${nombreTarea}"? Esta acción no se puede deshacer.`)) {
+        tareas.splice(tareaIdx, 1);
+        
+        tareasEstudiantes.forEach(estudiante => {
+            if (estudiante && estudiante[tareaIdx]) {
+                estudiante.splice(tareaIdx, 1);
+            }
+        });
+        
+        actualizarNombresTareas();
+        
+        guardarTareas();
+        renderTareas();
+        mostrarAlerta(`Tarea "${nombreTarea}" eliminada`, 'info');
+    }
+}
+
+
+
+function exportarTareas() {
+    const wb = XLSX.utils.book_new();
+    
+    // Hoja de configuración
+    const configData = [
+        ['CONFIGURACIÓN DE TAREAS'],
+        ['Tarea', 'Puntos Máximos', 'Peso (%)']
+    ];
+    
+    tareas.forEach(tarea => {
+        configData.push([tarea.nombre, tarea.puntosMaximos, tarea.peso]);
+    });
+    
+    const totalPeso = tareas.reduce((sum, tarea) => sum + tarea.peso, 0);
+    configData.push(['TOTAL', '', `${totalPeso}%`]);
+    
+    const wsConfig = XLSX.utils.aoa_to_sheet(configData);
+    XLSX.utils.book_append_sheet(wb, wsConfig, 'Configuración');
+    
+    // Hoja de resultados
+    const datos = [
+        ['Estudiante', ...tareas.flatMap(tarea => [tarea.nombre + ' PTS', tarea.nombre + ' NOTA', tarea.nombre + ' %']), 'TOTAL %']
+    ];
+    
+    // Fila de configuración
+    const configRow = ['CONFIGURACIÓN'];
+    tareas.forEach(tarea => {
+        configRow.push(tarea.puntosMaximos, '-------', tarea.peso + '%');
+    });
+    configRow.push(`${totalPeso}%`);
+    datos.push(configRow);
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
+        let totalPorcentaje = 0;
+        
+        tareas.forEach((tarea, tareaIdx) => {
+            const tareaEstudiante = obtenerTarea(estIdx, tareaIdx);
+            const nota = calcularNota(tareaEstudiante.puntos, tarea.puntosMaximos);
+            const porcentajePonderado = (nota * tarea.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            row.push(tareaEstudiante.puntos, nota.toFixed(1), porcentajePonderado.toFixed(1) + '%');
+        });
+        
+        row.push(totalPorcentaje.toFixed(1) + '%');
+        datos.push(row);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'Tareas');
+    
+    XLSX.writeFile(wb, 'evaluacion_tareas.xlsx');
+    mostrarAlerta('Tareas exportadas correctamente', 'exito');
+}
+
+function guardarTareas() {
+    const datos = {
+        tareas: tareas,
+        tareasEstudiantes: tareasEstudiantes
+    };
+    localStorage.setItem('tareasEvaluacion', JSON.stringify(datos));
+}
+
+function cargarTareas() {
+    const datos = localStorage.getItem('tareasEvaluacion');
+    if (datos) {
+        try {
+            const parsed = JSON.parse(datos);
+            tareas = parsed.tareas || tareas;
+            tareasEstudiantes = parsed.tareasEstudiantes || [];
+            
+            actualizarNombresTareas();
+        } catch (error) {
+            console.error('Error al cargar tareas:', error);
+        }
+    }
+}
+
+function sincronizarEstudiantesTareas() {
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!tareasEstudiantes[estIdx]) {
+            tareasEstudiantes[estIdx] = [];
+        }
+        
+        while (tareasEstudiantes[estIdx].length < tareas.length) {
+            tareasEstudiantes[estIdx].push({ puntos: 0 });
+        }
+    });
+    
+    tareasEstudiantes = tareasEstudiantes.slice(0, estudiantes.length);
+    
+    guardarTareas();
+    renderTareas();
+}
+
 // Modificar la función inicializarAplicacion para incluir evaluación
 const originalInicializarAplicacion = inicializarAplicacion;
 inicializarAplicacion = function() {
@@ -1524,6 +1807,9 @@ inicializarAplicacion = function() {
     cargarEvaluacion();
     sincronizarEstudiantesEvaluacion();
     renderEvaluacion();
+    cargarTareas();
+    sincronizarEstudiantesTareas();
+    renderTareas();
 };
 
 // ===== INICIALIZACIÓN =====

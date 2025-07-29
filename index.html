@@ -120,6 +120,29 @@
         </div>
     </div>
 
+    <!-- Sección de Tareas -->
+    <div class="tareas-container">
+        <h3>📚 Evaluación de Tareas</h3>
+        <div class="tareas-instructions">
+            <p><strong>💡 Instrucciones:</strong> SE EDITA SOLO LO QUE ESTÁ EN BLANCO. PUEDE CAMBIAR LOS PUNTOS MÁXIMOS DE CADA TAREA Y EL % DE PESO, LO DEMÁS SE CALCULA AUTOMÁTICAMENTE.</p>
+        </div>
+        
+        <div class="tareas-actions">
+            <button onclick="agregarTarea()" class="btn-agregar-tarea">
+                <span>➕</span> Agregar Tarea
+            </button>
+            <button onclick="exportarTareas()" class="btn-exportar-tareas">
+                <span>📤</span> Exportar Tareas
+            </button>
+        </div>
+
+        <div class="tareas-table-container">
+            <div class="tareas-table-responsive">
+                <div id="tareas-app"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Sección de Evaluación de Pruebas -->
     <div class="evaluacion-container">
         <h3>📝 Evaluación de Pruebas</h3>
