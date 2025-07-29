@@ -177,13 +177,15 @@ function verificarDatosLecciones() {
 
 // ===== FUNCIONES DE RENDERIZADO =====
 function renderAsistencia() {
-    verificarDatosLecciones(); // Agregar verificación
-    limpiarEstudiantesVacios();
+    verificarDatosLecciones();
     
-    if (!estudiantes || estudiantes.length === 0) {
-        renderTablaVacia();
+    if (estudiantes.length === 0) {
+        document.getElementById('app').innerHTML = renderTablaVacia();
+        actualizarContador();
         return;
     }
+    
+    limpiarEstudiantesVacios();
     
     let html = generarEncabezadoTabla();
     html += generarFilasEstudiantes();
@@ -191,12 +193,7 @@ function renderAsistencia() {
     
     document.getElementById('app').innerHTML = html;
     actualizarContador();
-    
-    // Aplicar sticky después de renderizar
-    setTimeout(implementarStickyManual, 100);
-    
-    // Configurar hover de filas después de renderizar
-    setTimeout(configurarHoverFilas, 200);
+    configurarHoverFilas();
 }
 
 function limpiarEstudiantesVacios() {
@@ -922,6 +919,8 @@ function configurarHoverFilas() {
     
     console.log('Hover configurado correctamente');
 }
+
+// ===== STICKY CSS PURO - SIN JAVASCRIPT MANUAL =====
 
 // ===== STICKY CSS PURO - SIN JAVASCRIPT MANUAL =====
 function implementarStickyManual() {

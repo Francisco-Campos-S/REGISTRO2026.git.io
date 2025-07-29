@@ -327,8 +327,7 @@ body.dark-mode header.scrolled {
     border-radius: var(--border-radius-lg);
     scroll-behavior: smooth;
     position: relative;
-    isolation: isolate;
-    contain: layout style paint;
+    /* Propiedades necesarias para sticky */
     overflow-y: visible;
 }
 
@@ -384,8 +383,10 @@ table {
     background: var(--color-table-bg);
     border-radius: var(--border-radius);
     box-shadow: 0 8px 32px var(--color-shadow);
-    overflow: hidden;
+    overflow: visible;
     margin: 0;
+    /* Propiedades necesarias para sticky */
+    position: relative;
 }
 
 /* Eliminar bordes en modo claro */
@@ -406,7 +407,6 @@ th, td {
 th.nombre, td.nombre {
     min-width: 260px;
     max-width: 380px;
-    position: -webkit-sticky !important;
     position: sticky !important;
     left: 0 !important;
     z-index: 3 !important;
@@ -415,6 +415,17 @@ th.nombre, td.nombre {
     box-shadow: 2px 0 6px rgba(0,0,0,0.04);
     transition: none !important;
     transform: none !important;
+}
+
+/* Prefijos para navegadores más antiguos */
+th.nombre {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+}
+
+td.nombre {
+    position: -webkit-sticky !important;
+    position: sticky !important;
 }
 
 /* Zebra para sticky name en modo claro */
@@ -929,7 +940,6 @@ tbody tr.fila-focus-activa {
 /* Asegurar que la celda sticky mantenga su posición */
 tbody tr:hover td.nombre,
 tbody tr.fila-focus-activa td.nombre {
-    position: -webkit-sticky !important;
     position: sticky !important;
     left: 0 !important;
     z-index: 9999 !important;
