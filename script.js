@@ -145,6 +145,9 @@ function renderAsistencia() {
     
     document.getElementById('app').innerHTML = html;
     actualizarContador();
+    
+    // Aplicar sticky después de renderizar
+    setTimeout(implementarStickyManual, 100);
 }
 
 function limpiarEstudiantesVacios() {
@@ -166,7 +169,7 @@ function renderTablaVacia() {
     let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
     html += `<table border="1" aria-label="Tabla de asistencia">`;
             html += '<thead><tr>';
-        html += '<th class="nombre">Nombre</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th>';
+        html += '<th class="numero">#</th><th class="nombre">Nombre</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th>';
     
     for (let d = 0; d < dias.length; d++) {
         html += `<th><input type="date" value="${dias[d].fecha}" style="width:140px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
@@ -185,6 +188,7 @@ function generarEncabezadoTabla() {
     html += `<table border="1" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
+        '<th rowspan="2" class="numero">#</th>' +
         '<th rowspan="2" class="nombre">Nombre</th>' +
         '<th rowspan="2" class="apellido1">Primer apellido</th>' +
         '<th rowspan="2" class="apellido2">Segundo apellido</th>' +
@@ -252,6 +256,7 @@ function generarFilasEstudiantes() {
         const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
         
         html += `<tr>`;
+        html += `<td class="numero" style="text-align:center;font-weight:bold;background:var(--color-header);color:var(--color-header-text);">${i + 1}</td>`;
         html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" onfocus="agregarBordeRojoFila(this)" onblur="quitarBordeRojoFila(this)" placeholder="Nombre" aria-label="Nombre"></td>`;
         html += `<td class="apellido1"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
         html += `<td class="apellido2"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
@@ -593,15 +598,16 @@ function mostrarAlerta(mensaje, tipo) {
 function descargarPlantilla() {
     const wb = XLSX.utils.book_new();
     const ws_data = [
-        ["Cédula", "Primer apellido", "Segundo apellido", "Nombre", ...dias.map(d => d.nombre)]
+        ["#", "Nombre", "Primer apellido", "Segundo apellido", "Cédula", ...dias.map(d => d.nombre)]
     ];
     
-    plantillaEjemplo.forEach(est => {
+    plantillaEjemplo.forEach((est, index) => {
         ws_data.push([
-            est.cedula,
+            index + 1,
+            est.nombre,
             est.apellido1,
             est.apellido2,
-            est.nombre,
+            est.cedula,
             ...est.asistenciaDias
         ]);
     });
@@ -638,10 +644,12 @@ function cargarPlantilla(event) {
                 }
                 
                 estudiantes.push({
-                    cedula: row[0] || '',
-                    apellido1: row[1] || '',
-                    apellido2: row[2] || '',
-                    nombre: row[3] || '',
+                    // Nuevo orden: #, Nombre, Apellido1, Apellido2, Cédula
+                    // row[0] es el número (lo ignoramos ya que lo generamos automáticamente)
+                    nombre: row[1] || '',
+                    apellido1: row[2] || '',
+                    apellido2: row[3] || '',
+                    cedula: row[4] || '',
                     asistenciaDias
                 });
             });
@@ -663,15 +671,16 @@ function cargarPlantilla(event) {
 function exportarDatos() {
     const wb = XLSX.utils.book_new();
     const ws_data = [
-        ["Cédula", "Primer apellido", "Segundo apellido", "Nombre", ...dias.map(d => d.nombre)]
+        ["#", "Nombre", "Primer apellido", "Segundo apellido", "Cédula", ...dias.map(d => d.nombre)]
     ];
     
-    estudiantes.forEach(est => {
+    estudiantes.forEach((est, index) => {
         ws_data.push([
-            est.cedula,
+            index + 1,
+            est.nombre,
             est.apellido1,
             est.apellido2,
-            est.nombre,
+            est.cedula,
             ...est.asistenciaDias
         ]);
     });
@@ -735,29 +744,70 @@ function quitarBordeRojoFila(input) {
     console.log('Borde rojo uniforme removido');
 }
 
-// ===== STICKY MANUAL PARA COLUMNA NOMBRE (FUNCIONA EN TODOS LOS NAVEGADORES) =====
+// ===== STICKY UNIVERSAL - FUNCIONA EN TODOS LOS NAVEGADORES =====
 function implementarStickyManual() {
     const tableContainer = document.querySelector('.table-responsive');
-    if (!tableContainer) return;
+    if (!tableContainer) {
+        console.warn('No se encontró .table-responsive');
+        return;
+    }
 
-    // Crear columna sticky manualmente
     const tabla = tableContainer.querySelector('table');
-    if (!tabla) return;
+    if (!tabla) {
+        console.warn('No se encontró tabla');
+        return;
+    }
 
-    // Obtener todas las celdas de nombre
+    // Obtener todas las celdas de nombre (sticky)
     const celdasNombre = tabla.querySelectorAll('th.nombre, td.nombre');
+    if (celdasNombre.length === 0) {
+        console.warn('No se encontraron celdas .nombre');
+        return;
+    }
     
-    tableContainer.addEventListener('scroll', function() {
-        const scrollLeft = this.scrollLeft;
+    // Remover listeners anteriores para evitar duplicados
+    tableContainer.removeEventListener('scroll', window.stickyScrollHandler);
+    
+    // Función para actualizar posición sticky
+    function actualizarSticky() {
+        const scrollLeft = tableContainer.scrollLeft;
         
         celdasNombre.forEach(celda => {
-            // Solo sticky funcional, sin cambiar estilos visuales
+            // Forzar sticky con múltiples métodos para compatibilidad
             celda.style.transform = `translateX(${scrollLeft}px)`;
             celda.style.position = 'relative';
             celda.style.zIndex = '100';
-            // No tocar colores, fondos, bordes - CSS se encarga de todo
+            
+            // Webkit específico
+            celda.style.webkitTransform = `translateX(${scrollLeft}px)`;
+            
+            // Mozilla específico
+            celda.style.mozTransform = `translateX(${scrollLeft}px)`;
         });
+    }
+    
+    // Guardar referencia global para poder removerlo
+    window.stickyScrollHandler = actualizarSticky;
+    
+    // Aplicar en scroll con throttling para performance
+    let ticking = false;
+    tableContainer.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                actualizarSticky();
+                ticking = false;
+            });
+            ticking = true;
+        }
     });
+    
+    // Aplicar inicialmente
+    actualizarSticky();
+    
+    // Aplicar en resize para responsive
+    window.addEventListener('resize', actualizarSticky);
+    
+    console.log(`Sticky universal activado para ${celdasNombre.length} celdas`);
 }
 
 // ===== INICIALIZACIÓN =====
