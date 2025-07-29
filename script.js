@@ -430,19 +430,29 @@ function calcularTotalesEstudiante(estudiante) {
 function calcularPorcentajeAsistencia(totales) {
     if (totales.totalLecciones <= 0) return 0;
     
-    // Calcular porcentaje de asistencia basado en lecciones presentes
-    let porcentajeAsistencia = (totales.presente / totales.totalLecciones) * 100;
-    porcentajeAsistencia = Math.round(porcentajeAsistencia * 100) / 100;
+    // Calcular porcentaje de ausencia (no de asistencia)
+    let porcentajeAusencia = (totales.totalAusencias / totales.totalLecciones) * 100;
+    porcentajeAusencia = Math.round(porcentajeAusencia * 100) / 100;
     
     // Asegurar que el porcentaje esté entre 0 y 100
-    if (porcentajeAsistencia > 100) porcentajeAsistencia = 100;
-    if (porcentajeAsistencia < 0) porcentajeAsistencia = 0;
+    if (porcentajeAusencia > 100) porcentajeAusencia = 100;
+    if (porcentajeAusencia < 0) porcentajeAusencia = 0;
     
-    // Convertir a escala de 0 a 10
-    let escala10 = (porcentajeAsistencia / 100) * 10;
-    escala10 = Math.round(escala10 * 100) / 100; // Redondear a 2 decimales
+    // Aplicar las reglas específicas de porcentaje de asistencia
+    let porcentajeAsistencia;
+    if (porcentajeAusencia === 0) porcentajeAsistencia = 10;
+    else if (porcentajeAusencia < 10) porcentajeAsistencia = 9;
+    else if (porcentajeAusencia < 20) porcentajeAsistencia = 8;
+    else if (porcentajeAusencia < 30) porcentajeAsistencia = 7;
+    else if (porcentajeAusencia < 40) porcentajeAsistencia = 6;
+    else if (porcentajeAusencia < 50) porcentajeAsistencia = 5;
+    else if (porcentajeAusencia < 60) porcentajeAsistencia = 4;
+    else if (porcentajeAusencia < 70) porcentajeAsistencia = 3;
+    else if (porcentajeAusencia < 80) porcentajeAsistencia = 2;
+    else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
+    else porcentajeAsistencia = 0;
     
-    return escala10;
+    return porcentajeAsistencia;
 }
 
 function generarAccionAlerta(porcentajeAsistencia, estudiante) {
