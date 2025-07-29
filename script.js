@@ -1131,7 +1131,10 @@ function renderEvaluacion() {
         }
     });
     
-    html += '<td class="calculated">100%</td>';
+    // Calcular la suma total de los pesos
+    const totalPeso = pruebas.reduce((sum, prueba) => sum + prueba.peso, 0);
+    const totalClass = totalPeso > 100 ? 'total-excedido' : '';
+    html += `<td class="calculated ${totalClass}">${totalPeso}%</td>`;
     html += '</tr>';
     
     // Filas de estudiantes
@@ -1204,6 +1207,15 @@ function actualizarPeso(pruebaIdx, valor) {
     } else {
         pruebas[pruebaIdx].peso = peso;
     }
+    
+    // Calcular el total de pesos
+    const totalPeso = pruebas.reduce((sum, prueba) => sum + prueba.peso, 0);
+    
+    // Mostrar alerta si el total excede 100%
+    if (totalPeso > 100) {
+        mostrarAlerta(`⚠️ El total de pesos es ${totalPeso}%, que excede el 100% recomendado`, 'info');
+    }
+    
     guardarEvaluacion();
     renderEvaluacion();
 }
@@ -1276,10 +1288,11 @@ function exportarEvaluacion() {
     
     // Fila de configuración
     const configRow = ['CONFIGURACIÓN'];
+    const totalPeso = pruebas.reduce((sum, prueba) => sum + prueba.peso, 0);
     pruebas.forEach(prueba => {
         configRow.push(prueba.puntosMaximos, '-------', prueba.peso);
     });
-    configRow.push('100%');
+    configRow.push(`${totalPeso}%`);
     datos.push(configRow);
     
     // Filas de estudiantes
