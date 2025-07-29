@@ -15,9 +15,26 @@ let dias = [
 ];
 
 // Valor de alerta temprana
-window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseFloat(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
+window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseInt(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
 
 console.log('🔧 VALOR INICIAL DE ALERTA:', window.valorExtra);
+
+// Función temporal para probar alertas
+function probarAlertas() {
+    console.log('=== PRUEBA DE ALERTAS ===');
+    const inputAlerta = document.getElementById('alertaTempranaInput');
+    const valorActual = inputAlerta ? parseInt(inputAlerta.value) : 2;
+    console.log('Valor actual del input:', valorActual);
+    console.log('Valor en window.valorExtra:', window.valorExtra);
+    
+    // Probar con diferentes porcentajes
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(porcentaje => {
+        const diferencia = 10 - porcentaje;
+        const deberiaActivar = diferencia > valorActual;
+        console.log(`%Asistencia: ${porcentaje}, Diferencia: ${diferencia}, ¿Activa?: ${deberiaActivar}`);
+    });
+    console.log('========================');
+}
 
 // Plantilla de ejemplo
 const plantillaEjemplo = [
@@ -30,11 +47,47 @@ const plantillaEjemplo = [
 function inicializarAplicacion() {
     console.log('🚀 Iniciando aplicación...');
     cargarDatosGuardados();
-    sincronizarInputAlerta();
     configurarModoOscuro();
     configurarEventos();
     renderAsistencia();
+    
+    // Esperar a que el DOM esté completamente cargado antes de sincronizar alertas
+    setTimeout(() => {
+        sincronizarInputAlerta();
+        probarAlertas();
+    }, 100);
+    
+    // Configurar hover de filas después de que se renderice la tabla
+    setTimeout(configurarHoverFilas, 500);
+    
+    // Re-aplicar estilos cuando cambie el modo oscuro
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                if (mutation.target === document.body) {
+                    console.log('Modo oscuro cambiado, re-configurando hover');
+                    // Re-configurar hover después del cambio de modo
+                    setTimeout(configurarHoverFilas, 200);
+                }
+            }
+        });
+    });
+    
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+    
     console.log('✅ Aplicación iniciada correctamente');
+}
+
+// Función para verificar que el DOM esté listo
+function esperarDOMListo() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', inicializarAplicacion);
+    } else {
+        inicializarAplicacion();
+    }
 }
 
 function cargarDatosGuardados() {
@@ -71,6 +124,9 @@ function cargarDatosGuardados() {
     } else {
         estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
     }
+    
+    // Sincronizar input de alerta temprana después de cargar datos
+    sincronizarInputAlerta();
     renderAsistencia();
 }
 
@@ -127,20 +183,25 @@ function ocultarTooltipModoOscuro() {
 function sincronizarInputAlerta() {
     let input = document.getElementById('alertaTempranaInput');
     if (!input) {
-        console.log('❌ No se encontró el input de alerta temprana');
+        console.log('❌ No se encontró el input de alerta temprana - Reintentando en 50ms...');
+        // Reintentar si el input no está disponible
+        setTimeout(sincronizarInputAlerta, 50);
         return;
     }
     
-    console.log('✅ Input de alerta temprana encontrado');
+    console.log('✅ Input de alerta temprana encontrado en:', input);
     
     // Configurar el input para aceptar valores enteros de 0 a 10
     input.min = 0;
     input.max = 10;
     input.step = 1; // Solo valores enteros
     
-    // Establecer valor inicial directamente desde el HTML
-    window.valorExtra = parseInt(input.value) || 2;
-    console.log('🔧 Valor inicial establecido:', window.valorExtra);
+    // Cargar valor guardado en localStorage o usar valor por defecto
+    const valorGuardado = localStorage.getItem(STORAGE_KEY_ALERTA);
+    const valorInicial = valorGuardado ? parseInt(valorGuardado) : 2;
+    input.value = valorInicial;
+    window.valorExtra = valorInicial;
+    console.log('🔧 Valor inicial establecido:', valorInicial, '(desde localStorage:', valorGuardado, ')');
     
     // Validar y actualizar el valor
     input.oninput = function() {
@@ -152,6 +213,18 @@ function sincronizarInputAlerta() {
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
         console.log('🔄 Alerta temprana configurada en:', val, '(escala 0-10, entero)');
         renderAsistencia(); // Re-renderizar para actualizar alertas
+    };
+    
+    // También agregar evento onchange para mayor compatibilidad
+    input.onchange = function() {
+        let val = parseInt(this.value) || 0;
+        if (val < 0) val = 0;
+        if (val > 10) val = 10;
+        window.valorExtra = val;
+        this.value = val;
+        localStorage.setItem(STORAGE_KEY_ALERTA, val);
+        console.log('🔄 Alerta temprana configurada (onchange):', val);
+        renderAsistencia();
     };
 }
 
@@ -504,8 +577,17 @@ function calcularPorcentajeAsistencia(totales) {
 function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     let accionHtml = '';
     
-    // Forzar un valor de prueba para verificar que funcione
-    let valorAlerta = window.valorExtra || 2;
+    // Obtener el valor actual del input de alerta temprana
+    let inputAlerta = document.getElementById('alertaTempranaInput');
+    let valorAlerta = 2; // Valor por defecto
+    
+    if (inputAlerta) {
+        valorAlerta = parseInt(inputAlerta.value) || 2;
+    } else {
+        // Fallback: usar window.valorExtra si el input no está disponible
+        valorAlerta = window.valorExtra || 2;
+        console.log('⚠️ Input no encontrado, usando valor global:', valorAlerta);
+    }
     
     // Calcular la diferencia: 10 - %asistencia
     let diferencia = 10 - porcentajeAsistencia;
@@ -517,6 +599,8 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     console.log('Valor alerta configurado (escala 0-10):', valorAlerta, 'tipo:', typeof valorAlerta);
     console.log('Diferencia (10 - %asistencia):', diferencia);
     console.log('¿Debería mostrar alerta?', diferencia > valorAlerta);
+    console.log('Input encontrado:', !!inputAlerta);
+    console.log('Valor global window.valorExtra:', window.valorExtra);
     console.log('Datos del estudiante:', {
         cedula: estudiante.cedula && estudiante.cedula.trim() !== '',
         nombre: estudiante.nombre && estudiante.nombre.trim() !== '',
@@ -1397,29 +1481,4 @@ inicializarAplicacion = function() {
 };
 
 // ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', function() {
-    inicializarAplicacion();
-    // CSS sticky funciona automáticamente, no necesitamos JavaScript
-    console.log('Aplicación inicializada con CSS sticky');
-    
-    // Configurar hover de filas después de que se renderice la tabla
-    setTimeout(configurarHoverFilas, 500);
-    
-    // Re-aplicar estilos cuando cambie el modo oscuro
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                if (mutation.target === document.body) {
-                    console.log('Modo oscuro cambiado, re-configurando hover');
-                    // Re-configurar hover después del cambio de modo
-                    setTimeout(configurarHoverFilas, 200);
-                }
-            }
-        });
-    });
-    
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-    });
-});
+esperarDOMListo();
