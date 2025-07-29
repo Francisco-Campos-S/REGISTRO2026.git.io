@@ -511,6 +511,27 @@ th.th-resumen, td.th-resumen {
     box-shadow: none !important;
 }
 
+/* Números en celdas de resumen - negros y más grandes */
+td.th-resumen {
+    color: #000 !important;
+    font-weight: 900 !important;
+    font-size: 1.3em !important;
+    text-align: center !important;
+}
+
+/* Modo oscuro para números de resumen */
+body.dark-mode td.th-resumen {
+    color: #fff !important;
+    font-weight: 900 !important;
+    font-size: 1.3em !important;
+    text-align: center !important;
+}
+
+/* Forzar colores en modo oscuro para números de resumen */
+body.dark-mode td[style*="color:#000"] {
+    color: #fff !important;
+}
+
 th.apellido1, td.apellido1,
 th.apellido2, td.apellido2 { 
     min-width: 260px; 

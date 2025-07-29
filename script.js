@@ -332,14 +332,14 @@ function generarFilasEstudiantes() {
             html += generarCeldaAsistencia(i, d, estudiante.asistenciaDias[d]);
         }
         
-        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totales.ausente}</td>`;
-        html += `<td style="font-weight:bold;color:#1976d2;text-align:center;">${totales.justificada}</td>`;
-        html += `<td style="font-weight:bold;color:#43a047;text-align:center;">${totales.presente}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-alerta);text-align:center;">${totales.tarde}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${totales.escapada}</td>`;
-        html += `<td style="font-weight:bold;color:#e74c3c;text-align:center;">${totales.totalAusencias}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-primario);text-align:center;">${totales.totalLecciones}</td>`;
-        html += `<td style="font-weight:bold;color:var(--color-exito);text-align:center;">${porcentajeAsistencia}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.ausente}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.justificada}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.presente}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.tarde}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.escapada}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.totalAusencias}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.totalLecciones}</td>`;
+        html += `<td style="font-weight:bold;color:#000;text-align:center;">${porcentajeAsistencia}</td>`;
         
         const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
         html += `<td style='font-size:1em;padding:2px 0;text-align:center;'>${accionHtml}</td>`;
