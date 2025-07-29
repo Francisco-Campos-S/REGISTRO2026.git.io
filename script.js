@@ -871,7 +871,10 @@ function agregarDia() {
         return;
     }
     
-    dias.push({ fecha: '', nombre: `Día ${dias.length + 1}`, lecciones: 0 });
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const fechaActual = new Date().toISOString().split('T')[0];
+    
+    dias.push({ fecha: fechaActual, nombre: `Día ${dias.length + 1}`, lecciones: 0 });
     estudiantes.forEach(est => {
         est.asistenciaDias.push({ ausencias: [{ tipo: 'Presente', cantidad: 0 }] });
     });
@@ -1856,7 +1859,7 @@ function renderTrabajoCotidiano() {
         html += '<th colspan="1">No hay días configurados</th>';
     } else {
         diasTrabajo.forEach((dia, idx) => {
-            html += `<th colspan="1">Indicador ${idx + 1}</th>`;
+            html += `<th colspan="1">Indicador ${idx + 1}${idx === diasTrabajo.length - 1 ? ' <button onclick="agregarDiaTrabajo();" class="btn-agregar-dia" title="Agregar indicador" style="margin-left:8px;padding:2px 6px;font-size:0.7em;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;">+ Indicador</button>' : ''}</th>`;
         });
     }
     
@@ -1882,8 +1885,16 @@ function renderTrabajoCotidiano() {
     
     if (diasTrabajo.length > 0) {
         diasTrabajo.forEach((dia, idx) => {
+            console.log(`PRUEBA: Renderizando día ${idx} con fecha: ${dia.fecha}`);
+            console.log(`PRUEBA: Tipo de fecha: ${typeof dia.fecha}`);
+            console.log(`PRUEBA: Fecha válida: ${dia.fecha ? 'SÍ' : 'NO'}`);
+            
+            // PRUEBA: Forzar formato de fecha
+            const fechaFormateada = dia.fecha || new Date().toISOString().split('T')[0];
+            console.log(`PRUEBA: Fecha formateada: ${fechaFormateada}`);
+            
             html += `<td class="editable" style="position:relative;">
-                <input type="date" value="${dia.fecha}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:30px;width:150px;font-size:1.1em;">
+                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:30px;width:150px;font-size:1.1em;">
                 <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
             </td>`;
         });
@@ -1983,6 +1994,32 @@ function renderTrabajoCotidiano() {
         // Forzar actualización de todos los cálculos al cargar
         console.log('Forzando actualización inicial de cálculos...');
         actualizarCalculosTrabajoCotidiano();
+        
+        // Forzar actualización de fechas después del render
+        setTimeout(() => {
+            console.log('PRUEBA: Iniciando forzado de fechas...');
+            const dateInputs = container.querySelectorAll('input[type="date"]');
+            console.log(`PRUEBA: Encontrados ${dateInputs.length} inputs de fecha`);
+            
+            dateInputs.forEach((input, idx) => {
+                console.log(`PRUEBA: Procesando input ${idx}:`, input);
+                console.log(`PRUEBA: Valor actual del input: "${input.value}"`);
+                
+                if (diasTrabajo[idx] && diasTrabajo[idx].fecha) {
+                    const fechaAplicar = diasTrabajo[idx].fecha;
+                    console.log(`PRUEBA: Aplicando fecha: ${fechaAplicar}`);
+                    
+                    input.value = fechaAplicar;
+                    input.setAttribute('value', fechaAplicar);
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    console.log(`PRUEBA: Después de aplicar - valor del input: "${input.value}"`);
+                } else {
+                    console.log(`PRUEBA: No hay fecha para día ${idx}`);
+                }
+            });
+        }, 300);
     }, 100);
 }
 
