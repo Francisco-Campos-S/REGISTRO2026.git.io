@@ -54,16 +54,40 @@ body {
 /* ===== HEADER ===== */
 header {
     text-align: center;
-    margin-bottom: 25px;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     background: linear-gradient(90deg, #fffde4 0%, var(--color-fondo) 100%);
     box-shadow: 0 8px 32px var(--color-shadow);
     padding: 20px;
-    border-radius: var(--border-radius-lg);
-    margin: 20px;
-    position: relative;
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+    margin: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+/* Ajustar el contenido principal para el header fijo */
+body {
+    padding-top: 200px;
+    scroll-behavior: smooth;
+}
+
+/* Efecto de scroll en el header */
+header.scrolled {
+    background: linear-gradient(90deg, rgba(255,253,228,0.95) 0%, rgba(227,233,247,0.95) 100%);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+body.dark-mode header.scrolled {
+    background: linear-gradient(90deg, rgba(38,50,56,0.95) 0%, rgba(55,71,79,0.95) 100%);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
 #btnModoOscuro {
@@ -301,6 +325,52 @@ header {
 .table-responsive {
     overflow-x: auto;
     border-radius: var(--border-radius-lg);
+    scroll-behavior: smooth;
+    position: relative;
+}
+
+/* Indicador visual de scroll horizontal */
+.table-responsive::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+body.dark-mode .table-responsive::after {
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+}
+
+/* ===== ALERTAS EN MODO OSCURO ===== */
+body.dark-mode .alerta {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .alerta.exito {
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    border: 2px solid rgba(102,187,106,0.3);
+    box-shadow: 0 8px 32px rgba(102,187,106,0.2);
+}
+
+body.dark-mode .alerta.error {
+    background: linear-gradient(135deg, #ef5350 0%, #e74c3c 100%);
+    border: 2px solid rgba(239,83,80,0.3);
+    box-shadow: 0 8px 32px rgba(239,83,80,0.2);
+}
+
+body.dark-mode .alerta.info {
+    background: linear-gradient(135deg, #ffd54f 0%, #fbc02d 100%);
+    border: 2px solid rgba(255,213,79,0.3);
+    box-shadow: 0 8px 32px rgba(255,213,79,0.2);
+    color: #2c3e50;
 }
 
 /* ===== TABLA ===== */
@@ -325,38 +395,55 @@ th, td {
     transition: var(--transition);
 }
 
-/* ===== COLUMNAS STICKY ===== */
-th.nombre, td.nombre { min-width: 160px; }
+/* ===== COLUMNAS STICKY - SOLO NOMBRE ===== */
+th.nombre, td.nombre { 
+    min-width: 160px; 
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background: inherit !important;
+    box-shadow: 2px 0 8px var(--color-shadow) !important;
+}
+
 th.apellido1, td.apellido1,
 th.apellido2, td.apellido2 { min-width: 140px; }
 th.cedula, td.cedula { min-width: 260px; max-width: 380px; }
 
-th[rowspan="2"]:nth-child(1),
-th[rowspan="2"]:nth-child(2),
-th[rowspan="2"]:nth-child(3),
-th[rowspan="2"]:nth-child(4),
-th[rowspan="2"]:nth-child(5),
-td.cedula,
-td.nombre,
-td.apellido1,
-td.apellido2,
-td:nth-child(1) {
-    position: sticky;
-    box-shadow: 2px 0 8px var(--color-shadow);
-    z-index: 2;
+/* Asegurar que el fondo de las columnas sticky se mantenga */
+tbody tr:nth-child(odd) td.nombre {
+    background: #f4f7fb !important;
+    color: #263238 !important;
 }
 
-th[rowspan="2"]:nth-child(1) { left: 0; }
-th[rowspan="2"]:nth-child(2) { left: 54px; }
-th[rowspan="2"]:nth-child(3) { left: 294px; }
-th[rowspan="2"]:nth-child(4) { left: 474px; }
-th[rowspan="2"]:nth-child(5) { left: 654px; }
+tbody tr:nth-child(even) td.nombre {
+    background: #c2c8d6 !important;
+    color: #263238 !important;
+}
 
-td:nth-child(1) { left: 0; }
-td.cedula { left: 54px; }
-td.apellido1 { left: 294px; }
-td.apellido2 { left: 474px; }
-td.nombre { left: 654px; }
+body.dark-mode tbody tr:nth-child(odd) td.nombre {
+    background: #263238 !important;
+    color: #fff !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td.nombre {
+    background: #fff !important;
+    color: #263238 !important;
+}
+
+/* Asegurar que los encabezados sticky tengan el fondo correcto */
+th.nombre {
+    background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%) !important;
+    color: #fff !important;
+    text-shadow: 0 2px 8px var(--color-shadow) !important;
+}
+
+/* Mejorar la experiencia de hover en la columna sticky */
+tbody tr:hover td.nombre {
+    background: var(--color-table-hover) !important;
+    box-shadow: 2px 0 8px var(--color-shadow-hover) !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
 
 /* ===== ENCABEZADOS ===== */
 th {
@@ -476,6 +563,53 @@ input[type="number"] {
     box-shadow: 0 2px 8px var(--color-shadow);
 }
 
+/* ===== INPUTS DE FECHA ESPECÍFICOS ===== */
+th input[type="date"] {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+    font-size: 1.08em;
+    height: 36px;
+    border-radius: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--color-border) !important;
+    background: rgba(255,255,255,0.92) !important;
+    color: #263238 !important;
+    overflow: visible !important;
+}
+
+/* Asegurar que los inputs de fecha muestren el año completo */
+input[type="date"]::-webkit-datetime-edit-year-field {
+    min-width: 4ch !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field {
+    min-width: 2ch !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-day-field {
+    min-width: 2ch !important;
+}
+
+th input[type="date"]:focus {
+    border: 2px solid var(--color-primario) !important;
+    box-shadow: 0 4px 16px rgba(25,118,210,0.13) !important;
+    background: #fff !important;
+    outline: none;
+}
+
+body.dark-mode th input[type="date"] {
+    background: rgba(44,62,80,0.18) !important;
+    color: #fff !important;
+    border: 2px solid var(--color-primario) !important;
+}
+
+body.dark-mode th input[type="date"]:focus {
+    background: #263238 !important;
+}
+
 input[type="number"]:focus {
     border: 2px solid var(--color-exito);
     box-shadow: 0 4px 16px rgba(67,160,71,0.13);
@@ -535,43 +669,81 @@ body.dark-mode .btn-agregar-dia {
     box-shadow: 0 2px 8px rgba(102,187,106,0.13);
 }
 
-/* ===== ALERTAS ===== */
+/* ===== ALERTAS MEJORADAS ===== */
 .alerta {
     position: fixed;
-    top: 24px;
+    top: 220px;
     left: 50%;
     transform: translateX(-50%);
-    min-width: 220px;
+    min-width: 280px;
     max-width: 90vw;
     z-index: 9999;
     font-size: 1.12em;
     font-weight: 600;
-    box-shadow: 0 6px 24px var(--color-shadow);
-    animation: fadeIn 0.3s;
-    border-radius: 10px;
-    padding: 12px 24px;
+    box-shadow: 0 8px 32px var(--color-shadow);
+    animation: slideInDown 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    border-radius: 15px;
+    padding: 16px 28px;
     letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+}
+
+.alerta:hover {
+    transform: translateX(-50%) scale(1.02);
+    box-shadow: 0 12px 40px var(--color-shadow-hover);
 }
 
 .alerta.exito {
-    background-color: var(--color-exito);
+    background: linear-gradient(135deg, var(--color-exito) 0%, #27ae60 100%);
     color: #fff;
-    border: 1px solid #c3e6cb;
+    border: 2px solid rgba(67,160,71,0.3);
+    box-shadow: 0 8px 32px rgba(67,160,71,0.2);
 }
 
 .alerta.error {
-    background-color: var(--color-error);
+    background: linear-gradient(135deg, var(--color-error) 0%, #c0392b 100%);
     color: #fff;
-    border: 1px solid #f5c6cb;
+    border: 2px solid rgba(231,76,60,0.3);
+    box-shadow: 0 8px 32px rgba(231,76,60,0.2);
 }
 
 .alerta.info {
-    background-color: var(--color-alerta);
+    background: linear-gradient(135deg, var(--color-alerta) 0%, #f39c12 100%);
     color: #2c3e50;
-    border: 1px solid #ffeeba;
+    border: 2px solid rgba(251,192,45,0.3);
+    box-shadow: 0 8px 32px rgba(251,192,45,0.2);
 }
 
-/* ===== ANIMACIONES ===== */
+/* ===== ANIMACIONES MEJORADAS ===== */
+@keyframes slideInDown {
+    0% { 
+        opacity: 0; 
+        transform: translateX(-50%) translateY(-100px) scale(0.8); 
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: translateX(-50%) translateY(10px) scale(1.05); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateX(-50%) translateY(0) scale(1); 
+    }
+}
+
+@keyframes slideOutUp {
+    0% { 
+        opacity: 1; 
+        transform: translateX(-50%) translateY(0) scale(1); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: translateX(-50%) translateY(-100px) scale(0.8); 
+    }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateX(-50%) scale(0.95); }
     to { opacity: 1; transform: translateX(-50%) scale(1); }
@@ -607,6 +779,23 @@ body.dark-mode .btn-agregar-dia {
         font-size: 13px; 
     }
     
+    /* Asegurar que los inputs de fecha se vean bien en móviles */
+    th input[type="date"] {
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        font-size: 0.9em;
+    }
+    
+    /* Ajustar alertas en móviles */
+    .alerta {
+        top: 190px;
+        min-width: 90vw;
+        max-width: 95vw;
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+    
     .actions-bar {
         flex-direction: column;
         gap: 15px;
@@ -618,8 +807,16 @@ body.dark-mode .btn-agregar-dia {
     }
     
     header {
-        margin: 10px;
+        margin: 0;
         padding: 15px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+    
+    body {
+        padding-top: 180px;
     }
     
     .header-content {

@@ -165,15 +165,15 @@ function limpiarEstudiantesVacios() {
 function renderTablaVacia() {
     let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
     html += `<table border="1" aria-label="Tabla de asistencia">`;
-    html += '<thead><tr>';
-    html += '<th>#</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th><th class="nombre">Nombre</th>';
+            html += '<thead><tr>';
+        html += '<th class="nombre">Nombre</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th>';
     
     for (let d = 0; d < dias.length; d++) {
-        html += `<th><input type="date" value="${dias[d].fecha}" style="width:110px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
+        html += `<th><input type="date" value="${dias[d].fecha}" style="width:140px;" aria-label="Fecha del día ${d+1}"><br><span class="label-dia">${dias[d].nombre}</span><br><div style='display:flex;align-items:center;gap:6px;margin-top:4px;'><span style='font-size:11px;color:#888;background:#f4f7fb;padding:2px 8px;border-radius:6px;'>Lecciones</span><input type="number" min="0" value="${dias[d].lecciones}" style="width:70px;" placeholder="Lecciones" aria-label="Lecciones día ${d+1}"></div></th>`;
     }
     
     html += '<th class="th-resumen">Acciones</th></tr></thead><tbody>';
-    html += `<tr><td colspan="${5 + dias.length + 1}" style="text-align:center;color:#888;font-size:1.08em;padding:18px 0;background:none;border:none;">No hay estudiantes registrados.</td></tr>`;
+            html += `<tr><td colspan="${4 + dias.length + 1}" style="text-align:center;color:#888;font-size:1.08em;padding:18px 0;background:none;border:none;">No hay estudiantes registrados.</td></tr>`;
     html += '</tbody></table>';
     
     document.getElementById('app').innerHTML = html;
@@ -185,11 +185,10 @@ function generarEncabezadoTabla() {
     html += `<table border="1" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
-        '<th rowspan="2">#</th>' +
+        '<th rowspan="2" class="nombre">Nombre</th>' +
         '<th rowspan="2" class="cedula">Cédula</th>' +
         '<th rowspan="2" class="apellido1">Primer apellido</th>' +
         '<th rowspan="2" class="apellido2">Segundo apellido</th>' +
-        '<th rowspan="2" class="nombre">Nombre</th>' +
         `<th colspan="${dias.length}"><span style="font-size:1em;font-weight:600;color:var(--color-primario);"><svg style="vertical-align:middle;margin-right:4px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="4"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Asistencia por día</span></th>` +
         '<th rowspan="2" class="th-resumen">Ausencias</th>' +
         '<th rowspan="2" class="th-resumen">Justificadas</th>' +
@@ -224,7 +223,7 @@ function contarAusentesDia(diaIndex) {
 function generarEncabezadoDia(diaIndex, ausentesDia) {
     let html = `<th>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-            <input type="date" value="${dias[diaIndex].fecha}" onchange="actualizarFechaDia(${diaIndex}, this.value)" style="width:110px;align-self:flex-start;" aria-label="Fecha del día ${diaIndex+1}">
+            <input type="date" value="${dias[diaIndex].fecha}" onchange="actualizarFechaDia(${diaIndex}, this.value)" style="width:140px;align-self:flex-start;" aria-label="Fecha del día ${diaIndex+1}">
             <div style="width:100%;display:flex;align-items:center;justify-content:space-between;">
                 <span class="label-dia">${dias[diaIndex].nombre}</span>
                 ${diaIndex === dias.length - 1 ? `<button onclick="agregarDia()" class="btn-agregar-dia" title="Agregar día">+ Día</button>` : ''}
@@ -253,11 +252,10 @@ function generarFilasEstudiantes() {
         const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
         
         html += `<tr>`;
-        html += `<td class="numero sticky">${num++}</td>`;
-        html += `<td class="cedula sticky"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
-        html += `<td class="apellido1 sticky"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
-        html += `<td class="apellido2 sticky"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
-        html += `<td class="nombre sticky"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
+        html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
+        html += `<td class="cedula"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
+        html += `<td class="apellido1"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
+        html += `<td class="apellido2"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
         
         for (let d = 0; d < dias.length; d++) {
             html += generarCeldaAsistencia(i, d, estudiante.asistenciaDias[d]);
@@ -557,7 +555,7 @@ function actualizarContador() {
     document.getElementById('contadorEstudiantes').textContent = `Cantidad de estudiantes: ${estudiantes.length}`;
 }
 
-// ===== FUNCIONES DE ALERTAS =====
+// ===== FUNCIONES DE ALERTAS MEJORADAS =====
 function mostrarAlerta(mensaje, tipo) {
     let alerta = document.createElement('div');
     alerta.className = 'alerta ' + tipo;
@@ -567,15 +565,21 @@ function mostrarAlerta(mensaje, tipo) {
     else if (tipo === 'error') icon = '❌';
     else if (tipo === 'info') icon = 'ℹ️';
     
-    alerta.innerHTML = `<span style="margin-right:8px;">${icon}</span>${mensaje}`;
+    alerta.innerHTML = `<span style="margin-right:8px;font-size:1.2em;">${icon}</span>${mensaje}`;
     alerta.setAttribute('role', 'alert');
     alerta.setAttribute('aria-live', 'assertive');
     
     document.body.appendChild(alerta);
     
+    // Animación de salida suave
     setTimeout(() => {
-        alerta.remove();
-    }, 2200);
+        alerta.style.animation = 'slideOutUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        setTimeout(() => {
+            if (alerta.parentNode) {
+                alerta.remove();
+            }
+        }, 500);
+    }, 2500);
 }
 
 // ===== FUNCIONES DE IMPORTACIÓN/EXPORTACIÓN =====
@@ -689,6 +693,16 @@ function configurarEventos() {
             }
         });
     }
+    
+    // Efecto de scroll en el header
+    window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
 }
 
 // ===== INICIALIZACIÓN =====
