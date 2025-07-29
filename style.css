@@ -378,32 +378,24 @@ body.dark-mode .alerta.info {
 
 /* ===== TABLA ===== */
 table {
-    min-width: 900px;
-    border-collapse: separate;
+    width: 100%;
+    border-collapse: collapse;
     border-spacing: 0;
     background: var(--color-table-bg);
+    border-radius: var(--border-radius);
     box-shadow: 0 8px 32px var(--color-shadow);
-    border-radius: var(--border-radius-lg);
-    overflow: visible;
-    color: var(--color-text);
+    overflow: hidden;
     margin: 0;
-    width: 100%;
-    position: relative;
 }
 
-/* Dark mode para tabla - sin bordes */
-body.dark-mode table {
+/* Eliminar bordes en modo claro */
+table {
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-body.dark-mode th, 
-body.dark-mode td {
-    border: none !important;
-}
-
 th, td {
-    border: 1px solid var(--color-fondo);
+    border: none !important;
     padding: 12px 14px;
     text-align: left;
     white-space: nowrap;
@@ -565,22 +557,18 @@ tbody tr:nth-child(odd) td {
 }
 
 tbody tr:nth-child(even) td {
-    background: #e8eaed !important;
-    color: #263238 !important;
+    background: var(--color-table-row);
+    color: var(--color-text);
 }
 
 body.dark-mode tbody tr:nth-child(odd) td {
     background: #2d3436 !important;
     color: #fff !important;
-    border: none !important;
-    box-shadow: none !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
     background: #4a5568 !important;
     color: #fff !important;
-    border: none !important;
-    box-shadow: none !important;
 }
 
 /* ===== CELDA NUMERO ===== */
@@ -598,11 +586,9 @@ td.numero {
     max-width: 55px;
 }
 
-/* Dark mode para celda número - sin bordes */
+/* Dark mode para celda número */
 body.dark-mode td.numero {
-    border-right: none !important;
-    border-left: none !important;
-    box-shadow: none !important;
+    /* Mantener estilos específicos del modo oscuro si es necesario */
 }
 
 /* ===== INPUTS Y SELECTS ===== */
