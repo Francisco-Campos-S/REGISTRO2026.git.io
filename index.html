@@ -120,6 +120,29 @@
         </div>
     </div>
 
+    <!-- Sección de Evaluación de Pruebas -->
+    <div class="evaluacion-container">
+        <h3>📝 Evaluación de Pruebas</h3>
+        <div class="evaluacion-instructions">
+            <p><strong>💡 Instrucciones:</strong> SE EDITA SOLO LO QUE ESTA EN BLANCO. PUEDE CAMBIAR LOS PUNTOS DE CADA PRUEBA Y EL % DE PESO, LO DEMÁS SE HACE AUTOMÁTICO.</p>
+        </div>
+        
+        <div class="evaluacion-actions">
+            <button onclick="agregarPrueba()" class="btn-agregar-prueba">
+                <span>➕</span> Agregar Prueba
+            </button>
+            <button onclick="exportarEvaluacion()" class="btn-exportar-evaluacion">
+                <span>📤</span> Exportar Evaluación
+            </button>
+        </div>
+
+        <div class="evaluacion-table-container">
+            <div class="evaluacion-table-responsive">
+                <div id="evaluacion-app"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html> 

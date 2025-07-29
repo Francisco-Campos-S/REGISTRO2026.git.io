@@ -727,6 +727,7 @@ function agregarEstudiante() {
     
     guardarDatos();
     renderAsistencia();
+    sincronizarEstudiantesEvaluacion();
 }
 
 function agregarDia() {
@@ -779,6 +780,7 @@ function eliminarEstudiante(idx) {
         estudiantes.splice(idx, 1);
         guardarDatos();
         renderAsistencia();
+        sincronizarEstudiantesEvaluacion();
         mostrarAlerta('Estudiante eliminado', 'info');
     }
 }
@@ -1072,6 +1074,293 @@ function implementarStickyManual() {
     // Solo asegurar que los estilos estén aplicados
     console.log('Sticky CSS aplicado correctamente');
 }
+
+// ===== EVALUACIÓN DE PRUEBAS =====
+let pruebas = [
+    { nombre: 'I PRUEBA', puntosMaximos: 30, peso: 20 },
+    { nombre: 'II PRUEBA', puntosMaximos: 30, peso: 15 }
+];
+
+let evaluacionesEstudiantes = [];
+
+// Función para renderizar la tabla de evaluación
+function renderEvaluacion() {
+    const container = document.getElementById('evaluacion-app');
+    if (!container) return;
+
+    let html = '<table class="evaluacion-table">';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Estudiante</th>';
+    
+    pruebas.forEach(prueba => {
+        html += `<th colspan="3">${prueba.nombre}</th>`;
+    });
+    
+    html += '<th>TOTAL</th>';
+    html += '</tr><tr>';
+    html += '<th></th>';
+    
+    pruebas.forEach(prueba => {
+        html += '<th>PTS</th>';
+        html += '<th>NOTA</th>';
+        html += '<th>%</th>';
+    });
+    
+    html += '<th>%</th>';
+    html += '</tr></thead>';
+    
+    // Fila de configuración
+    html += '<tbody>';
+    html += '<tr class="config-row">';
+    html += '<td class="student-name">CONFIGURACIÓN</td>';
+    
+    pruebas.forEach((prueba, idx) => {
+        html += `<td class="editable"><input type="number" value="${prueba.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximos(${idx}, this.value)" title="Puntos máximos de la prueba"></td>`;
+        html += '<td class="calculated">-------</td>';
+        
+        // Celda de peso con botón eliminar integrado
+        if (pruebas.length > 1) {
+            html += `<td class="editable" style="position:relative;">
+                <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:30px;width:80px;">
+                <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
+            </td>`;
+        } else {
+            html += `<td class="editable"><input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="width:80px;"></td>`;
+        }
+    });
+    
+    html += '<td class="calculated">100%</td>';
+    html += '</tr>';
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return; // Saltar estudiantes vacíos
+        
+        html += '<tr>';
+        html += `<td class="student-name">${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}</td>`;
+        
+        let totalPorcentaje = 0;
+        
+        pruebas.forEach((prueba, pruebaIdx) => {
+            const evaluacion = obtenerEvaluacion(estIdx, pruebaIdx);
+            const nota = calcularNota(evaluacion.puntos, prueba.puntosMaximos);
+            const porcentaje = calcularPorcentaje(evaluacion.puntos, prueba.puntosMaximos);
+            const porcentajePonderado = (nota * prueba.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${prueba.puntosMaximos}" step="0.1" onchange="actualizarPuntos(${estIdx}, ${pruebaIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="calculated">${nota.toFixed(1)}</td>`;
+            html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
+        });
+        
+        html += `<td class="calculated">${totalPorcentaje.toFixed(1)}%</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// Función para obtener evaluación de un estudiante en una prueba
+function obtenerEvaluacion(estIdx, pruebaIdx) {
+    if (!evaluacionesEstudiantes[estIdx]) {
+        evaluacionesEstudiantes[estIdx] = [];
+    }
+    if (!evaluacionesEstudiantes[estIdx][pruebaIdx]) {
+        evaluacionesEstudiantes[estIdx][pruebaIdx] = { puntos: 0 };
+    }
+    return evaluacionesEstudiantes[estIdx][pruebaIdx];
+}
+
+// Función para calcular nota (escala 0-10)
+function calcularNota(puntos, puntosMaximos) {
+    if (puntosMaximos <= 0) return 0;
+    return Math.round((puntos / puntosMaximos) * 100 * 10) / 10; // Redondeo a 1 decimal
+}
+
+// Función para calcular porcentaje
+function calcularPorcentaje(puntos, puntosMaximos) {
+    if (puntosMaximos <= 0) return 0;
+    return (puntos / puntosMaximos) * 100;
+}
+
+// Función para actualizar puntos máximos de una prueba
+function actualizarPuntosMaximos(pruebaIdx, valor) {
+    pruebas[pruebaIdx].puntosMaximos = parseInt(valor) || 0;
+    guardarEvaluacion();
+    renderEvaluacion();
+}
+
+// Función para actualizar peso de una prueba
+function actualizarPeso(pruebaIdx, valor) {
+    const peso = parseInt(valor) || 0;
+    // Validar que esté entre 0 y 100
+    if (peso < 0) {
+        pruebas[pruebaIdx].peso = 0;
+    } else if (peso > 100) {
+        pruebas[pruebaIdx].peso = 100;
+    } else {
+        pruebas[pruebaIdx].peso = peso;
+    }
+    guardarEvaluacion();
+    renderEvaluacion();
+}
+
+// Función para actualizar puntos de un estudiante
+function actualizarPuntos(estIdx, pruebaIdx, valor) {
+    const evaluacion = obtenerEvaluacion(estIdx, pruebaIdx);
+    evaluacion.puntos = Number(valor) || 0;
+    guardarEvaluacion();
+    renderEvaluacion();
+}
+
+// Función para agregar nueva prueba
+function agregarPrueba() {
+    const numeroPrueba = pruebas.length + 1;
+    const nombrePrueba = numeroPrueba === 1 ? 'I PRUEBA' : 
+                        numeroPrueba === 2 ? 'II PRUEBA' : 
+                        numeroPrueba === 3 ? 'III PRUEBA' : 
+                        numeroPrueba === 4 ? 'IV PRUEBA' : 
+                        `${numeroPrueba}ª PRUEBA`;
+    
+    pruebas.push({
+        nombre: nombrePrueba,
+        puntosMaximos: 30,
+        peso: 10
+    });
+    
+    // Agregar evaluaciones para todos los estudiantes existentes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!evaluacionesEstudiantes[estIdx]) {
+            evaluacionesEstudiantes[estIdx] = [];
+        }
+        evaluacionesEstudiantes[estIdx].push({ puntos: 0 });
+    });
+    
+    guardarEvaluacion();
+    renderEvaluacion();
+    mostrarAlerta(`Prueba "${nombrePrueba}" agregada`, 'exito');
+}
+
+// Función para eliminar prueba
+function eliminarPrueba(pruebaIdx) {
+    if (pruebas.length <= 1) {
+        mostrarAlerta('Debe haber al menos una prueba', 'error');
+        return;
+    }
+    
+    if (confirm(`¿Seguro que deseas eliminar la prueba "${pruebas[pruebaIdx].nombre}"? Esta acción no se puede deshacer.`)) {
+        pruebas.splice(pruebaIdx, 1);
+        
+        // Eliminar evaluaciones de esa prueba para todos los estudiantes
+        evaluacionesEstudiantes.forEach(estudiante => {
+            if (estudiante && estudiante[pruebaIdx]) {
+                estudiante.splice(pruebaIdx, 1);
+            }
+        });
+        
+        guardarEvaluacion();
+        renderEvaluacion();
+        mostrarAlerta('Prueba eliminada', 'info');
+    }
+}
+
+// Función para exportar evaluación
+function exportarEvaluacion() {
+    const wb = XLSX.utils.book_new();
+    
+    // Preparar datos para exportar
+    const datos = [];
+    
+    // Fila de configuración
+    const configRow = ['CONFIGURACIÓN'];
+    pruebas.forEach(prueba => {
+        configRow.push(prueba.puntosMaximos, '-------', prueba.peso);
+    });
+    configRow.push('100%');
+    datos.push(configRow);
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
+        let totalPorcentaje = 0;
+        
+        pruebas.forEach((prueba, pruebaIdx) => {
+            const evaluacion = obtenerEvaluacion(estIdx, pruebaIdx);
+            const nota = calcularNota(evaluacion.puntos, prueba.puntosMaximos);
+            const porcentajePonderado = (nota * prueba.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            row.push(evaluacion.puntos, nota.toFixed(1), porcentajePonderado.toFixed(1) + '%');
+        });
+        
+        row.push(totalPorcentaje.toFixed(1) + '%');
+        datos.push(row);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'Evaluación');
+    
+    XLSX.writeFile(wb, 'evaluacion_pruebas.xlsx');
+    mostrarAlerta('Evaluación exportada correctamente', 'exito');
+}
+
+// Función para guardar evaluación
+function guardarEvaluacion() {
+    const datos = {
+        pruebas: pruebas,
+        evaluaciones: evaluacionesEstudiantes
+    };
+    localStorage.setItem('evaluacionPruebas', JSON.stringify(datos));
+}
+
+// Función para cargar evaluación
+function cargarEvaluacion() {
+    const datos = localStorage.getItem('evaluacionPruebas');
+    if (datos) {
+        try {
+            const parsed = JSON.parse(datos);
+            pruebas = parsed.pruebas || pruebas;
+            evaluacionesEstudiantes = parsed.evaluaciones || [];
+        } catch (error) {
+            console.error('Error al cargar evaluación:', error);
+        }
+    }
+}
+
+// Función para sincronizar estudiantes en evaluación
+function sincronizarEstudiantesEvaluacion() {
+    // Agregar evaluaciones para nuevos estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!evaluacionesEstudiantes[estIdx]) {
+            evaluacionesEstudiantes[estIdx] = [];
+        }
+        
+        // Asegurar que tenga evaluaciones para todas las pruebas
+        while (evaluacionesEstudiantes[estIdx].length < pruebas.length) {
+            evaluacionesEstudiantes[estIdx].push({ puntos: 0 });
+        }
+    });
+    
+    // Eliminar evaluaciones de estudiantes eliminados
+    evaluacionesEstudiantes = evaluacionesEstudiantes.slice(0, estudiantes.length);
+    
+    guardarEvaluacion();
+    renderEvaluacion();
+}
+
+// Modificar la función inicializarAplicacion para incluir evaluación
+const originalInicializarAplicacion = inicializarAplicacion;
+inicializarAplicacion = function() {
+    originalInicializarAplicacion();
+    cargarEvaluacion();
+    sincronizarEstudiantesEvaluacion();
+    renderEvaluacion();
+};
 
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', function() {

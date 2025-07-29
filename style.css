@@ -1255,3 +1255,461 @@ body.dark-mode .celda-asistencia-multiple button {
 body.dark-mode .celda-asistencia-multiple button:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
+
+/* ===== SECCIÓN DE EVALUACIÓN DE PRUEBAS ===== */
+.evaluacion-container {
+    margin: 40px 0;
+    padding: 30px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e3e9f7 100%);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    border: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.evaluacion-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-secundario));
+}
+
+.evaluacion-container h3 {
+    color: var(--color-primario);
+    font-size: 2em;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.evaluacion-container h3::before {
+    content: '📝';
+    font-size: 1.2em;
+}
+
+.evaluacion-instructions {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.evaluacion-instructions::before {
+    content: '💡';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 2em;
+    opacity: 0.3;
+}
+
+.evaluacion-instructions p {
+    margin: 0;
+    font-weight: 600;
+    color: #856404;
+    font-size: 1.05em;
+    line-height: 1.4;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.evaluacion-actions {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.btn-agregar-prueba, .btn-exportar-evaluacion {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 25px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(25,118,210,0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-agregar-prueba::before, .btn-exportar-evaluacion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-agregar-prueba:hover::before, .btn-exportar-evaluacion:hover::before {
+    left: 100%;
+}
+
+.btn-agregar-prueba:hover, .btn-exportar-evaluacion:hover {
+    background: linear-gradient(135deg, var(--color-secundario) 0%, var(--color-primario) 100%);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(25,118,210,0.5);
+}
+
+.evaluacion-table-container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.evaluacion-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-secundario));
+    z-index: 1;
+}
+
+.evaluacion-table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+/* Tabla de evaluación */
+.evaluacion-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    background: #fff;
+}
+
+.evaluacion-table th {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: #fff;
+    padding: 15px 10px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    font-size: 1.05em;
+}
+
+.evaluacion-table td {
+    padding: 10px 8px;
+    border: none;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Filas de configuración (amarillas) */
+.evaluacion-table .config-row {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
+    font-weight: 600;
+    color: #856404;
+    border-bottom: 2px solid #ffc107;
+}
+
+.evaluacion-table .config-row td {
+    border: none;
+}
+
+/* Paso zebra mejorado para filas de estudiantes */
+.evaluacion-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+.evaluacion-table tbody tr:nth-child(even) {
+    background: var(--color-table-row);
+}
+
+/* Paso zebra en modo oscuro */
+body.dark-mode .evaluacion-table tbody tr:nth-child(odd) {
+    background: #37474f;
+}
+
+body.dark-mode .evaluacion-table tbody tr:nth-child(even) {
+    background: #455a64;
+}
+
+/* Hover effects para filas de estudiantes */
+.evaluacion-table tbody tr:hover {
+    background: #e3f2fd !important;
+    transition: background-color 0.2s ease;
+}
+
+.evaluacion-table tbody tr:hover .student-name {
+    background: #e3f2fd !important;
+}
+
+.evaluacion-table tbody tr:hover .calculated {
+    background: #e3f2fd !important;
+    color: inherit;
+}
+
+.evaluacion-table tbody tr:hover .editable {
+    background: #e3f2fd !important;
+}
+
+/* Efectos especiales para la fila de configuración */
+.evaluacion-table .config-row:hover {
+    background: #fff8e1 !important;
+    color: #f57c00;
+}
+
+/* Celdas editables (blancas) */
+.evaluacion-table .editable {
+    background: #fff !important;
+    border: 2px solid #1976d2 !important;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+}
+
+/* Celdas calculadas (grises) */
+.evaluacion-table .calculated {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%) !important;
+    color: #555;
+    font-weight: 500;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Inputs en evaluación */
+.evaluacion-table input[type="number"] {
+    width: 70px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9em;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+/* Inputs de porcentaje más grandes */
+.evaluacion-table .config-row input[type="number"] {
+    width: 80px;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+/* Ocultar flechas de incremento/decremento en inputs de número */
+.evaluacion-table input[type="number"]::-webkit-outer-spin-button,
+.evaluacion-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.evaluacion-table input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.evaluacion-table input[type="number"]:focus {
+    border-color: var(--color-primario);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(25,118,210,0.2);
+    transform: scale(1.02);
+}
+
+/* Columna de nombres de estudiantes */
+.evaluacion-table .student-name {
+    background: inherit !important;
+    font-weight: 600;
+    text-align: left;
+    padding-left: 12px;
+    min-width: 150px;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+}
+
+/* Modo oscuro para evaluación */
+body.dark-mode .evaluacion-container {
+    background: linear-gradient(135deg, #37474f 0%, #263238 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .evaluacion-container::before {
+    background: linear-gradient(90deg, #1976d2, #42a5f5);
+}
+
+body.dark-mode .evaluacion-instructions {
+    background: linear-gradient(135deg, #2d2a1e 0%, #1e1a0e 100%);
+    border: 2px solid #4a4a2a;
+    color: #ffd54f;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+}
+
+body.dark-mode .evaluacion-instructions::before {
+    opacity: 0.5;
+}
+
+body.dark-mode .evaluacion-instructions p {
+    color: #ffd54f;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .evaluacion-container h3 {
+    color: #42a5f5;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .evaluacion-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .evaluacion-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .evaluacion-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .evaluacion-table-container::before {
+    background: linear-gradient(90deg, #1976d2, #42a5f5);
+}
+
+body.dark-mode .evaluacion-table {
+    background: #263238;
+}
+
+body.dark-mode .evaluacion-table th {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .evaluacion-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .evaluacion-table .config-row {
+    background: linear-gradient(135deg, #3e3a1e 0%, #2d2a1e 100%) !important;
+    border-bottom: 2px solid #ffc107;
+    color: #ffd54f;
+}
+
+body.dark-mode .evaluacion-table .editable {
+    background: #37474f !important;
+    border: 2px solid #42a5f5 !important;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.2);
+}
+
+body.dark-mode .evaluacion-table .calculated {
+    background: linear-gradient(135deg, #455a64 0%, #37474f 100%) !important;
+    color: #e0e0e0;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .evaluacion-table .student-name {
+    background: inherit !important;
+    color: #fff;
+    font-weight: 600;
+}
+
+body.dark-mode .evaluacion-table input[type="number"] {
+    background: #37474f;
+    color: #fff;
+    border: 1px solid #546e7a;
+    border-radius: 4px;
+}
+
+/* Inputs de configuración en modo oscuro */
+body.dark-mode .evaluacion-table .config-row input[type="number"] {
+    background: #2d2a1e;
+    color: #ffd54f;
+    border: 1px solid #ffc107;
+    font-weight: 600;
+}
+
+body.dark-mode .evaluacion-table input[type="number"]:focus {
+    border-color: #42a5f5;
+    background: #1e2729;
+    box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.3);
+    transform: scale(1.02);
+}
+
+/* Botón eliminar prueba */
+.evaluacion-table .config-row button {
+    transition: all 0.2s ease;
+}
+
+.evaluacion-table .config-row button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Modo oscuro para botón eliminar */
+body.dark-mode .evaluacion-table .config-row button {
+    background: #d32f2f !important;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+    border: 1px solid #b71c1c;
+}
+
+body.dark-mode .evaluacion-table .config-row button:hover {
+    background: #f44336 !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+}
+
+/* Hover effects en modo oscuro para evaluación */
+body.dark-mode .evaluacion-table tbody tr:hover {
+    background: #455a64 !important;
+}
+
+body.dark-mode .evaluacion-table tbody tr:hover .student-name {
+    background: #455a64 !important;
+}
+
+body.dark-mode .evaluacion-table tbody tr:hover .calculated {
+    background: #455a64 !important;
+    color: inherit;
+}
+
+body.dark-mode .evaluacion-table tbody tr:hover .editable {
+    background: #455a64 !important;
+}
+
+body.dark-mode .evaluacion-table .config-row:hover {
+    background: #3e3a1e !important;
+    color: #ffb74d;
+}
