@@ -374,13 +374,19 @@ function generarCeldaAsistencia(estIndex, diaIndex, dia) {
     dia.ausencias.forEach((ausencia, ausenciaIndex) => {
         html += `<div style="display:flex;align-items:center;gap:4px;">`;
         html += `<select onchange="actualizarAsistenciaTipoMultiple(${estIndex},${diaIndex},${ausenciaIndex},this.value)" class="select-asistencia select-${ausencia.tipo === 'Tardía' ? 'tardia' : ausencia.tipo.toLowerCase()}" style="width:100px;padding:4px 6px;font-size:0.9em;text-align:center;" aria-label="Tipo ausencia ${ausenciaIndex+1} estudiante ${estIndex+1} día ${diaIndex+1}">`;
-        html += `<option value="Presente"${ausencia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
+        
+        // Si es la primera ausencia (selector principal), incluir "Presente"
+        if (ausenciaIndex === 0) {
+            html += `<option value="Presente"${ausencia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
+        }
+        
         html += `<option value="Ausente"${ausencia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
         html += `<option value="Tardía"${ausencia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
         html += `<option value="Escapada"${ausencia.tipo === 'Escapada' ? ' selected' : ''}>Escapada</option>`;
         html += `<option value="Justificada"${ausencia.tipo === 'Justificada' ? ' selected' : ''}>Justificada</option>`;
         html += `</select>`;
         
+        // Solo mostrar input de cantidad si no es "Presente"
         if (ausencia.tipo !== 'Presente') {
             html += `<input type="number" min="0" value="${ausencia.cantidad || 0}" style="width:45px;padding:4px 2px;font-size:0.9em;" onchange="actualizarAsistenciaCantidadMultiple(${estIndex},${diaIndex},${ausenciaIndex},this.value)" aria-label="Cantidad ausencia ${ausenciaIndex+1} estudiante ${estIndex+1} día ${diaIndex+1}">`;
         }
@@ -616,7 +622,7 @@ function agregarAusencia(estIdx, diaIdx) {
     
     // Agregar nueva ausencia
     estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.push({
-        tipo: 'Ausente',
+        tipo: 'Tardía',
         cantidad: 1
     });
     
