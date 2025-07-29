@@ -600,6 +600,14 @@ function actualizarAsistenciaTipoMultiple(estIdx, diaIdx, ausenciaIdx, valor) {
     if (!estudiantes[estIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx] || !estudiantes[estIdx].asistenciaDias[diaIdx].ausencias) return;
     
     estudiantes[estIdx].asistenciaDias[diaIdx].ausencias[ausenciaIdx].tipo = valor;
+    
+    // Si es el primer selector (ausenciaIndex === 0) y se selecciona "Ausente" o "Justificada", precargar con lecciones del día
+    if (ausenciaIdx === 0 && (valor === 'Ausente' || valor === 'Justificada')) {
+        const leccionesDia = Number(dias[diaIdx].lecciones) || 0;
+        estudiantes[estIdx].asistenciaDias[diaIdx].ausencias[ausenciaIdx].cantidad = leccionesDia;
+        console.log(`Precargando ${valor.toLowerCase()} con ${leccionesDia} lecciones para estudiante ${estIdx + 1}, día ${diaIdx + 1}`);
+    }
+    
     guardarDatos();
     renderAsistencia();
 }
@@ -623,7 +631,7 @@ function agregarAusencia(estIdx, diaIdx) {
     // Agregar nueva ausencia
     estudiantes[estIdx].asistenciaDias[diaIdx].ausencias.push({
         tipo: 'Tardía',
-        cantidad: 1
+        cantidad: 0
     });
     
     guardarDatos();
@@ -659,6 +667,7 @@ function actualizarLeccionesDia(idx, valor) {
     console.log('Valor recibido:', valor, 'tipo:', typeof valor);
     console.log('Valor convertido a Number:', Number(valor));
     
+    const valorAnterior = Number(dias[idx].lecciones) || 0;
     dias[idx].lecciones = Number(valor);
     
     console.log('Día actualizado:', dias[idx]);
@@ -669,6 +678,32 @@ function actualizarLeccionesDia(idx, valor) {
     console.log(`Día ${idx + 1} (${dias[idx].nombre}): ${dias[idx].lecciones} lecciones`);
     console.log('Total lecciones actual:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
     console.log('================================');
+    
+    // Actualizar automáticamente las cantidades de ausencias en el primer selector
+    if (valorAnterior !== Number(valor)) {
+        console.log('=== ACTUALIZANDO AUSENCIAS AUTOMÁTICAMENTE ===');
+        let contadorActualizados = 0;
+        
+        estudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante.asistenciaDias && estudiante.asistenciaDias[idx] && 
+                estudiante.asistenciaDias[idx].ausencias && estudiante.asistenciaDias[idx].ausencias[0]) {
+                
+                const primeraAusencia = estudiante.asistenciaDias[idx].ausencias[0];
+                
+                // Solo actualizar si es "Ausente" o "Justificada" en el primer selector
+                if (primeraAusencia.tipo === 'Ausente' || primeraAusencia.tipo === 'Justificada') {
+                    const cantidadAnterior = primeraAusencia.cantidad;
+                    primeraAusencia.cantidad = Number(valor);
+                    contadorActualizados++;
+                    
+                    console.log(`Estudiante ${estIdx + 1}: ${primeraAusencia.tipo} actualizada de ${cantidadAnterior} a ${primeraAusencia.cantidad} lecciones`);
+                }
+            }
+        });
+        
+        console.log(`Total de ausencias actualizadas: ${contadorActualizados}`);
+        console.log('==============================================');
+    }
     
     guardarDatos();
     renderAsistencia();
