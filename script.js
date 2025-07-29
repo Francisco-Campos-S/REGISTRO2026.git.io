@@ -292,7 +292,7 @@ function generarCeldaAsistencia(estIndex, diaIndex, dia) {
     
     let html = `<td style="min-width:130px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};vertical-align:middle;">`;
     html += `<div style="display:flex;align-items:center;justify-content:${dia.tipo === 'Presente' ? 'flex-start' : 'center'};gap:8px;">`;
-    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
+    html += `<select onchange="actualizarAsistenciaTipo(${estIndex},${diaIndex},this.value)" class="select-asistencia select-${dia.tipo.toLowerCase()}" style="width:110px;padding:6px 8px;font-size:1em;margin-right:8px;text-align:${dia.tipo === 'Presente' ? 'left' : 'center'};" aria-label="Tipo asistencia estudiante ${estIndex+1} día ${diaIndex+1}">`;
     html += `<option value="Presente"${dia.tipo === 'Presente' ? ' selected' : ''}>Presente</option>`;
     html += `<option value="Ausente"${dia.tipo === 'Ausente' ? ' selected' : ''}>Ausente</option>`;
     html += `<option value="Tardía"${dia.tipo === 'Tardía' ? ' selected' : ''}>Tardía</option>`;
@@ -403,6 +403,13 @@ function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
     } else {
         estudiantes[estIdx].asistenciaDias[diaIdx].tipo = valor;
     }
+    
+    // Actualizar clase CSS del select para cambiar color
+    const selectElement = event.target;
+    if (selectElement) {
+        selectElement.className = `select-asistencia select-${valor.toLowerCase()}`;
+    }
+    
     guardarDatos();
     renderAsistencia();
 }
