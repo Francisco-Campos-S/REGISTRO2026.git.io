@@ -396,13 +396,24 @@ th, td {
 }
 
 /* ===== COLUMNAS STICKY - SOLO NOMBRE ===== */
-th.nombre, td.nombre { 
-    min-width: 160px; 
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    background: inherit !important;
-    box-shadow: 2px 0 8px var(--color-shadow) !important;
+th.nombre, td.nombre {
+    min-width: 160px;
+    position: sticky;
+    right: 0;
+    z-index: 20;
+    background: #fff;
+    box-shadow: -2px 0 8px var(--color-shadow);
+}
+body.dark-mode th.nombre, 
+body.dark-mode td.nombre {
+    background: #263238 !important;
+}
+/* Asegurar que la columna de acciones no sea sticky */
+th.th-resumen, td.th-resumen {
+    position: static !important;
+    right: auto !important;
+    left: auto !important;
+    box-shadow: none !important;
 }
 
 th.apellido1, td.apellido1,
@@ -427,20 +438,50 @@ body.dark-mode tbody tr:nth-child(odd) td.nombre {
 
 body.dark-mode tbody tr:nth-child(even) td.nombre {
     background: #fff !important;
-    color: #263238 !important;
+    color: #000 !important;
 }
 
-/* Asegurar que los encabezados sticky tengan el fondo correcto */
+/* Encabezado sticky columna nombre */
 th.nombre {
-    background: linear-gradient(90deg, var(--color-secundario) 0%, var(--color-primario) 100%) !important;
+    position: sticky;
+    right: 0;
+    z-index: 20;
     color: #fff !important;
     text-shadow: 0 2px 8px var(--color-shadow) !important;
+    box-shadow: -2px 0 8px var(--color-shadow);
+    border-left: 2px solid #fff;
+    border-right: 2px solid var(--color-fondo);
+    background: var(--color-primario) !important;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+th.nombre:hover {
+    background: linear-gradient(180deg, #dbe6f6 0%, var(--color-fondo) 100%) !important;
+    box-shadow: 0 4px 18px var(--color-shadow-hover), -2px 0 8px var(--color-shadow) !important;
+    color: #fff !important;
+    text-shadow: 0 2px 8px var(--color-shadow) !important;
+    border-left: 2px solid #b0bec5;
+    border-right: 2px solid var(--color-fondo);
+}
+
+body.dark-mode th.nombre {
+    background: var(--color-fondo) !important;
+    border-left: 2px solid #90caf9;
+    border-right: 2px solid var(--color-fondo);
+}
+body.dark-mode th.nombre:hover {
+    background: #37474f !important;
+    box-shadow: 0 4px 18px var(--color-shadow-hover), -2px 0 8px var(--color-shadow) !important;
+    color: #fff !important;
+    text-shadow: 0 2px 8px var(--color-shadow) !important;
+    border-left: 2px solid #90caf9;
+    border-right: 2px solid var(--color-fondo);
 }
 
 /* Mejorar la experiencia de hover en la columna sticky */
 tbody tr:hover td.nombre {
     background: var(--color-table-hover) !important;
-    box-shadow: 2px 0 8px var(--color-shadow-hover) !important;
+    box-shadow: -2px 0 8px var(--color-shadow-hover) !important;
     transform: scale(1.02);
     transition: all 0.2s ease;
 }
@@ -492,7 +533,7 @@ body.dark-mode tbody tr:nth-child(odd) td {
 
 body.dark-mode tbody tr:nth-child(even) td {
     background: #fff !important;
-    color: #263238 !important;
+    color: #000 !important;
     border: 2px solid var(--color-border) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
 }
@@ -548,6 +589,14 @@ body.dark-mode input[type="text"]:focus,
 body.dark-mode select:focus, 
 body.dark-mode input[type="date"]:focus {
     background: #263238 !important;
+}
+
+/* Texto negro en inputs de filas pares (blancas) en modo oscuro */
+body.dark-mode tbody tr:nth-child(even) input[type="text"],
+body.dark-mode tbody tr:nth-child(even) select,
+body.dark-mode tbody tr:nth-child(even) input[type="number"] {
+    color: #000 !important;
+    background: #fff !important;
 }
 
 input[type="number"] {
@@ -621,13 +670,13 @@ input[type="number"]:focus {
     background: linear-gradient(90deg, var(--color-error) 60%, #c0392b 100%);
     color: white;
     border: none;
-    padding: 7px 18px;
+    padding: 3px 10px !important;
     border-radius: 10px;
-    font-size: 1em;
+    font-size: 0.93em !important;
     box-shadow: 0 2px 8px rgba(231,76,60,0.13);
     font-weight: 600;
     transition: var(--transition);
-    cursor: pointer;
+    margin-left: 4px !important;
 }
 
 .btn-eliminar-dia:hover, .btn-eliminar-est:hover {
@@ -640,13 +689,18 @@ input[type="number"]:focus {
     background: linear-gradient(90deg, var(--color-exito) 60%, #27ae60 100%);
     color: white;
     border: none;
-    padding: 12px 32px;
-    border-radius: 10px;
-    font-size: 1.18em;
-    font-weight: 700;
-    box-shadow: 0 4px 16px rgba(39,174,96,0.13);
-    margin-bottom: 0;
-    margin-left: 8px;
+    padding: 4px 12px !important;
+    border-radius: 7px;
+    font-size: 0.98em !important;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(67,160,71,0.10);
+    margin-left: 6px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     transition: var(--transition);
     opacity: 0.96;
     position: relative;
@@ -654,6 +708,20 @@ input[type="number"]:focus {
     animation: fadeInBtnDia 0.7s cubic-bezier(.77,0,.18,1);
     letter-spacing: 0.5px;
     cursor: pointer;
+    vertical-align: middle;
+}
+
+th .header-dia-flex {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 2px;
+}
+
+th input[type="date"] {
+    margin-bottom: 0 !important;
+    margin-right: 0 !important;
+    vertical-align: middle;
 }
 
 .btn-agregar-dia:hover {
@@ -715,6 +783,12 @@ body.dark-mode .btn-agregar-dia {
     color: #2c3e50;
     border: 2px solid rgba(251,192,45,0.3);
     box-shadow: 0 8px 32px rgba(251,192,45,0.2);
+}
+
+.btn-agregar-dia:hover {
+    background: linear-gradient(90deg,#27ae60 0%,#43a047 100%) !important;
+    transform: scale(1.06);
+    box-shadow: 0 4px 16px rgba(39,174,96,0.13) !important;
 }
 
 /* ===== ANIMACIONES MEJORADAS ===== */

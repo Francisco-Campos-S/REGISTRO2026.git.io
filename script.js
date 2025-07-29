@@ -185,10 +185,10 @@ function generarEncabezadoTabla() {
     html += `<table border="1" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
-        '<th rowspan="2" class="nombre">Nombre</th>' +
         '<th rowspan="2" class="cedula">Cédula</th>' +
         '<th rowspan="2" class="apellido1">Primer apellido</th>' +
         '<th rowspan="2" class="apellido2">Segundo apellido</th>' +
+        '<th rowspan="2" class="nombre">Nombre</th>' +
         `<th colspan="${dias.length}"><span style="font-size:1em;font-weight:600;color:var(--color-primario);"><svg style="vertical-align:middle;margin-right:4px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="4"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Asistencia por día</span></th>` +
         '<th rowspan="2" class="th-resumen">Ausencias</th>' +
         '<th rowspan="2" class="th-resumen">Justificadas</th>' +
@@ -252,10 +252,10 @@ function generarFilasEstudiantes() {
         const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
         
         html += `<tr>`;
-        html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
         html += `<td class="cedula"><input type="text" value="${estudiante.cedula || ''}" onchange="actualizarEstudiante(${i}, 'cedula', this.value)" placeholder="Número de cédula" aria-label="Cédula"></td>`;
         html += `<td class="apellido1"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
         html += `<td class="apellido2"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
+        html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" placeholder="Nombre" aria-label="Nombre"></td>`;
         
         for (let d = 0; d < dias.length; d++) {
             html += generarCeldaAsistencia(i, d, estudiante.asistenciaDias[d]);
