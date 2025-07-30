@@ -1854,6 +1854,10 @@ inicializarAplicacion = function() {
     cargarPortafolio();
     sincronizarEstudiantesPortafolio();
     renderPortafolio();
+    
+    // Configurar navegación
+    configurarNavegacionTeclado();
+    agregarIndicadoresNavegacion();
 };
 
 // ===== FUNCIONES DE TRABAJO COTIDIANO =====
@@ -2961,4 +2965,110 @@ function sincronizarEstudiantesPortafolio() {
     
     // Eliminar evaluaciones de estudiantes que ya no existen
     portafoliosEstudiantes.splice(estudiantes.length);
+}
+
+// ===== FUNCIONES DE NAVEGACIÓN =====
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+        
+        // Efecto visual de resaltado
+        section.style.transition = 'box-shadow 0.3s ease';
+        section.style.boxShadow = '0 0 30px rgba(102, 126, 234, 0.5)';
+        
+        setTimeout(() => {
+            section.style.boxShadow = '';
+        }, 2000);
+        
+        // Mostrar alerta de navegación
+        const sectionNames = {
+            'asistencia': 'Asistencia',
+            'trabajo-cotidiano': 'Trabajo Cotidiano',
+            'tareas': 'Tareas',
+            'evaluacion': 'Evaluación',
+            'proyecto': 'Proyecto',
+            'portafolio': 'Portafolio'
+        };
+        
+        mostrarAlerta(`Navegando a: ${sectionNames[sectionId]}`, 'info');
+    }
+}
+
+function scrollToMenu() {
+    const menu = document.querySelector('.menu-navegacion');
+    if (menu) {
+        // Calcular la posición del menú con un offset para que sea visible
+        const menuPosition = menu.offsetTop - 100; // 100px de margen superior
+        
+        window.scrollTo({
+            top: menuPosition,
+            behavior: 'smooth'
+        });
+        
+        // Efecto visual de resaltado
+        menu.style.transition = 'box-shadow 0.3s ease';
+        menu.style.boxShadow = '0 0 30px rgba(102, 126, 234, 0.5)';
+        
+        setTimeout(() => {
+            menu.style.boxShadow = '';
+        }, 2000);
+        
+        mostrarAlerta('Volviendo al menú principal', 'info');
+    }
+}
+
+// Función para agregar navegación con teclado
+function configurarNavegacionTeclado() {
+    document.addEventListener('keydown', function(event) {
+        // Ctrl/Cmd + número para navegar rápidamente
+        if ((event.ctrlKey || event.metaKey) && event.key >= '1' && event.key <= '6') {
+            event.preventDefault();
+            const sections = ['asistencia', 'trabajo-cotidiano', 'tareas', 'evaluacion', 'proyecto', 'portafolio'];
+            const index = parseInt(event.key) - 1;
+            if (sections[index]) {
+                scrollToSection(sections[index]);
+            }
+        }
+        
+        // Escape para volver al menú
+        if (event.key === 'Escape') {
+            scrollToMenu();
+        }
+    });
+}
+
+// Función para agregar indicadores de navegación
+function agregarIndicadoresNavegacion() {
+    // Agregar indicador de sección actual en el scroll
+    window.addEventListener('scroll', function() {
+        const sections = ['asistencia', 'trabajo-cotidiano', 'tareas', 'evaluacion', 'proyecto', 'portafolio'];
+        const scrollPosition = window.scrollY + 100;
+        
+        sections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    // Resaltar botón del menú correspondiente
+                    const menuBtn = document.querySelector(`[onclick="scrollToSection('${sectionId}')"]`);
+                    if (menuBtn) {
+                        menuBtn.style.transform = 'scale(1.05)';
+                        menuBtn.style.boxShadow = '0 0 20px rgba(102, 126, 234, 0.4)';
+                    }
+                } else {
+                    const menuBtn = document.querySelector(`[onclick="scrollToSection('${sectionId}')"]`);
+                    if (menuBtn) {
+                        menuBtn.style.transform = '';
+                        menuBtn.style.boxShadow = '';
+                    }
+                }
+            }
+        });
+    });
 }

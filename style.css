@@ -3801,3 +3801,226 @@ body.dark-mode .portafolio-table .config-row:hover {
 body.dark-mode .portafolio-table .total-excedido {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
 }
+
+/* ===== MENÚ DE NAVEGACIÓN ===== */
+.menu-navegacion {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-navegacion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    pointer-events: none;
+    border-radius: 15px;
+}
+
+.menu-navegacion h3 {
+    color: #ffffff;
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.menu-botones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.menu-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #2c3e50;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.menu-btn:hover::before {
+    left: 100%;
+}
+
+.menu-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.menu-btn span {
+    font-size: 1.2em;
+}
+
+/* Colores específicos para cada botón */
+.asistencia-btn:hover {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+}
+
+.trabajo-btn:hover {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    color: white;
+}
+
+.tareas-btn:hover {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    color: white;
+}
+
+.evaluacion-btn:hover {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.proyecto-btn:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.portafolio-btn:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+/* Botón Volver al Menú */
+.btn-volver-menu {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 10px;
+}
+
+.btn-volver-menu:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+}
+
+.btn-volver-menu span {
+    font-size: 1.1em;
+}
+
+/* ===== MODO OSCURO PARA MENÚ ===== */
+body.dark-mode .menu-navegacion {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.4);
+}
+
+body.dark-mode .menu-navegacion::before {
+    background: linear-gradient(45deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+}
+
+body.dark-mode .menu-btn {
+    background: rgba(44, 62, 80, 0.9);
+    color: #ecf0f1;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+body.dark-mode .menu-btn:hover {
+    background: rgba(52, 73, 94, 0.95);
+    color: #ffffff;
+}
+
+body.dark-mode .btn-volver-menu {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    box-shadow: 0 4px 15px rgba(44, 62, 80, 0.4);
+}
+
+body.dark-mode .btn-volver-menu:hover {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    box-shadow: 0 6px 20px rgba(44, 62, 80, 0.5);
+}
+
+/* ===== BARRA DE ACCIONES DE ASISTENCIA ===== */
+.asistencia-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+body.dark-mode .asistencia-actions {
+    border-bottom-color: #444;
+}
+
+/* ===== RESPONSIVE PARA MENÚ ===== */
+@media (max-width: 768px) {
+    .menu-botones {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .menu-btn {
+        padding: 12px 15px;
+        font-size: 0.9em;
+    }
+    
+    .menu-btn span {
+        font-size: 1.1em;
+    }
+    
+    .btn-volver-menu {
+        padding: 8px 15px;
+        font-size: 0.8em;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-botones {
+        grid-template-columns: 1fr;
+    }
+    
+    .menu-btn {
+        padding: 15px 20px;
+        font-size: 1em;
+    }
+}
