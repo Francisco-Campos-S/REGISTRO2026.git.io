@@ -4364,7 +4364,7 @@ body.dark-mode .resumen-btn:hover {
 }
 
 .asistencia-table tbody tr:nth-child(even) {
-    background: #e8f4f8;
+    background: #a0c4b3;
 }
 
 /* Paso zebra en modo oscuro para tabla de asistencia */
@@ -4373,7 +4373,7 @@ body.dark-mode .asistencia-table tbody tr:nth-child(odd) {
 }
 
 body.dark-mode .asistencia-table tbody tr:nth-child(even) {
-    background: #1a252f;
+    background: #0f1419;
 }
 
 /* Hover effects para tabla de asistencia */
