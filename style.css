@@ -2702,7 +2702,7 @@ body.dark-mode .evaluacion-table tbody tr:nth-child(even) {
     min-width: 150px;
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 15;
 }
 
 /* Modo oscuro para evaluación */
@@ -3245,7 +3245,7 @@ body.dark-mode .texto-alerta {
     min-width: 150px;
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 15;
 }
 
 /* ===== SECCIÓN PORTAFOLIO ===== */
@@ -3560,7 +3560,7 @@ body.dark-mode .texto-alerta {
     min-width: 150px;
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 15;
 }
 
 /* ===== MODO OSCURO PARA PROYECTO ===== */
