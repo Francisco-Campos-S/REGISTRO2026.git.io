@@ -1269,8 +1269,8 @@ function renderEvaluacion() {
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:30px;width:80px;">
-            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
+            <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:40px;width:80px;">
+            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
         </td>`;
     });
     
@@ -1582,8 +1582,8 @@ function renderTareas() {
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" title="% de peso de la tarea" style="padding-right:30px;width:80px;">
-            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
+            <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" title="% de peso de la tarea" style="padding-right:40px;width:80px;">
+            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
         </td>`;
     });
     
@@ -1913,8 +1913,8 @@ function renderTrabajoCotidiano() {
             const fechaFormateada = dia.fecha || new Date().toISOString().split('T')[0];
             
             html += `<td class="editable" style="position:relative;">
-                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:30px;width:150px;font-size:1.1em;">
-                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
+                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:40px;width:150px;font-size:1.1em;">
+                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
             </td>`;
         });
     } else {
@@ -2493,8 +2493,8 @@ function renderProyecto() {
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" title="% de peso del proyecto" style="padding-right:30px;width:80px;">
-            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
+            <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" title="% de peso del proyecto" style="padding-right:40px;width:80px;">
+            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
         </td>`;
     });
     
@@ -2774,8 +2774,8 @@ function renderPortafolio() {
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" title="% de peso del portafolio" style="padding-right:30px;width:80px;">
-            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
+            <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" title="% de peso del portafolio" style="padding-right:40px;width:80px;">
+            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
         </td>`;
     });
     
