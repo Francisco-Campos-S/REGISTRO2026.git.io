@@ -20,6 +20,16 @@
     --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    /* Nuevas variables para mejoras UX */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --glow-primary: 0 0 20px rgba(5, 150, 105, 0.3);
+    --glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
+    --glow-warning: 0 0 20px rgba(245, 158, 11, 0.3);
+    --glow-error: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 /* ===== MODO OSCURO ===== */
@@ -41,6 +51,14 @@ body.dark-mode {
     --gradient-success: linear-gradient(135deg, #34d399 0%, #10b981 100%);
     --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     --gradient-error: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    /* Variables para modo oscuro */
+    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --glow-primary: 0 0 20px rgba(52, 211, 153, 0.4);
+    --glow-success: 0 0 20px rgba(52, 211, 153, 0.4);
+    --glow-warning: 0 0 20px rgba(251, 191, 36, 0.4);
+    --glow-error: 0 0 20px rgba(248, 113, 113, 0.4);
 }
 
 /* ===== RESET Y BASE ===== */
@@ -57,6 +75,11 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     transition: var(--transition);
+    /* Mejoras de UX */
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* ===== HEADER ===== */
@@ -68,14 +91,16 @@ header {
     right: 0;
     z-index: 1000;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-medium);
     padding: 20px;
     border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
     margin: 0;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
+    transition: all 0.3s var(--animation-smooth);
+    /* Mejoras de UX */
+    will-change: transform, box-shadow;
 }
 
 /* Ajustar el contenido principal para el header fijo */
@@ -89,14 +114,16 @@ header.scrolled {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-strong);
+    transform: translateY(0);
 }
 
 body.dark-mode header.scrolled {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-strong);
+    transform: translateY(0);
 }
 
 #btnModoOscuro {
@@ -288,15 +315,34 @@ body.dark-mode header.scrolled {
     border-radius: 14px;
     padding: 14px 32px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+    transition: all 0.3s var(--animation-smooth);
+    box-shadow: var(--shadow-medium);
     position: relative;
     overflow: hidden;
+    /* Mejoras de UX */
+    will-change: transform, box-shadow;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.actions-bar button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s var(--animation-smooth);
+}
+
+.actions-bar button:hover::before {
+    left: 100%;
 }
 
 .actions-bar button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-strong), var(--glow-primary);
 }
 
 .btn-eliminar-est {
@@ -658,19 +704,28 @@ body.dark-mode td.numero {
 input[type="text"], select, input[type="date"] {
     background: #fff !important;
     color: #263238 !important;
-    box-shadow: 0 2px 8px var(--color-shadow) !important;
+    box-shadow: var(--shadow-soft) !important;
     border: 1.5px solid var(--color-border) !important;
     border-radius: 10px;
     font-size: 1em;
-    transition: var(--transition);
+    transition: all 0.3s var(--animation-smooth);
     padding: 8px 12px;
+    /* Mejoras de UX */
+    will-change: border-color, box-shadow, transform;
+}
+
+input[type="text"]:hover, select:hover, input[type="date"]:hover {
+    border-color: var(--color-primario) !important;
+    box-shadow: var(--shadow-medium) !important;
+    transform: translateY(-1px);
 }
 
 input[type="text"]:focus, select:focus, input[type="date"]:focus {
     border: 2px solid var(--color-primario) !important;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2) !important;
+    box-shadow: var(--shadow-strong), var(--glow-primary) !important;
     background: #fff !important;
     outline: none;
+    transform: translateY(-2px) scale(1.02);
 }
 
 body.dark-mode input[type="text"], 
@@ -912,20 +967,22 @@ body.dark-mode .select-justificada {
     z-index: 9999;
     font-size: 1.12em;
     font-weight: 600;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    animation: slideInDown 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: var(--shadow-strong);
+    animation: slideInDown 0.5s var(--animation-bounce);
     border-radius: 15px;
     padding: 16px 28px;
     letter-spacing: 0.5px;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 2px solid rgba(255,255,255,0.2);
-    transition: all 0.3s ease;
+    transition: all 0.3s var(--animation-smooth);
+    /* Mejoras de UX */
+    will-change: transform, box-shadow;
 }
 
 .alerta:hover {
-    transform: translateX(-50%) scale(1.02);
-    box-shadow: 0 12px 40px var(--color-shadow-hover);
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: var(--shadow-strong), var(--glow-primary);
 }
 
 .alerta.exito {
@@ -960,6 +1017,9 @@ tbody tr:hover {
     box-shadow: 0 0 0 3px #e74c3c !important;
     z-index: 100 !important;
     position: relative !important;
+    transition: all 0.3s var(--animation-smooth);
+    /* Mejoras de UX */
+    will-change: box-shadow, transform;
 }
 
 tbody tr.fila-focus-activa {
@@ -1153,21 +1213,27 @@ body.dark-mode .alerta-temprana {
 
 /* ===== SCROLL HORIZONTAL ===== */
 .table-responsive::-webkit-scrollbar {
-    height: 8px;
+    height: 10px;
 }
 
 .table-responsive::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: var(--color-primario);
-    border-radius: 4px;
+    background: var(--gradient-primary);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s var(--animation-smooth);
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: var(--color-secundario);
+    background: var(--gradient-secundario);
+    transform: scaleY(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== VERSION MESSAGE ===== */
@@ -3890,14 +3956,17 @@ body.dark-mode .portafolio-table .total-excedido {
     cursor: pointer;
     font-weight: 600;
     font-size: 1em;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s var(--animation-smooth);
+    box-shadow: var(--shadow-medium);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     position: relative;
     overflow: hidden;
+    /* Mejoras de UX */
+    will-change: transform, box-shadow;
+    letter-spacing: 0.3px;
 }
 
 .menu-btn::before {
@@ -3916,8 +3985,8 @@ body.dark-mode .portafolio-table .total-excedido {
 }
 
 .menu-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-strong);
 }
 
 .menu-btn span {
