@@ -658,6 +658,7 @@ function actualizarEstudiante(idx, campo, valor) {
     
     guardarDatos();
     renderAsistencia();
+    sincronizarTodasLasSecciones();
 }
 
 function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
@@ -805,20 +806,7 @@ function agregarEstudiante() {
     
     guardarDatos();
     renderAsistencia();
-    sincronizarEstudiantesEvaluacion();
-    sincronizarEstudiantesTareas();
-    sincronizarEstudiantesTrabajoCotidiano();
-    sincronizarEstudiantesProyecto();
-    sincronizarEstudiantesPortafolio();
-    
-    // Renderizar todas las secciones para actualizar las listas
-    setTimeout(() => {
-        renderEvaluacion();
-        renderTareas();
-        renderTrabajoCotidiano();
-        renderProyecto();
-        renderPortafolio();
-    }, 100);
+    sincronizarTodasLasSecciones();
 }
 
 function agregarDia() {
@@ -874,20 +862,7 @@ function eliminarEstudiante(idx) {
         estudiantes.splice(idx, 1);
         guardarDatos();
         renderAsistencia();
-        sincronizarEstudiantesEvaluacion();
-        sincronizarEstudiantesTareas();
-        sincronizarEstudiantesTrabajoCotidiano();
-        sincronizarEstudiantesProyecto();
-        sincronizarEstudiantesPortafolio();
-        
-        // Renderizar todas las secciones para actualizar las listas
-        setTimeout(() => {
-            renderEvaluacion();
-            renderTareas();
-            renderTrabajoCotidiano();
-            renderProyecto();
-            renderPortafolio();
-        }, 100);
+        sincronizarTodasLasSecciones();
         
         mostrarAlerta('Estudiante eliminado', 'info');
     }
@@ -930,21 +905,7 @@ function ordenarEstudiantesManual() {
     
     guardarDatos();
     renderAsistencia();
-    
-    // Sincronizar y renderizar todas las secciones
-    sincronizarEstudiantesEvaluacion();
-    sincronizarEstudiantesTareas();
-    sincronizarEstudiantesTrabajoCotidiano();
-    sincronizarEstudiantesProyecto();
-    sincronizarEstudiantesPortafolio();
-    
-    setTimeout(() => {
-        renderEvaluacion();
-        renderTareas();
-        renderTrabajoCotidiano();
-        renderProyecto();
-        renderPortafolio();
-    }, 100);
+    sincronizarTodasLasSecciones();
 }
 
 // ===== FUNCIONES DE PERSISTENCIA =====
@@ -1551,23 +1512,29 @@ function cargarEvaluacion() {
 
 // Función para sincronizar estudiantes en evaluación
 function sincronizarEstudiantesEvaluacion() {
-    // Agregar evaluaciones para nuevos estudiantes
+    // Crear un nuevo array que mantenga el orden correcto
+    const nuevoEvaluacionesEstudiantes = [];
+    
+    // Agregar evaluaciones para todos los estudiantes en el orden correcto
     estudiantes.forEach((estudiante, estIdx) => {
-        if (!evaluacionesEstudiantes[estIdx]) {
-            evaluacionesEstudiantes[estIdx] = [];
+        // Si ya existe una entrada para este estudiante, mantenerla
+        if (evaluacionesEstudiantes[estIdx]) {
+            nuevoEvaluacionesEstudiantes[estIdx] = evaluacionesEstudiantes[estIdx];
+        } else {
+            // Crear nueva entrada para el estudiante
+            nuevoEvaluacionesEstudiantes[estIdx] = [];
         }
         
         // Asegurar que tenga evaluaciones para todas las pruebas
-        while (evaluacionesEstudiantes[estIdx].length < pruebas.length) {
-            evaluacionesEstudiantes[estIdx].push({ puntos: 0 });
+        while (nuevoEvaluacionesEstudiantes[estIdx].length < pruebas.length) {
+            nuevoEvaluacionesEstudiantes[estIdx].push({ puntos: 0 });
         }
     });
     
-    // Eliminar evaluaciones de estudiantes eliminados
-    evaluacionesEstudiantes = evaluacionesEstudiantes.slice(0, estudiantes.length);
+    // Reemplazar el array original
+    evaluacionesEstudiantes = nuevoEvaluacionesEstudiantes;
     
     guardarEvaluacion();
-    renderEvaluacion();
 }
 
 // ===== FUNCIONES DE TAREAS =====
@@ -1842,20 +1809,29 @@ function cargarTareas() {
 }
 
 function sincronizarEstudiantesTareas() {
+    // Crear un nuevo array que mantenga el orden correcto
+    const nuevoTareasEstudiantes = [];
+    
+    // Agregar tareas para todos los estudiantes en el orden correcto
     estudiantes.forEach((estudiante, estIdx) => {
-        if (!tareasEstudiantes[estIdx]) {
-            tareasEstudiantes[estIdx] = [];
+        // Si ya existe una entrada para este estudiante, mantenerla
+        if (tareasEstudiantes[estIdx]) {
+            nuevoTareasEstudiantes[estIdx] = tareasEstudiantes[estIdx];
+        } else {
+            // Crear nueva entrada para el estudiante
+            nuevoTareasEstudiantes[estIdx] = [];
         }
         
-        while (tareasEstudiantes[estIdx].length < tareas.length) {
-            tareasEstudiantes[estIdx].push({ puntos: 0 });
+        // Asegurar que tenga tareas para todas las tareas configuradas
+        while (nuevoTareasEstudiantes[estIdx].length < tareas.length) {
+            nuevoTareasEstudiantes[estIdx].push({ puntos: 0 });
         }
     });
     
-    tareasEstudiantes = tareasEstudiantes.slice(0, estudiantes.length);
+    // Reemplazar el array original
+    tareasEstudiantes = nuevoTareasEstudiantes;
     
     guardarTareas();
-    renderTareas();
 }
 
 // Modificar la función inicializarAplicacion para incluir evaluación
@@ -2393,28 +2369,31 @@ function cargarTrabajoCotidiano() {
 }
 
 function sincronizarEstudiantesTrabajoCotidiano() {
-    // Asegurar que trabajoCotidianoEstudiantes existe
-    if (!trabajoCotidianoEstudiantes) {
-        trabajoCotidianoEstudiantes = [];
-    }
+    // Crear un nuevo array que mantenga el orden correcto
+    const nuevoTrabajoCotidianoEstudiantes = [];
     
+    // Agregar datos de trabajo cotidiano para todos los estudiantes en el orden correcto
     estudiantes.forEach((estudiante, estIdx) => {
-        if (!trabajoCotidianoEstudiantes[estIdx]) {
-            trabajoCotidianoEstudiantes[estIdx] = [];
+        // Si ya existe una entrada para este estudiante, mantenerla
+        if (trabajoCotidianoEstudiantes[estIdx]) {
+            nuevoTrabajoCotidianoEstudiantes[estIdx] = trabajoCotidianoEstudiantes[estIdx];
+        } else {
+            // Crear nueva entrada para el estudiante
+            nuevoTrabajoCotidianoEstudiantes[estIdx] = [];
         }
         
         // Asegurar que hay suficientes días para cada estudiante
-        while (trabajoCotidianoEstudiantes[estIdx].length < diasTrabajo.length) {
-            trabajoCotidianoEstudiantes[estIdx].push({ nota: null });
+        while (nuevoTrabajoCotidianoEstudiantes[estIdx].length < diasTrabajo.length) {
+            nuevoTrabajoCotidianoEstudiantes[estIdx].push({ nota: null });
         }
         
         // Truncar si hay más días de los necesarios
-        if (trabajoCotidianoEstudiantes[estIdx].length > diasTrabajo.length) {
-            trabajoCotidianoEstudiantes[estIdx] = trabajoCotidianoEstudiantes[estIdx].slice(0, diasTrabajo.length);
+        if (nuevoTrabajoCotidianoEstudiantes[estIdx].length > diasTrabajo.length) {
+            nuevoTrabajoCotidianoEstudiantes[estIdx] = nuevoTrabajoCotidianoEstudiantes[estIdx].slice(0, diasTrabajo.length);
         }
         
         // Validar y corregir datos existentes
-        trabajoCotidianoEstudiantes[estIdx].forEach((dia, diaIdx) => {
+        nuevoTrabajoCotidianoEstudiantes[estIdx].forEach((dia, diaIdx) => {
             if (dia && typeof dia === 'object') {
                 if (dia.nota !== null && dia.nota !== undefined) {
                     const parsedNota = parseFloat(dia.nota);
@@ -2425,13 +2404,13 @@ function sincronizarEstudiantesTrabajoCotidiano() {
                     }
                 }
             } else {
-                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+                nuevoTrabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
             }
         });
     });
     
-    // Asegurar que solo hay datos para estudiantes existentes
-    trabajoCotidianoEstudiantes = trabajoCotidianoEstudiantes.slice(0, estudiantes.length);
+    // Reemplazar el array original
+    trabajoCotidianoEstudiantes = nuevoTrabajoCotidianoEstudiantes;
     
     guardarTrabajoCotidiano();
 }
@@ -2727,20 +2706,29 @@ function cargarProyecto() {
 
 // Función para sincronizar estudiantes en proyecto
 function sincronizarEstudiantesProyecto() {
-    // Agregar proyectos faltantes para estudiantes nuevos
+    // Crear un nuevo array que mantenga el orden correcto
+    const nuevoProyectosEstudiantes = [];
+    
+    // Agregar proyectos para todos los estudiantes en el orden correcto
     estudiantes.forEach((estudiante, estIdx) => {
-        if (!proyectosEstudiantes[estIdx]) {
-            proyectosEstudiantes[estIdx] = [];
+        // Si ya existe una entrada para este estudiante, mantenerla
+        if (proyectosEstudiantes[estIdx]) {
+            nuevoProyectosEstudiantes[estIdx] = proyectosEstudiantes[estIdx];
+        } else {
+            // Crear nueva entrada para el estudiante
+            nuevoProyectosEstudiantes[estIdx] = [];
         }
         
         // Agregar evaluaciones faltantes
-        while (proyectosEstudiantes[estIdx].length < proyectos.length) {
-            proyectosEstudiantes[estIdx].push({ puntos: 0 });
+        while (nuevoProyectosEstudiantes[estIdx].length < proyectos.length) {
+            nuevoProyectosEstudiantes[estIdx].push({ puntos: 0 });
         }
     });
     
-    // Eliminar evaluaciones de estudiantes que ya no existen
-    proyectosEstudiantes.splice(estudiantes.length);
+    // Reemplazar el array original
+    proyectosEstudiantes = nuevoProyectosEstudiantes;
+    
+    guardarProyecto();
 }
 
 // ===== SECCIÓN PORTAFOLIO =====
@@ -2999,20 +2987,29 @@ function cargarPortafolio() {
 
 // Función para sincronizar estudiantes en portafolio
 function sincronizarEstudiantesPortafolio() {
-    // Agregar portafolios faltantes para estudiantes nuevos
+    // Crear un nuevo array que mantenga el orden correcto
+    const nuevoPortafoliosEstudiantes = [];
+    
+    // Agregar portafolios para todos los estudiantes en el orden correcto
     estudiantes.forEach((estudiante, estIdx) => {
-        if (!portafoliosEstudiantes[estIdx]) {
-            portafoliosEstudiantes[estIdx] = [];
+        // Si ya existe una entrada para este estudiante, mantenerla
+        if (portafoliosEstudiantes[estIdx]) {
+            nuevoPortafoliosEstudiantes[estIdx] = portafoliosEstudiantes[estIdx];
+        } else {
+            // Crear nueva entrada para el estudiante
+            nuevoPortafoliosEstudiantes[estIdx] = [];
         }
         
         // Agregar evaluaciones faltantes
-        while (portafoliosEstudiantes[estIdx].length < portafolios.length) {
-            portafoliosEstudiantes[estIdx].push({ puntos: 0 });
+        while (nuevoPortafoliosEstudiantes[estIdx].length < portafolios.length) {
+            nuevoPortafoliosEstudiantes[estIdx].push({ puntos: 0 });
         }
     });
     
-    // Eliminar evaluaciones de estudiantes que ya no existen
-    portafoliosEstudiantes.splice(estudiantes.length);
+    // Reemplazar el array original
+    portafoliosEstudiantes = nuevoPortafoliosEstudiantes;
+    
+    guardarPortafolio();
 }
 
 // ===== FUNCIONES DE NAVEGACIÓN =====
@@ -3231,3 +3228,30 @@ function mostrarResumenEvaluaciones() {
 
 // ===== INICIALIZACIÓN =====
 esperarDOMListo();
+
+// ===== FUNCIONES DE SINCRONIZACIÓN MEJORADAS =====
+function sincronizarTodasLasSecciones() {
+    // Sincronizar evaluaciones
+    sincronizarEstudiantesEvaluacion();
+    
+    // Sincronizar tareas
+    sincronizarEstudiantesTareas();
+    
+    // Sincronizar trabajo cotidiano
+    sincronizarEstudiantesTrabajoCotidiano();
+    
+    // Sincronizar proyectos
+    sincronizarEstudiantesProyecto();
+    
+    // Sincronizar portafolios
+    sincronizarEstudiantesPortafolio();
+    
+    // Renderizar todas las secciones para actualizar las listas
+    setTimeout(() => {
+        renderEvaluacion();
+        renderTareas();
+        renderTrabajoCotidiano();
+        renderProyecto();
+        renderPortafolio();
+    }, 100);
+}
