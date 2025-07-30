@@ -776,6 +776,13 @@ function agregarEstudiante() {
     sincronizarEstudiantesEvaluacion();
     sincronizarEstudiantesTareas();
     sincronizarEstudiantesTrabajoCotidiano();
+    
+    // Renderizar todas las secciones para actualizar las listas
+    setTimeout(() => {
+        renderEvaluacion();
+        renderTareas();
+        renderTrabajoCotidiano();
+    }, 100);
 }
 
 function agregarDia() {
@@ -834,6 +841,14 @@ function eliminarEstudiante(idx) {
         sincronizarEstudiantesEvaluacion();
         sincronizarEstudiantesTareas();
         sincronizarEstudiantesTrabajoCotidiano();
+        
+        // Renderizar todas las secciones para actualizar las listas
+        setTimeout(() => {
+            renderEvaluacion();
+            renderTareas();
+            renderTrabajoCotidiano();
+        }, 100);
+        
         mostrarAlerta('Estudiante eliminado', 'info');
     }
 }
@@ -875,6 +890,17 @@ function ordenarEstudiantesManual() {
     
     guardarDatos();
     renderAsistencia();
+    
+    // Sincronizar y renderizar todas las secciones
+    sincronizarEstudiantesEvaluacion();
+    sincronizarEstudiantesTareas();
+    sincronizarEstudiantesTrabajoCotidiano();
+    
+    setTimeout(() => {
+        renderEvaluacion();
+        renderTareas();
+        renderTrabajoCotidiano();
+    }, 100);
 }
 
 // ===== FUNCIONES DE PERSISTENCIA =====
@@ -988,6 +1014,18 @@ function cargarPlantilla(event) {
             limpiarEstudiantesVacios();
             guardarDatos();
             renderAsistencia();
+            
+            // Sincronizar y renderizar todas las secciones
+            sincronizarEstudiantesEvaluacion();
+            sincronizarEstudiantesTareas();
+            sincronizarEstudiantesTrabajoCotidiano();
+            
+            setTimeout(() => {
+                renderEvaluacion();
+                renderTareas();
+                renderTrabajoCotidiano();
+            }, 100);
+            
             mostrarAlerta('Datos importados y agregados correctamente', 'exito');
             
         } catch (error) {
