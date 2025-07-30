@@ -2283,7 +2283,7 @@ body.dark-mode .trabajo-cotidiano-table tbody tr:hover .editable {
 }
 
 /* Hacer que las celdas se expandan dinámicamente */
-td:has(.celda-asistencia-multiple) {
+td .celda-asistencia-multiple {
     min-width: 140px !important;
     max-width: 200px !important;
     transition: all 0.3s ease;

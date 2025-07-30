@@ -17,33 +17,24 @@ let dias = [
 // Valor de alerta temprana
 window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseInt(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
 
-console.log('🔧 VALOR INICIAL DE ALERTA:', window.valorExtra);
+// Debounce para actualizaciones
+let debounceTimer;
+function debounce(func, delay) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(func, delay);
+}
+
+
 
 // Detectar si estamos en Live Server
 function detectarLiveServer() {
     const esLiveServer = window.location.href.includes('127.0.0.1:5501') || 
                         window.location.href.includes('localhost:5501') ||
                         window.location.href.includes('live-server');
-    console.log('🌐 Detectado Live Server:', esLiveServer);
     return esLiveServer;
 }
 
-// Función temporal para probar alertas
-function probarAlertas() {
-    console.log('=== PRUEBA DE ALERTAS ===');
-    const inputAlerta = document.getElementById('alertaTempranaInput');
-    const valorActual = inputAlerta ? parseInt(inputAlerta.value) : 2;
-    console.log('Valor actual del input:', valorActual);
-    console.log('Valor en window.valorExtra:', window.valorExtra);
-    
-    // Probar con diferentes porcentajes
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(porcentaje => {
-        const diferencia = 10 - porcentaje;
-        const deberiaActivar = diferencia > valorActual;
-        console.log(`%Asistencia: ${porcentaje}, Diferencia: ${diferencia}, ¿Activa?: ${deberiaActivar}`);
-    });
-    console.log('========================');
-}
+
 
 // Plantilla de ejemplo
 const plantillaEjemplo = [
@@ -56,11 +47,9 @@ const plantillaEjemplo = [
 function inicializarAplicacion() {
     // Evitar inicializaciones múltiples
     if (window.aplicacionInicializada) {
-        console.log('⚠️ Aplicación ya inicializada, saltando...');
         return;
     }
     
-    console.log('🚀 Iniciando aplicación...');
     window.aplicacionInicializada = true;
     
     cargarDatosGuardados();
@@ -71,7 +60,6 @@ function inicializarAplicacion() {
     // Esperar a que el DOM esté completamente cargado antes de sincronizar alertas
     setTimeout(() => {
         sincronizarInputAlerta();
-        probarAlertas();
     }, 100);
     
     // Configurar hover de filas después de que se renderice la tabla
@@ -82,7 +70,6 @@ function inicializarAplicacion() {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 if (mutation.target === document.body) {
-                    console.log('Modo oscuro cambiado, re-configurando hover');
                     // Re-configurar hover después del cambio de modo
                     setTimeout(configurarHoverFilas, 200);
                 }
@@ -94,22 +81,15 @@ function inicializarAplicacion() {
         attributes: true,
         attributeFilter: ['class']
     });
-    
-    console.log('✅ Aplicación iniciada correctamente');
 }
 
 // Función para verificar que el DOM esté listo
 function esperarDOMListo() {
-    console.log('🔄 Estado del DOM:', document.readyState);
-    console.log('🌐 URL actual:', window.location.href);
-    
     const esLiveServer = detectarLiveServer();
     
     if (document.readyState === 'loading') {
-        console.log('⏳ DOM cargando, esperando DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', inicializarAplicacion);
     } else {
-        console.log('✅ DOM ya está listo, inicializando...');
         inicializarAplicacion();
     }
     
@@ -117,7 +97,6 @@ function esperarDOMListo() {
     const tiempoFallback = esLiveServer ? 3000 : 2000;
     setTimeout(() => {
         if (!window.aplicacionInicializada) {
-            console.log(`⚠️ Fallback ${esLiveServer ? 'para Live Server' : 'general'} - inicializando...`);
             window.aplicacionInicializada = true;
             inicializarAplicacion();
         }
@@ -143,16 +122,8 @@ function cargarDatosGuardados() {
                 }
             }
             sincronizarAsistenciaDias();
-            
-            // Debug: mostrar datos cargados
-            console.log('=== DATOS CARGADOS ===');
-            console.log('Días cargados:', dias);
-            console.log('Total lecciones cargadas:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
-            console.log('=====================');
-            
             mostrarAlerta('Datos cargados correctamente', 'exito');
         } catch (error) {
-            console.error('Error al cargar datos:', error);
             estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
         }
     } else {
@@ -162,9 +133,27 @@ function cargarDatosGuardados() {
     // Cargar datos de trabajo cotidiano
     cargarTrabajoCotidiano();
     
+    // Sincronizar estudiantes de trabajo cotidiano
+    sincronizarEstudiantesTrabajoCotidiano();
+    
+    // Verificar integridad de datos después de cargar
+    setTimeout(() => {
+        verificarIntegridadDatosTrabajoCotidiano();
+    }, 100);
+    
     // Sincronizar input de alerta temprana después de cargar datos
     sincronizarInputAlerta();
     renderAsistencia();
+    
+    // Renderizar trabajo cotidiano después de sincronizar
+    setTimeout(() => {
+        renderTrabajoCotidiano();
+        // Forzar una segunda sincronización después del render
+        setTimeout(() => {
+            sincronizarEstudiantesTrabajoCotidiano();
+            renderTrabajoCotidiano();
+        }, 200);
+    }, 100);
 }
 
 function sincronizarAsistenciaDias() {
@@ -222,14 +211,10 @@ function sincronizarInputAlerta() {
     if (!input) {
         const esLiveServer = detectarLiveServer();
         const tiempoReintento = esLiveServer ? 100 : 50;
-        console.log(`❌ No se encontró el input de alerta temprana - Reintentando en ${tiempoReintento}ms...`);
         // Reintentar si el input no está disponible
         setTimeout(sincronizarInputAlerta, tiempoReintento);
         return;
     }
-    
-    console.log('✅ Input de alerta temprana encontrado en:', input);
-    console.log('📍 Ubicación del input:', input.offsetParent ? 'visible' : 'no visible');
     
     // Configurar el input para aceptar valores enteros de 0 a 10
     input.min = 0;
@@ -241,7 +226,6 @@ function sincronizarInputAlerta() {
     const valorInicial = valorGuardado ? parseInt(valorGuardado) : 2;
     input.value = valorInicial;
     window.valorExtra = valorInicial;
-    console.log('🔧 Valor inicial establecido:', valorInicial, '(desde localStorage:', valorGuardado, ')');
     
     // Validar y actualizar el valor
     input.oninput = function() {
@@ -251,7 +235,6 @@ function sincronizarInputAlerta() {
         window.valorExtra = val;
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
-        console.log('🔄 Alerta temprana configurada en:', val, '(escala 0-10, entero)');
         renderAsistencia(); // Re-renderizar para actualizar alertas
     };
     
@@ -263,43 +246,22 @@ function sincronizarInputAlerta() {
         window.valorExtra = val;
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
-        console.log('🔄 Alerta temprana configurada (onchange):', val);
         renderAsistencia();
     };
     
     // Verificar que el input esté realmente configurado
     setTimeout(() => {
         if (input.value !== valorInicial.toString()) {
-            console.log('⚠️ Input no se configuró correctamente, reintentando...');
             input.value = valorInicial;
             window.valorExtra = valorInicial;
         }
     }, 100);
 }
 
-// ===== FUNCIÓN DE VERIFICACIÓN DE DATOS =====
-function verificarDatosLecciones() {
-    console.log('=== VERIFICACIÓN DE DATOS LECCIONES ===');
-    console.log('Array de días:', dias);
-    console.log('Días individuales:');
-    dias.forEach((dia, index) => {
-        console.log(`  Día ${index + 1} (${dia.nombre}): ${dia.lecciones} lecciones (tipo: ${typeof dia.lecciones})`);
-    });
-    
-    let sumaManual = 0;
-    dias.forEach(dia => {
-        sumaManual += Number(dia.lecciones) || 0;
-    });
-    console.log('Suma manual de lecciones:', sumaManual);
-    
-    let sumaReduce = dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0);
-    console.log('Suma con reduce:', sumaReduce);
-    console.log('=====================================');
-}
+
 
 // ===== FUNCIONES DE RENDERIZADO =====
 function renderAsistencia() {
-    verificarDatosLecciones();
     
     if (estudiantes.length === 0) {
         document.getElementById('app').innerHTML = renderTablaVacia();
@@ -573,16 +535,7 @@ function calcularTotalesEstudiante(estudiante) {
     let totalAusencias = totalAusente + (totalTarde * 0.5) + totalEscapada;
     let totalPresente = totalLecciones - totalAusencias;
     
-    // Debug: mostrar información en consola
-    console.log('=== DEBUG CALCULO TOTALES ===');
-    console.log('Estudiante:', estudiante.nombre || 'Sin nombre');
-    console.log('Días:', dias.map(d => ({ nombre: d.nombre, lecciones: d.lecciones })));
-    console.log('Total lecciones:', totalLecciones);
-    console.log('Ausente:', totalAusente, 'Tardía:', totalTarde, 'Escapada:', totalEscapada, 'Justificada:', totalJustificada);
-    console.log('Total ausencias (sin justificadas):', totalAusencias);
-    console.log('Total presente:', totalPresente);
-    console.log('Fórmula: Presentes =', totalLecciones, '-', totalAusencias, '=', totalPresente);
-    console.log('=============================');
+
     
     return {
         ausente: totalAusente,
@@ -635,27 +588,12 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     } else {
         // Fallback: usar window.valorExtra si el input no está disponible
         valorAlerta = window.valorExtra || 2;
-        console.log('⚠️ Input no encontrado, usando valor global:', valorAlerta);
     }
     
     // Calcular la diferencia: 10 - %asistencia
     let diferencia = 10 - porcentajeAsistencia;
     
-    // Debug: mostrar valores para comparación
-    console.log('=== DEBUG ALERTA TEMPRANA ===');
-    console.log('Estudiante:', estudiante.nombre || 'Sin nombre');
-    console.log('Porcentaje asistencia (escala 0-10):', porcentajeAsistencia, 'tipo:', typeof porcentajeAsistencia);
-    console.log('Valor alerta configurado (escala 0-10):', valorAlerta, 'tipo:', typeof valorAlerta);
-    console.log('Diferencia (10 - %asistencia):', diferencia);
-    console.log('¿Debería mostrar alerta?', diferencia > valorAlerta);
-    console.log('Input encontrado:', !!inputAlerta);
-    console.log('Valor global window.valorExtra:', window.valorExtra);
-    console.log('Datos del estudiante:', {
-        cedula: estudiante.cedula && estudiante.cedula.trim() !== '',
-        nombre: estudiante.nombre && estudiante.nombre.trim() !== '',
-        apellido1: estudiante.apellido1 && estudiante.apellido1.trim() !== ''
-    });
-    console.log('=============================');
+
     
     // Mostrar alerta temprana si la diferencia es mayor al valor configurado
     // Se activa cuando (10 - %asistencia) > valor_alerta
@@ -664,21 +602,10 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
         estudiante.nombre && estudiante.nombre.trim() !== '' &&
         estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
         accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
-        console.log('✅ ALERTA ACTIVADA para estudiante:', estudiante.nombre);
+        // Alerta activada
     } else {
-        console.log('❌ NO se activa alerta para estudiante:', estudiante.nombre);
-        if (diferencia <= valorAlerta) {
-            console.log('   - Razón: Diferencia <= Valor alerta');
-        }
-        if (!estudiante.cedula || !estudiante.cedula.trim()) {
-            console.log('   - Razón: Sin cédula');
-        }
-        if (!estudiante.nombre || !estudiante.nombre.trim()) {
-            console.log('   - Razón: Sin nombre');
-        }
-        if (!estudiante.apellido1 || !estudiante.apellido1.trim()) {
-            console.log('   - Razón: Sin primer apellido');
-        }
+        // No se activa alerta
+
     }
     
     return accionHtml;
@@ -803,18 +730,10 @@ function actualizarLeccionesDia(idx, valor) {
     const valorAnterior = Number(dias[idx].lecciones) || 0;
     dias[idx].lecciones = Number(valor);
     
-    console.log('Día actualizado:', dias[idx]);
-    console.log('Array completo después de actualizar:', dias);
-    
-    // Debug: mostrar actualización de lecciones
-    console.log('=== ACTUALIZACIÓN LECCIONES ===');
-    console.log(`Día ${idx + 1} (${dias[idx].nombre}): ${dias[idx].lecciones} lecciones`);
-    console.log('Total lecciones actual:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
-    console.log('================================');
+
     
     // Actualizar automáticamente las cantidades de ausencias en el primer selector
     if (valorAnterior !== Number(valor)) {
-        console.log('=== ACTUALIZANDO AUSENCIAS AUTOMÁTICAMENTE ===');
         let contadorActualizados = 0;
         
         estudiantes.forEach((estudiante, estIdx) => {
@@ -825,17 +744,11 @@ function actualizarLeccionesDia(idx, valor) {
                 
                 // Solo actualizar si es "Ausente" o "Justificada" en el primer selector
                 if (primeraAusencia.tipo === 'Ausente' || primeraAusencia.tipo === 'Justificada') {
-                    const cantidadAnterior = primeraAusencia.cantidad;
                     primeraAusencia.cantidad = Number(valor);
                     contadorActualizados++;
-                    
-                    console.log(`Estudiante ${estIdx + 1}: ${primeraAusencia.tipo} actualizada de ${cantidadAnterior} a ${primeraAusencia.cantidad} lecciones`);
                 }
             }
         });
-        
-        console.log(`Total de ausencias actualizadas: ${contadorActualizados}`);
-        console.log('==============================================');
     }
     
     guardarDatos();
@@ -966,11 +879,7 @@ function ordenarEstudiantesManual() {
 
 // ===== FUNCIONES DE PERSISTENCIA =====
 function guardarDatos() {
-    // Debug: mostrar datos antes de guardar
-    console.log('=== GUARDANDO DATOS ===');
-    console.log('Días a guardar:', dias);
-    console.log('Total lecciones a guardar:', dias.reduce((acc, dia) => acc + (Number(dia.lecciones) || 0), 0));
-    console.log('=======================');
+
     
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ estudiantes, dias }));
 }
@@ -1147,6 +1056,32 @@ function configurarEventos() {
         configurarEscalaMaxima();
         renderTrabajoCotidiano();
     }, 200);
+    
+    // Eventos para preservar datos antes de cerrar/recargar
+    window.addEventListener('beforeunload', function() {
+        preservarDatosInputs();
+        guardarTrabajoCotidiano();
+    });
+    
+    // Eventos para preservar datos en intervalos regulares
+    setInterval(function() {
+        preservarDatosInputs();
+        guardarTrabajoCotidiano();
+    }, 2000); // Guardar cada 2 segundos
+    
+    // Eventos para preservar datos cuando se pierde el foco
+    document.addEventListener('blur', function() {
+        preservarDatosInputs();
+        guardarTrabajoCotidiano();
+    }, true);
+    
+    // Eventos para preservar datos cuando se hace clic en cualquier lugar
+    document.addEventListener('click', function() {
+        setTimeout(() => {
+            preservarDatosInputs();
+            guardarTrabajoCotidiano();
+        }, 100);
+    });
 }
 
 // ===== FUNCIONES DE BORDE ROJO UNIFORME EN TODA LA FILA =====
@@ -1160,7 +1095,6 @@ function agregarBordeRojoFila(input) {
     const fila = input.closest('tr');
     if (fila) {
         fila.classList.add('fila-focus-activa');
-        console.log('Borde rojo uniforme aplicado a toda la fila via CSS');
     }
 }
 
@@ -1169,7 +1103,6 @@ function quitarBordeRojoFila(input) {
     document.querySelectorAll('tr').forEach(tr => {
         tr.classList.remove('fila-focus-activa');
     });
-    console.log('Borde rojo uniforme removido');
 }
 
 // ===== MANEJO DE HOVER CON JAVASCRIPT =====
@@ -1182,12 +1115,10 @@ function configurarHoverFilas() {
     });
     
     const filas = document.querySelectorAll('tbody tr');
-    console.log(`Configurando hover para ${filas.length} filas`);
     
     filas.forEach(fila => {
         // Crear handlers únicos para cada fila
         const mouseenterHandler = function() {
-            console.log('Mouse enter en fila');
             // Limpiar bordes anteriores
             document.querySelectorAll('tr').forEach(tr => {
                 tr.classList.remove('fila-focus-activa');
@@ -1197,7 +1128,6 @@ function configurarHoverFilas() {
         };
         
         const mouseleaveHandler = function() {
-            console.log('Mouse leave en fila');
             // Solo quitar si no hay focus en el input de nombre
             const inputNombre = this.querySelector('td.nombre input');
             if (!inputNombre || document.activeElement !== inputNombre) {
@@ -1719,8 +1649,6 @@ function eliminarTarea(tareaIdx) {
     }
 }
 
-
-
 function exportarTareas() {
     const wb = XLSX.utils.book_new();
     
@@ -1840,14 +1768,8 @@ inicializarAplicacion = function() {
 function renderTrabajoCotidiano() {
     const container = document.getElementById('trabajo-cotidiano-app');
     if (!container) {
-        console.log('Container no encontrado');
         return;
     }
-    
-    console.log('Renderizando trabajo cotidiano...');
-    console.log('Días trabajo:', diasTrabajo);
-    console.log('Estudiantes:', estudiantes);
-    console.log('Trabajo cotidiano estudiantes:', trabajoCotidianoEstudiantes);
     
     let html = '<table class="trabajo-cotidiano-table">';
     
@@ -1885,13 +1807,8 @@ function renderTrabajoCotidiano() {
     
     if (diasTrabajo.length > 0) {
         diasTrabajo.forEach((dia, idx) => {
-            console.log(`PRUEBA: Renderizando día ${idx} con fecha: ${dia.fecha}`);
-            console.log(`PRUEBA: Tipo de fecha: ${typeof dia.fecha}`);
-            console.log(`PRUEBA: Fecha válida: ${dia.fecha ? 'SÍ' : 'NO'}`);
-            
-            // PRUEBA: Forzar formato de fecha
+            // Forzar formato de fecha
             const fechaFormateada = dia.fecha || new Date().toISOString().split('T')[0];
-            console.log(`PRUEBA: Fecha formateada: ${fechaFormateada}`);
             
             html += `<td class="editable" style="position:relative;">
                 <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:30px;width:150px;font-size:1.1em;">
@@ -1902,7 +1819,7 @@ function renderTrabajoCotidiano() {
         html += '<td class="editable"><input type="date" value="" disabled title="Agregue un día primero"></td>';
     }
     
-    html += `<td class="calculated">${valorTotalTrabajo}</td>`;
+    html += `<td class="calculated">${valorTotalTrabajo}.0%</td>`;
     html += '</tr>';
     
     // Filas de estudiantes
@@ -1914,18 +1831,21 @@ function renderTrabajoCotidiano() {
         
         if (diasTrabajo.length > 0) {
             diasTrabajo.forEach((dia, diaIdx) => {
-                // Obtener nota directamente
+                // Obtener nota directamente con validación robusta
                 let nota = null;
-                if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+                if (trabajoCotidianoEstudiantes && 
+                    trabajoCotidianoEstudiantes[estIdx] && 
+                    trabajoCotidianoEstudiantes[estIdx][diaIdx] && 
+                    trabajoCotidianoEstudiantes[estIdx][diaIdx].nota !== null && 
+                    trabajoCotidianoEstudiantes[estIdx][diaIdx].nota !== undefined) {
                     nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
                 }
                 
-                console.log(`Estudiante ${estIdx}, Día ${diaIdx}, Nota:`, nota);
-                
                 // Crear input con ID único
                 const inputId = `nota_${estIdx}_${diaIdx}`;
+                const inputValue = nota !== null && nota !== undefined ? nota : '';
                 html += `<td class="editable">
-                    <input id="${inputId}" type="number" value="${nota || ''}" min="0" max="${escalaMaxima}" step="0.1" 
+                    <input id="${inputId}" type="number" value="${inputValue}" min="0" max="${escalaMaxima}" step="0.1" 
                            title="Nota del estudiante (0-${escalaMaxima})" 
                            style="width: 80px; padding: 8px; border: 2px solid #ff9800; border-radius: 6px; text-align: center; background: #fff; color: #333;">
                 </td>`;
@@ -1936,22 +1856,19 @@ function renderTrabajoCotidiano() {
         
         // Calcular porcentaje final
         let totalNotas = 0;
-        let diasConNota = 0;
         
         diasTrabajo.forEach((dia, diaIdx) => {
             if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
                 const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
-                if (nota !== null && nota !== undefined && nota >= 0) {
+                if (nota !== null && nota !== undefined) {
                     totalNotas += nota;
-                    diasConNota++;
                 }
             }
         });
         
-        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
-        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+        const porcentajeFinal = diasTrabajo.length > 0 ? (totalNotas / (diasTrabajo.length * escalaMaxima)) * valorTotalTrabajo : 0;
         
-        console.log(`Estudiante ${estIdx}: totalNotas=${totalNotas}, diasConNota=${diasConNota}, promedio=${promedio}, porcentajeFinal=${porcentajeFinal}`);
+
         
         html += `<td class="calculated">${porcentajeFinal.toFixed(1) + '%'}</td>`;
         html += '</tr>';
@@ -1960,13 +1877,11 @@ function renderTrabajoCotidiano() {
     html += '</tbody></table>';
     container.innerHTML = html;
     
-    console.log('Tabla renderizada');
+
     
     // Agregar eventos a los inputs después del renderizado
     setTimeout(() => {
-        console.log('Agregando eventos a inputs...');
         const inputs = container.querySelectorAll('input[type="number"]');
-        console.log('Inputs encontrados para eventos:', inputs.length);
         
         inputs.forEach((input, index) => {
             const id = input.id;
@@ -1975,52 +1890,69 @@ function renderTrabajoCotidiano() {
                 const estIdx = parseInt(parts[1]);
                 const diaIdx = parseInt(parts[2]);
                 
-                console.log(`Configurando evento para input ${id}: estudiante ${estIdx}, día ${diaIdx}`);
+                // Remover eventos anteriores para evitar duplicados
+                input.removeEventListener('input', input._inputHandler);
+                input.removeEventListener('change', input._changeHandler);
+                input.removeEventListener('blur', input._blurHandler);
                 
-                input.addEventListener('input', function() {
-                    console.log(`Evento input disparado para ${id}:`, this.value);
-                    actualizarNotaTrabajo(estIdx, diaIdx, this.value);
-                });
+                // Crear nuevos handlers
+                input._inputHandler = function() {
+                    debounce(() => actualizarNotaTrabajo(estIdx, diaIdx, this.value), 300);
+                };
                 
-                input.addEventListener('change', function() {
-                    console.log(`Evento change disparado para ${id}:`, this.value);
+                input._changeHandler = function() {
                     actualizarNotaTrabajo(estIdx, diaIdx, this.value);
-                });
+                };
+                
+                input._blurHandler = function() {
+                    actualizarNotaTrabajo(estIdx, diaIdx, this.value);
+                    preservarDatosInputs();
+                    guardarTrabajoCotidiano();
+                };
+                
+                input.addEventListener('input', input._inputHandler);
+                input.addEventListener('change', input._changeHandler);
+                input.addEventListener('blur', input._blurHandler);
             }
         });
         
-        console.log('Eventos agregados correctamente');
-        
         // Forzar actualización de todos los cálculos al cargar
-        console.log('Forzando actualización inicial de cálculos...');
         actualizarCalculosTrabajoCotidiano();
         
-        // Forzar actualización de fechas después del render
+        // Restaurar valores de inputs después del render
         setTimeout(() => {
-            console.log('PRUEBA: Iniciando forzado de fechas...');
-            const dateInputs = container.querySelectorAll('input[type="date"]');
-            console.log(`PRUEBA: Encontrados ${dateInputs.length} inputs de fecha`);
-            
-            dateInputs.forEach((input, idx) => {
-                console.log(`PRUEBA: Procesando input ${idx}:`, input);
-                console.log(`PRUEBA: Valor actual del input: "${input.value}"`);
-                
-                if (diasTrabajo[idx] && diasTrabajo[idx].fecha) {
-                    const fechaAplicar = diasTrabajo[idx].fecha;
-                    console.log(`PRUEBA: Aplicando fecha: ${fechaAplicar}`);
-                    
-                    input.value = fechaAplicar;
-                    input.setAttribute('value', fechaAplicar);
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                    
-                    console.log(`PRUEBA: Después de aplicar - valor del input: "${input.value}"`);
-                } else {
-                    console.log(`PRUEBA: No hay fecha para día ${idx}`);
+            // Restaurar valores de inputs numéricos
+            const numberInputs = container.querySelectorAll('input[type="number"]');
+            numberInputs.forEach((input) => {
+                const id = input.id;
+                if (id && id.startsWith('nota_')) {
+                    const parts = id.split('_');
+                    if (parts.length === 3) {
+                        const estIdx = parseInt(parts[1]);
+                        const diaIdx = parseInt(parts[2]);
+                        
+                        if (trabajoCotidianoEstudiantes && 
+                            trabajoCotidianoEstudiantes[estIdx] && 
+                            trabajoCotidianoEstudiantes[estIdx][diaIdx] && 
+                            trabajoCotidianoEstudiantes[estIdx][diaIdx].nota !== null && 
+                            trabajoCotidianoEstudiantes[estIdx][diaIdx].nota !== undefined) {
+                            input.value = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
+                        }
+                    }
                 }
             });
-        }, 300);
-    }, 100);
+            
+            // Forzar actualización de fechas después del render
+            const dateInputs = container.querySelectorAll('input[type="date"]');
+            dateInputs.forEach((input, idx) => {
+                if (diasTrabajo[idx] && diasTrabajo[idx].fecha) {
+                    const fechaAplicar = diasTrabajo[idx].fecha;
+                    input.value = fechaAplicar;
+                    input.setAttribute('value', fechaAplicar);
+                }
+            });
+        }, 100);
+    }, 50);
 }
 
 function obtenerNotaTrabajo(estIdx, diaIdx) {
@@ -2042,49 +1974,43 @@ function actualizarFechaTrabajo(diaIdx, fecha) {
 }
 
 function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
-    console.log('=== ACTUALIZAR NOTA TRABAJO ===');
-    console.log('Parámetros:', estIdx, diaIdx, valor);
-    console.log('Tipo de valor:', typeof valor);
-    
-    const nota = parseFloat(valor) || null;
-    console.log('Nota parseada:', nota);
+    // Mejorar el parsing para manejar valores vacíos y ceros correctamente
+    let nota = null;
+    if (valor !== '' && valor !== null && valor !== undefined) {
+        const parsedValue = parseFloat(valor);
+        if (!isNaN(parsedValue)) {
+            nota = parsedValue;
+        }
+    }
     
     // Asegurar que existe la estructura de datos
     if (!trabajoCotidianoEstudiantes[estIdx]) {
         trabajoCotidianoEstudiantes[estIdx] = [];
-        console.log('Creado array para estudiante', estIdx);
     }
     if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
         trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
-        console.log('Creado objeto para día', diaIdx);
     }
     
     // Guardar la nota
     trabajoCotidianoEstudiantes[estIdx][diaIdx].nota = nota;
-    console.log('Nota guardada:', trabajoCotidianoEstudiantes[estIdx][diaIdx].nota);
     
     // Actualizar solo los cálculos sin re-renderizar toda la tabla
-    console.log('Llamando a actualizarCalculosTrabajoCotidiano...');
     actualizarCalculosTrabajoCotidiano();
     
     guardarTrabajoCotidiano();
 }
 
 function preservarDatosInputs() {
-    console.log('Preservando datos de inputs...');
     const container = document.getElementById('trabajo-cotidiano-app');
     if (!container) {
-        console.log('Container no encontrado para preservar datos');
         return;
     }
     
     const inputs = container.querySelectorAll('input[type="number"]');
-    console.log(`Encontrados ${inputs.length} inputs para preservar`);
     
     inputs.forEach((input) => {
         const id = input.id;
         if (!id) {
-            console.log('Input sin ID, saltando...');
             return;
         }
         
@@ -2092,90 +2018,68 @@ function preservarDatosInputs() {
         if (parts.length === 3) {
             const estIdx = parseInt(parts[1]);
             const diaIdx = parseInt(parts[2]);
-            const valor = parseFloat(input.value) || null;
             
-            console.log(`Procesando input ${id}: estudiante ${estIdx}, día ${diaIdx}, valor ${valor}`);
+            // Mejorar el parsing para manejar valores vacíos y ceros correctamente
+            let valor = null;
+            if (input.value !== '' && input.value !== null && input.value !== undefined) {
+                const parsedValue = parseFloat(input.value);
+                if (!isNaN(parsedValue)) {
+                    valor = parsedValue;
+                }
+            }
             
             // Asegurar que existe la estructura de datos
             if (!trabajoCotidianoEstudiantes[estIdx]) {
                 trabajoCotidianoEstudiantes[estIdx] = [];
-                console.log(`Creado array para estudiante ${estIdx}`);
             }
             if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
                 trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
-                console.log(`Creado objeto para día ${diaIdx}`);
             }
             
             // Guardar el valor del input
             trabajoCotidianoEstudiantes[estIdx][diaIdx].nota = valor;
-            console.log(`Preservado: estudiante ${estIdx}, día ${diaIdx}, valor ${valor}`);
-        } else {
-            console.log(`ID inválido: ${id}, partes:`, parts);
         }
     });
     
     guardarTrabajoCotidiano();
-    console.log('Datos preservados y guardados');
 }
 
 function actualizarCalculosTrabajoCotidiano() {
-    console.log('=== ACTUALIZANDO CÁLCULOS ===');
-    
     estudiantes.forEach((estudiante, estIdx) => {
         if (!estudiante.nombre && !estudiante.apellido1) return;
         
         let totalNotas = 0;
-        let diasConNota = 0;
-        
-        console.log(`Calculando para estudiante ${estIdx}:`);
         
         diasTrabajo.forEach((dia, diaIdx) => {
             if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
                 const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
-                console.log(`  Día ${diaIdx}: nota = ${nota}`);
-                if (nota !== null && nota !== undefined && nota >= 0) {
+                if (nota !== null && nota !== undefined) {
                     totalNotas += nota;
-                    diasConNota++;
                 }
             }
         });
         
-        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
-        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
-        
-        console.log(`  Total notas: ${totalNotas}, Días con nota: ${diasConNota}`);
-        console.log(`  Promedio: ${promedio}, Porcentaje final: ${porcentajeFinal}`);
+        const porcentajeFinal = diasTrabajo.length > 0 ? (totalNotas / (diasTrabajo.length * escalaMaxima)) * valorTotalTrabajo : 0;
         
         // Buscar la fila del estudiante
         const container = document.getElementById('trabajo-cotidiano-app');
         if (!container) {
-            console.log('  Container no encontrado');
             return;
         }
         
         const rows = container.querySelectorAll('tbody tr');
         const studentRow = rows[estIdx + 1]; // +1 por la fila de configuración
         
-        console.log(`  Buscando fila para estudiante ${estIdx}:`);
-        console.log(`  Total filas en tbody: ${rows.length}`);
-        console.log(`  Índice de fila buscada: ${estIdx + 1}`);
-        
         if (studentRow) {
             const cells = studentRow.querySelectorAll('td');
-            console.log(`  Celdas encontradas: ${cells.length}`);
             
-            // La última celda es el % Final (no hay columna promedio)
+            // La última celda es el % Final
             const porcentajeCell = cells[cells.length - 1];
             
             if (porcentajeCell) {
                 const valorPorcentaje = porcentajeFinal.toFixed(1) + '%';
                 porcentajeCell.textContent = valorPorcentaje;
-                console.log(`  Porcentaje actualizado en celda: ${valorPorcentaje}`);
-            } else {
-                console.log(`  No se encontró celda de porcentaje`);
             }
-        } else {
-            console.log(`  No se encontró la fila del estudiante ${estIdx}`);
         }
     });
 }
@@ -2197,12 +2101,8 @@ function agregarDiaTrabajo() {
         fecha: fechaActual
     });
     
-    estudiantes.forEach((estudiante, estIdx) => {
-        if (!trabajoCotidianoEstudiantes[estIdx]) {
-            trabajoCotidianoEstudiantes[estIdx] = [];
-        }
-        trabajoCotidianoEstudiantes[estIdx].push({ nota: null });
-    });
+    // Sincronizar estudiantes para el nuevo día
+    sincronizarEstudiantesTrabajoCotidiano();
     
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
@@ -2216,12 +2116,8 @@ function eliminarDiaTrabajo(diaIdx) {
     // Eliminar el día de la lista
     diasTrabajo.splice(diaIdx, 1);
     
-    // Eliminar las notas de todos los estudiantes para ese día
-    estudiantes.forEach((estudiante, estIdx) => {
-        if (trabajoCotidianoEstudiantes[estIdx]) {
-            trabajoCotidianoEstudiantes[estIdx].splice(diaIdx, 1);
-        }
-    });
+    // Sincronizar estudiantes después de eliminar el día
+    sincronizarEstudiantesTrabajoCotidiano();
     
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
@@ -2233,7 +2129,6 @@ function configurarEscalaMaxima() {
     if (input) {
         input.value = escalaMaxima;
         input.onchange = function() {
-            console.log('Escala cambiada de', escalaMaxima, 'a', this.value);
             // Preservar datos antes de cambiar
             preservarDatosInputs();
             escalaMaxima = parseInt(this.value) || 3;
@@ -2247,7 +2142,6 @@ function configurarEscalaMaxima() {
     if (inputValorTotal) {
         inputValorTotal.value = valorTotalTrabajo;
         inputValorTotal.onchange = function() {
-            console.log('Valor total cambiado de', valorTotalTrabajo, 'a', this.value);
             // Preservar datos antes de cambiar
             preservarDatosInputs();
             valorTotalTrabajo = parseInt(this.value) || 35;
@@ -2296,7 +2190,6 @@ function exportarTrabajoCotidiano() {
         
         const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
         let totalNotas = 0;
-        let diasConNota = 0;
         
         diasTrabajo.forEach((dia, diaIdx) => {
             const datosEstudiante = obtenerNotaTrabajo(estIdx, diaIdx);
@@ -2304,14 +2197,12 @@ function exportarTrabajoCotidiano() {
             
             if (nota !== null && nota !== undefined) {
                 totalNotas += nota;
-                diasConNota++;
             }
             
             row.push(dia.fecha);
         });
         
-        const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
-        const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
+        const porcentajeFinal = diasTrabajo.length > 0 ? (totalNotas / (diasTrabajo.length * escalaMaxima)) * valorTotalTrabajo : 0;
         row.push(porcentajeFinal.toFixed(1) + '%');
         datos.push(row);
     });
@@ -2341,175 +2232,108 @@ function cargarTrabajoCotidiano() {
             diasTrabajo = parsed.diasTrabajo || [];
             trabajoCotidianoEstudiantes = parsed.trabajoCotidianoEstudiantes || [];
             escalaMaxima = parsed.escalaMaxima || 3;
-            valorTotalTrabajo = parsed.valorTotalTrabajo || 35;
+            valorTotalTrabajo = parsed.valorTotalTrabajo || 30;
+            
+            // Asegurar que los datos están en el formato correcto
+            if (trabajoCotidianoEstudiantes && Array.isArray(trabajoCotidianoEstudiantes)) {
+                trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+                    if (Array.isArray(estudiante)) {
+                        estudiante.forEach((dia, diaIdx) => {
+                            if (dia && typeof dia === 'object') {
+                                // Asegurar que la nota sea un número o null
+                                if (dia.nota !== null && dia.nota !== undefined) {
+                                    const parsedNota = parseFloat(dia.nota);
+                                    dia.nota = isNaN(parsedNota) ? null : parsedNota;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
         } catch (error) {
-            console.error('Error al cargar trabajo cotidiano:', error);
+            // Si hay error, inicializar con valores por defecto
+            diasTrabajo = [];
+            trabajoCotidianoEstudiantes = [];
+            escalaMaxima = 3;
+            valorTotalTrabajo = 30;
         }
     }
 }
 
 function sincronizarEstudiantesTrabajoCotidiano() {
+    // Asegurar que trabajoCotidianoEstudiantes existe
+    if (!trabajoCotidianoEstudiantes) {
+        trabajoCotidianoEstudiantes = [];
+    }
+    
     estudiantes.forEach((estudiante, estIdx) => {
         if (!trabajoCotidianoEstudiantes[estIdx]) {
             trabajoCotidianoEstudiantes[estIdx] = [];
         }
         
+        // Asegurar que hay suficientes días para cada estudiante
         while (trabajoCotidianoEstudiantes[estIdx].length < diasTrabajo.length) {
             trabajoCotidianoEstudiantes[estIdx].push({ nota: null });
         }
+        
+        // Truncar si hay más días de los necesarios
+        if (trabajoCotidianoEstudiantes[estIdx].length > diasTrabajo.length) {
+            trabajoCotidianoEstudiantes[estIdx] = trabajoCotidianoEstudiantes[estIdx].slice(0, diasTrabajo.length);
+        }
+        
+        // Validar y corregir datos existentes
+        trabajoCotidianoEstudiantes[estIdx].forEach((dia, diaIdx) => {
+            if (dia && typeof dia === 'object') {
+                if (dia.nota !== null && dia.nota !== undefined) {
+                    const parsedNota = parseFloat(dia.nota);
+                    if (isNaN(parsedNota)) {
+                        dia.nota = null;
+                    } else {
+                        dia.nota = parsedNota;
+                    }
+                }
+            } else {
+                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+            }
+        });
     });
     
+    // Asegurar que solo hay datos para estudiantes existentes
     trabajoCotidianoEstudiantes = trabajoCotidianoEstudiantes.slice(0, estudiantes.length);
     
     guardarTrabajoCotidiano();
-    renderTrabajoCotidiano();
 }
 
-// Función de prueba para verificar que los inputs funcionan
-function probarInputsTrabajoCotidiano() {
-    console.log('=== PRUEBA DE INPUTS ===');
-    console.log('Días trabajo:', diasTrabajo.length);
-    console.log('Estudiantes:', estudiantes.length);
-    console.log('Datos guardados:', trabajoCotidianoEstudiantes);
-    
-    // Buscar todos los inputs numéricos en la tabla
-    const inputs = document.querySelectorAll('#trabajo-cotidiano-app input[type="number"]');
-    console.log('Inputs encontrados:', inputs.length);
-    
-    inputs.forEach((input, index) => {
-        console.log(`Input ${index}:`, input);
-        console.log(`  - ID: ${input.id}`);
-        console.log(`  - Valor: ${input.value}`);
-        console.log(`  - Disabled: ${input.disabled}`);
-        console.log(`  - Oninput: ${input.oninput}`);
-    });
-    
-    // Probar actualizar una nota manualmente
-    if (inputs.length > 0 && !inputs[0].disabled) {
-        console.log('Probando actualizar primera nota...');
-        actualizarNotaTrabajo(0, 0, 2.5);
-    }
-}
-
-// Función de prueba para verificar los cálculos
-function probarCalculosTrabajoCotidiano() {
-    console.log('=== PRUEBA DE CÁLCULOS ===');
-    console.log('Escala máxima:', escalaMaxima);
-    console.log('Valor total:', valorTotalTrabajo);
-    
-    // Simular algunas notas
-    if (!trabajoCotidianoEstudiantes[0]) trabajoCotidianoEstudiantes[0] = [];
-    if (!trabajoCotidianoEstudiantes[0][0]) trabajoCotidianoEstudiantes[0][0] = { nota: null };
-    if (!trabajoCotidianoEstudiantes[0][1]) trabajoCotidianoEstudiantes[0][1] = { nota: null };
-    
-    trabajoCotidianoEstudiantes[0][0].nota = 2.5;
-    trabajoCotidianoEstudiantes[0][1].nota = 3.0;
-    
-    console.log('Notas simuladas:', trabajoCotidianoEstudiantes[0]);
-    
-    // Ejecutar cálculos
-    actualizarCalculosTrabajoCotidiano();
-}
-
-// Función para probar la preservación de datos
-function probarPreservacionDatos() {
-    console.log('=== PRUEBA DE PRESERVACIÓN DE DATOS ===');
-    console.log('Estado antes de preservar:', JSON.stringify(trabajoCotidianoEstudiantes));
-    preservarDatosInputs();
-    console.log('Estado después de preservar:', JSON.stringify(trabajoCotidianoEstudiantes));
-    console.log('=====================================');
-}
-
-// Función para probar el cálculo del % final específicamente
-function probarCalculoPorcentajeFinal() {
-    console.log('=== PRUEBA DE CÁLCULO % FINAL ===');
-    console.log('Escala máxima:', escalaMaxima);
-    console.log('Valor total trabajo:', valorTotalTrabajo);
-    
-    // Simular datos de prueba
-    const notasPrueba = [2.5, 3.0, 2.0, 2.8];
-    const totalNotas = notasPrueba.reduce((sum, nota) => sum + nota, 0);
-    const diasConNota = notasPrueba.length;
-    const promedio = totalNotas / diasConNota;
-    const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
-    
-    console.log('Notas de prueba:', notasPrueba);
-    console.log('Total notas:', totalNotas);
-    console.log('Días con nota:', diasConNota);
-    console.log('Promedio:', promedio);
-    console.log('Porcentaje final:', porcentajeFinal.toFixed(1) + '%');
-    
-    // Verificar el cálculo manual
-    const promedioManual = 10.3 / 4; // 2.575
-    const porcentajeManual = (2.575 / 3) * 35; // 30.04%
-    console.log('Verificación manual:');
-    console.log('  Promedio esperado: 2.575');
-    console.log('  % Final esperado: 30.0%');
-    console.log('  Promedio calculado:', promedio);
-    console.log('  % Final calculado:', porcentajeFinal.toFixed(1) + '%');
-    
-    console.log('================================');
-}
-
-// Función para verificar el cálculo real de un estudiante específico
-function verificarCalculoEstudiante(estIdx = 0) {
-    console.log(`=== VERIFICACIÓN CÁLCULO ESTUDIANTE ${estIdx} ===`);
-    
-    if (!estudiantes[estIdx]) {
-        console.log('Estudiante no encontrado');
-        return;
+function verificarIntegridadDatosTrabajoCotidiano() {
+    // Verificar que todos los datos estén en el formato correcto
+    if (!trabajoCotidianoEstudiantes || !Array.isArray(trabajoCotidianoEstudiantes)) {
+        trabajoCotidianoEstudiantes = [];
     }
     
-    const estudiante = estudiantes[estIdx];
-    console.log('Estudiante:', estudiante.nombre, estudiante.apellido1);
-    console.log('Días trabajo:', diasTrabajo.length);
-    console.log('Escala máxima:', escalaMaxima);
-    console.log('Valor total:', valorTotalTrabajo);
-    
-    let totalNotas = 0;
-    let diasConNota = 0;
-    const notasDetalladas = [];
-    
-    diasTrabajo.forEach((dia, diaIdx) => {
-        if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
-            const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
-            console.log(`  Día ${diaIdx}: nota = ${nota}`);
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!trabajoCotidianoEstudiantes[estIdx] || !Array.isArray(trabajoCotidianoEstudiantes[estIdx])) {
+            trabajoCotidianoEstudiantes[estIdx] = [];
+        }
+        
+        diasTrabajo.forEach((dia, diaIdx) => {
+            if (!trabajoCotidianoEstudiantes[estIdx][diaIdx] || typeof trabajoCotidianoEstudiantes[estIdx][diaIdx] !== 'object') {
+                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+            }
             
-            if (nota !== null && nota !== undefined && nota >= 0) {
-                totalNotas += nota;
-                diasConNota++;
-                notasDetalladas.push(nota);
+            // Validar que la nota sea un número válido o null
+            const diaData = trabajoCotidianoEstudiantes[estIdx][diaIdx];
+            if (diaData.nota !== null && diaData.nota !== undefined) {
+                const parsedNota = parseFloat(diaData.nota);
+                if (isNaN(parsedNota)) {
+                    diaData.nota = null;
+                } else {
+                    diaData.nota = parsedNota;
+                }
             }
-        } else {
-            console.log(`  Día ${diaIdx}: sin datos`);
-        }
+        });
     });
     
-    const promedio = diasConNota > 0 ? totalNotas / diasConNota : 0;
-    const porcentajeFinal = (promedio / escalaMaxima) * valorTotalTrabajo;
-    
-    console.log('Resultados:');
-    console.log('  Notas válidas:', notasDetalladas);
-    console.log('  Total notas:', totalNotas);
-    console.log('  Días con nota:', diasConNota);
-    console.log('  Promedio:', promedio);
-    console.log('  Porcentaje final:', porcentajeFinal.toFixed(1) + '%');
-    
-    // Verificar en la tabla
-    const container = document.getElementById('trabajo-cotidiano-app');
-    if (container) {
-        const rows = container.querySelectorAll('tbody tr');
-        const studentRow = rows[estIdx + 1];
-        if (studentRow) {
-            const cells = studentRow.querySelectorAll('td');
-            const porcentajeCell = cells[cells.length - 1];
-            if (porcentajeCell) {
-                console.log('  % Final en tabla:', porcentajeCell.textContent);
-            }
-        }
-    }
-    
-    console.log('========================================');
+    guardarTrabajoCotidiano();
 }
 
 // ===== INICIALIZACIÓN =====
