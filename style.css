@@ -4024,3 +4024,53 @@ body.dark-mode .asistencia-actions {
         font-size: 1em;
     }
 }
+
+/* ===== ESTILOS PARA EL BOTÓN DE RESUMEN ===== */
+.resumen-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.resumen-btn:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.resumen-btn::before {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+}
+
+body.dark-mode .resumen-btn {
+    background: linear-gradient(135deg, #4a5fd8 0%, #5a3190 100%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .resumen-btn:hover {
+    background: linear-gradient(135deg, #3a4fc8 0%, #4a2180 100%) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ===== ESTILOS PARA EL MODAL ===== */
+.modal-overlay {
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay .modal-content {
+    animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

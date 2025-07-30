@@ -1268,6 +1268,12 @@ function renderEvaluacion() {
     const container = document.getElementById('evaluacion-app');
     if (!container) return;
 
+    // Si no hay pruebas configuradas, mostrar mensaje
+    if (pruebas.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📝 No hay evaluaciones configuradas</h3><p>Agregue al menos una prueba para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya evaluaciones disponibles.</em></p><br><button onclick="agregarPrueba()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primera Prueba</button></div>';
+        return;
+    }
+
     let html = '<table class="evaluacion-table">';
     
     // Encabezado
@@ -1464,7 +1470,13 @@ function eliminarPrueba(pruebaIdx) {
         
         guardarEvaluacion();
         renderEvaluacion();
-        mostrarAlerta(`Prueba "${nombrePrueba}" eliminada`, 'info');
+        
+        // Verificar si se eliminó la última prueba
+        if (pruebas.length === 0) {
+            mostrarAlerta(`Prueba "${nombrePrueba}" eliminada. No quedan evaluaciones configuradas. Los estudiantes se han ocultado.`, 'info');
+        } else {
+            mostrarAlerta(`Prueba "${nombrePrueba}" eliminada`, 'info');
+        }
     }
 }
 
@@ -1562,6 +1574,12 @@ function sincronizarEstudiantesEvaluacion() {
 function renderTareas() {
     const container = document.getElementById('tareas-app');
     if (!container) return;
+
+    // Si no hay tareas configuradas, mostrar mensaje
+    if (tareas.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📚 No hay tareas configuradas</h3><p>Agregue al menos una tarea para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya tareas disponibles.</em></p><br><button onclick="agregarTarea()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primera Tarea</button></div>';
+        return;
+    }
 
     let html = '<table class="tareas-table">';
     
@@ -1731,7 +1749,13 @@ function eliminarTarea(tareaIdx) {
         
         guardarTareas();
         renderTareas();
-        mostrarAlerta(`Tarea "${nombreTarea}" eliminada`, 'info');
+        
+        // Verificar si se eliminó la última tarea
+        if (tareas.length === 0) {
+            mostrarAlerta(`Tarea "${nombreTarea}" eliminada. No quedan tareas configuradas. Los estudiantes se han ocultado.`, 'info');
+        } else {
+            mostrarAlerta(`Tarea "${nombreTarea}" eliminada`, 'info');
+        }
     }
 }
 
@@ -1864,6 +1888,12 @@ inicializarAplicacion = function() {
 function renderTrabajoCotidiano() {
     const container = document.getElementById('trabajo-cotidiano-app');
     if (!container) {
+        return;
+    }
+    
+    // Si no hay días de trabajo configurados, mostrar mensaje
+    if (diasTrabajo.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📋 No hay indicadores de trabajo cotidiano configurados</h3><p>Agregue al menos un indicador para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya indicadores disponibles.</em></p><br><button onclick="agregarDiaTrabajo()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primer Indicador</button></div>';
         return;
     }
     
@@ -2217,7 +2247,13 @@ function eliminarDiaTrabajo(diaIdx) {
     
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
-    mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
+    
+    // Verificar si se eliminó el último día
+    if (diasTrabajo.length === 0) {
+        mostrarAlerta(`Día ${diaIdx + 1} eliminado. No quedan indicadores configurados. Los estudiantes se han ocultado.`, 'info');
+    } else {
+        mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
+    }
 }
 
 function configurarEscalaMaxima() {
@@ -2445,7 +2481,7 @@ function renderProyecto() {
     if (!container) return;
     
     if (proyectos.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay proyectos configurados. Agregue un proyecto para comenzar.</p>';
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>🔬 No hay proyectos configurados</h3><p>Agregue al menos un proyecto para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya proyectos disponibles.</em></p><br><button onclick="agregarProyecto()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primer Proyecto</button></div>';
         return;
     }
     
@@ -2608,7 +2644,13 @@ function eliminarProyecto(proyectoIdx) {
         
         guardarProyecto();
         renderProyecto();
-        mostrarAlerta(`Proyecto "${nombreProyecto}" eliminado`, 'info');
+        
+        // Verificar si se eliminó el último proyecto
+        if (proyectos.length === 0) {
+            mostrarAlerta(`Proyecto "${nombreProyecto}" eliminado. No quedan proyectos configurados. Los estudiantes se han ocultado.`, 'info');
+        } else {
+            mostrarAlerta(`Proyecto "${nombreProyecto}" eliminado`, 'info');
+        }
     }
 }
 
@@ -2711,7 +2753,7 @@ function renderPortafolio() {
     if (!container) return;
     
     if (portafolios.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay portafolios configurados. Agregue un portafolio para comenzar.</p>';
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📁 No hay portafolios configurados</h3><p>Agregue al menos un portafolio para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya portafolios disponibles.</em></p><br><button onclick="agregarPortafolio()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primer Portafolio</button></div>';
         return;
     }
     
@@ -2874,7 +2916,13 @@ function eliminarPortafolio(portafolioIdx) {
         
         guardarPortafolio();
         renderPortafolio();
-        mostrarAlerta(`Portafolio "${nombrePortafolio}" eliminado`, 'info');
+        
+        // Verificar si se eliminó el último portafolio
+        if (portafolios.length === 0) {
+            mostrarAlerta(`Portafolio "${nombrePortafolio}" eliminado. No quedan portafolios configurados. Los estudiantes se han ocultado.`, 'info');
+        } else {
+            mostrarAlerta(`Portafolio "${nombrePortafolio}" eliminado`, 'info');
+        }
     }
 }
 
@@ -3072,3 +3120,114 @@ function agregarIndicadoresNavegacion() {
         });
     });
 }
+
+// ===== FUNCIÓN DE RESUMEN DE SECCIONES ACTIVAS =====
+function mostrarResumenSeccionesActivas() {
+    const secciones = [
+        { nombre: 'Pruebas', activa: pruebas.length > 0, cantidad: pruebas.length, icono: '📝' },
+        { nombre: 'Tareas', activa: tareas.length > 0, cantidad: tareas.length, icono: '📚' },
+        { nombre: 'Trabajo Cotidiano', activa: diasTrabajo.length > 0, cantidad: diasTrabajo.length, icono: '📋' },
+        { nombre: 'Proyectos', activa: proyectos.length > 0, cantidad: proyectos.length, icono: '🔬' },
+        { nombre: 'Portafolios', activa: portafolios.length > 0, cantidad: portafolios.length, icono: '📁' }
+    ];
+    
+    const seccionesActivas = secciones.filter(s => s.activa);
+    const seccionesInactivas = secciones.filter(s => !s.activa);
+    
+    let mensaje = '';
+    
+    if (seccionesActivas.length > 0) {
+        mensaje += `<div style="margin-bottom: 15px;"><strong>✅ Secciones activas (${seccionesActivas.length}):</strong><br>`;
+        seccionesActivas.forEach(s => {
+            mensaje += `${s.icono} ${s.nombre}: ${s.cantidad} ${s.cantidad === 1 ? 'elemento' : 'elementos'}<br>`;
+        });
+        mensaje += '</div>';
+    }
+    
+    if (seccionesInactivas.length > 0) {
+        mensaje += `<div><strong>⚠️ Secciones inactivas (${seccionesInactivas.length}):</strong><br>`;
+        mensaje += '<em>Los estudiantes se ocultan automáticamente en estas secciones</em><br>';
+        seccionesInactivas.forEach(s => {
+            mensaje += `${s.icono} ${s.nombre}<br>`;
+        });
+        mensaje += '</div>';
+    }
+    
+    return mensaje;
+}
+
+// Función para mostrar resumen de evaluaciones en un modal
+function mostrarResumenEvaluaciones() {
+    const resumen = mostrarResumenSeccionesActivas();
+    
+    // Crear modal
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+    `;
+    
+    modalContent.innerHTML = `
+        <h2 style="margin-top: 0; color: #333; text-align: center; border-bottom: 2px solid #667eea; padding-bottom: 15px;">
+            📊 Resumen de Evaluaciones
+        </h2>
+        <div style="line-height: 1.6; color: #555;">
+            ${resumen}
+        </div>
+        <div style="margin-top: 25px; text-align: center;">
+            <button onclick="this.closest('.modal-overlay').remove()" style="
+                background: #667eea;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+            ">Cerrar</button>
+        </div>
+    `;
+    
+    modal.className = 'modal-overlay';
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Cerrar modal al hacer clic fuera
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Cerrar modal con Escape
+    document.addEventListener('keydown', function closeOnEscape(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+}
+
+// ===== INICIALIZACIÓN =====
+esperarDOMListo();
