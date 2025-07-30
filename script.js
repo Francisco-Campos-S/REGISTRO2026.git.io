@@ -808,12 +808,16 @@ function agregarEstudiante() {
     sincronizarEstudiantesEvaluacion();
     sincronizarEstudiantesTareas();
     sincronizarEstudiantesTrabajoCotidiano();
+    sincronizarEstudiantesProyecto();
+    sincronizarEstudiantesPortafolio();
     
     // Renderizar todas las secciones para actualizar las listas
     setTimeout(() => {
         renderEvaluacion();
         renderTareas();
         renderTrabajoCotidiano();
+        renderProyecto();
+        renderPortafolio();
     }, 100);
 }
 
@@ -873,12 +877,16 @@ function eliminarEstudiante(idx) {
         sincronizarEstudiantesEvaluacion();
         sincronizarEstudiantesTareas();
         sincronizarEstudiantesTrabajoCotidiano();
+        sincronizarEstudiantesProyecto();
+        sincronizarEstudiantesPortafolio();
         
         // Renderizar todas las secciones para actualizar las listas
         setTimeout(() => {
             renderEvaluacion();
             renderTareas();
             renderTrabajoCotidiano();
+            renderProyecto();
+            renderPortafolio();
         }, 100);
         
         mostrarAlerta('Estudiante eliminado', 'info');
@@ -927,11 +935,15 @@ function ordenarEstudiantesManual() {
     sincronizarEstudiantesEvaluacion();
     sincronizarEstudiantesTareas();
     sincronizarEstudiantesTrabajoCotidiano();
+    sincronizarEstudiantesProyecto();
+    sincronizarEstudiantesPortafolio();
     
     setTimeout(() => {
         renderEvaluacion();
         renderTareas();
         renderTrabajoCotidiano();
+        renderProyecto();
+        renderPortafolio();
     }, 100);
 }
 
@@ -1051,11 +1063,15 @@ function cargarPlantilla(event) {
             sincronizarEstudiantesEvaluacion();
             sincronizarEstudiantesTareas();
             sincronizarEstudiantesTrabajoCotidiano();
+            sincronizarEstudiantesProyecto();
+            sincronizarEstudiantesPortafolio();
             
             setTimeout(() => {
                 renderEvaluacion();
                 renderTareas();
                 renderTrabajoCotidiano();
+                renderProyecto();
+                renderPortafolio();
             }, 100);
             
             mostrarAlerta('Datos importados y agregados correctamente', 'exito');
@@ -1832,6 +1848,12 @@ inicializarAplicacion = function() {
     sincronizarEstudiantesTrabajoCotidiano();
     renderTrabajoCotidiano();
     configurarEscalaMaxima();
+    cargarProyecto();
+    sincronizarEstudiantesProyecto();
+    renderProyecto();
+    cargarPortafolio();
+    sincronizarEstudiantesPortafolio();
+    renderPortafolio();
 };
 
 // ===== FUNCIONES DE TRABAJO COTIDIANO =====
@@ -2408,3 +2430,535 @@ function verificarIntegridadDatosTrabajoCotidiano() {
 
 // ===== INICIALIZACIÓN =====
 esperarDOMListo();
+
+// ===== SECCIÓN PROYECTO =====
+let proyectos = [];
+let proyectosEstudiantes = [];
+
+// Función para renderizar proyecto
+function renderProyecto() {
+    const container = document.getElementById('proyecto-app');
+    if (!container) return;
+    
+    if (proyectos.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay proyectos configurados. Agregue un proyecto para comenzar.</p>';
+        return;
+    }
+    
+    let html = '<table class="proyecto-table">';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Estudiante</th>';
+    proyectos.forEach(proyecto => {
+        html += `<th colspan="3">${proyecto.nombre}</th>`;
+    });
+    html += '<th>TOTAL</th>';
+    html += '</tr><tr>';
+    html += '<th></th>';
+    proyectos.forEach(proyecto => {
+        html += '<th>PTS</th>';
+        html += '<th>NOTA</th>';
+        html += '<th>%</th>';
+    });
+    html += '<th>%</th>';
+    html += '</tr></thead>';
+    
+    // Fila de configuración
+    html += '<tbody>';
+    html += '<tr class="config-row">';
+    html += '<td class="student-name">CONFIGURACIÓN</td>';
+    proyectos.forEach((proyecto, idx) => {
+        html += `<td class="editable"><input type="number" value="${proyecto.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosProyecto(${idx}, this.value)" title="Puntos máximos del proyecto"></td>`;
+        html += '<td class="calculated">-------</td>';
+        
+        // Celda de peso con botón eliminar integrado
+        html += `<td class="editable" style="position:relative;">
+            <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" title="% de peso del proyecto" style="padding-right:30px;width:80px;">
+            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
+        </td>`;
+    });
+    
+    // Calcular la suma total de los pesos
+    const totalPeso = proyectos.reduce((sum, proyecto) => sum + proyecto.peso, 0);
+    const totalClass = totalPeso > 100 ? 'total-excedido' : '';
+    html += `<td class="calculated ${totalClass}">${totalPeso}%</td>`;
+    html += '</tr>';
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return; // Saltar estudiantes vacíos
+        
+        html += '<tr>';
+        html += `<td class="student-name">${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}</td>`;
+        
+        let totalPorcentaje = 0;
+        
+        proyectos.forEach((proyecto, proyectoIdx) => {
+            const evaluacion = obtenerProyecto(estIdx, proyectoIdx);
+            const nota = calcularNota(evaluacion.puntos, proyecto.puntosMaximos);
+            const porcentaje = calcularPorcentaje(evaluacion.puntos, proyecto.puntosMaximos);
+            const porcentajePonderado = (nota * proyecto.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${proyecto.puntosMaximos}" step="0.1" onchange="actualizarPuntosProyecto(${estIdx}, ${proyectoIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="calculated">${nota.toFixed(1)}</td>`;
+            html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
+        });
+        
+        html += `<td class="calculated">${totalPorcentaje.toFixed(1)}%</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// Función para obtener evaluación de proyecto
+function obtenerProyecto(estIdx, proyectoIdx) {
+    if (!proyectosEstudiantes[estIdx] || !proyectosEstudiantes[estIdx][proyectoIdx]) {
+        return { puntos: 0 };
+    }
+    return proyectosEstudiantes[estIdx][proyectoIdx];
+}
+
+// Función para actualizar puntos máximos de proyecto
+function actualizarPuntosMaximosProyecto(proyectoIdx, valor) {
+    proyectos[proyectoIdx].puntosMaximos = parseFloat(valor) || 30;
+    guardarProyecto();
+    renderProyecto();
+}
+
+// Función para actualizar peso de proyecto
+function actualizarPesoProyecto(proyectoIdx, valor) {
+    proyectos[proyectoIdx].peso = parseFloat(valor) || 10;
+    guardarProyecto();
+    renderProyecto();
+}
+
+// Función para actualizar puntos de proyecto
+function actualizarPuntosProyecto(estIdx, proyectoIdx, valor) {
+    if (!proyectosEstudiantes[estIdx]) {
+        proyectosEstudiantes[estIdx] = [];
+    }
+    if (!proyectosEstudiantes[estIdx][proyectoIdx]) {
+        proyectosEstudiantes[estIdx][proyectoIdx] = { puntos: 0 };
+    }
+    proyectosEstudiantes[estIdx][proyectoIdx].puntos = parseFloat(valor) || 0;
+    guardarProyecto();
+    renderProyecto();
+}
+
+// Función para obtener nombre de proyecto
+function obtenerNombreProyecto(posicion) {
+    return `Proyecto ${posicion}`;
+}
+
+// Función para actualizar nombres de todos los proyectos
+function actualizarNombresProyectos() {
+    proyectos.forEach((proyecto, index) => {
+        proyecto.nombre = obtenerNombreProyecto(index + 1);
+    });
+}
+
+// Función para agregar nuevo proyecto
+function agregarProyecto() {
+    proyectos.push({
+        nombre: '', // Se actualizará automáticamente
+        puntosMaximos: 30,
+        peso: 10
+    });
+    
+    // Actualizar nombres de todos los proyectos
+    actualizarNombresProyectos();
+    
+    // Agregar evaluaciones para todos los estudiantes existentes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!proyectosEstudiantes[estIdx]) {
+            proyectosEstudiantes[estIdx] = [];
+        }
+        proyectosEstudiantes[estIdx].push({ puntos: 0 });
+    });
+    
+    guardarProyecto();
+    renderProyecto();
+    mostrarAlerta(`Proyecto "${proyectos[proyectos.length - 1].nombre}" agregado`, 'exito');
+}
+
+// Función para eliminar proyecto
+function eliminarProyecto(proyectoIdx) {
+    const nombreProyecto = proyectos[proyectoIdx].nombre;
+    
+    if (confirm(`¿Seguro que deseas eliminar el proyecto "${nombreProyecto}"? Esta acción no se puede deshacer.`)) {
+        proyectos.splice(proyectoIdx, 1);
+        
+        // Eliminar evaluaciones de ese proyecto para todos los estudiantes
+        proyectosEstudiantes.forEach(estudiante => {
+            if (estudiante && estudiante[proyectoIdx]) {
+                estudiante.splice(proyectoIdx, 1);
+            }
+        });
+        
+        // Actualizar nombres de todos los proyectos
+        actualizarNombresProyectos();
+        
+        guardarProyecto();
+        renderProyecto();
+        mostrarAlerta(`Proyecto "${nombreProyecto}" eliminado`, 'info');
+    }
+}
+
+// Función para exportar proyecto
+function exportarProyecto() {
+    const wb = XLSX.utils.book_new();
+    
+    // Preparar datos para exportar
+    const datos = [];
+    
+    // Fila de configuración
+    const configRow = ['CONFIGURACIÓN'];
+    const totalPeso = proyectos.reduce((sum, proyecto) => sum + proyecto.peso, 0);
+    proyectos.forEach(proyecto => {
+        configRow.push(proyecto.puntosMaximos, '-------', proyecto.peso);
+    });
+    configRow.push(`${totalPeso}%`);
+    datos.push(configRow);
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
+        let totalPorcentaje = 0;
+        
+        proyectos.forEach((proyecto, proyectoIdx) => {
+            const evaluacion = obtenerProyecto(estIdx, proyectoIdx);
+            const nota = calcularNota(evaluacion.puntos, proyecto.puntosMaximos);
+            const porcentajePonderado = (nota * proyecto.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            row.push(evaluacion.puntos, nota.toFixed(1), porcentajePonderado.toFixed(1) + '%');
+        });
+        
+        row.push(totalPorcentaje.toFixed(1) + '%');
+        datos.push(row);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'Proyecto');
+    
+    XLSX.writeFile(wb, 'evaluacion_proyectos.xlsx');
+    mostrarAlerta('Proyecto exportado correctamente', 'exito');
+}
+
+// Función para guardar proyecto
+function guardarProyecto() {
+    const datos = {
+        proyectos: proyectos,
+        proyectosEstudiantes: proyectosEstudiantes
+    };
+    localStorage.setItem('proyectoData', JSON.stringify(datos));
+}
+
+// Función para cargar proyecto
+function cargarProyecto() {
+    try {
+        const datosGuardados = localStorage.getItem('proyectoData');
+        if (datosGuardados) {
+            const datos = JSON.parse(datosGuardados);
+            proyectos = datos.proyectos || [];
+            proyectosEstudiantes = datos.proyectosEstudiantes || [];
+            
+            // Actualizar nombres de proyectos
+            actualizarNombresProyectos();
+        }
+    } catch (error) {
+        console.error('Error al cargar proyecto:', error);
+        proyectos = [];
+        proyectosEstudiantes = [];
+    }
+}
+
+// Función para sincronizar estudiantes en proyecto
+function sincronizarEstudiantesProyecto() {
+    // Agregar proyectos faltantes para estudiantes nuevos
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!proyectosEstudiantes[estIdx]) {
+            proyectosEstudiantes[estIdx] = [];
+        }
+        
+        // Agregar evaluaciones faltantes
+        while (proyectosEstudiantes[estIdx].length < proyectos.length) {
+            proyectosEstudiantes[estIdx].push({ puntos: 0 });
+        }
+    });
+    
+    // Eliminar evaluaciones de estudiantes que ya no existen
+    proyectosEstudiantes.splice(estudiantes.length);
+}
+
+// ===== SECCIÓN PORTAFOLIO =====
+let portafolios = [];
+let portafoliosEstudiantes = [];
+
+// Función para renderizar portafolio
+function renderPortafolio() {
+    const container = document.getElementById('portafolio-app');
+    if (!container) return;
+    
+    if (portafolios.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No hay portafolios configurados. Agregue un portafolio para comenzar.</p>';
+        return;
+    }
+    
+    let html = '<table class="portafolio-table">';
+    
+    // Encabezado
+    html += '<thead><tr>';
+    html += '<th>Estudiante</th>';
+    portafolios.forEach(portafolio => {
+        html += `<th colspan="3">${portafolio.nombre}</th>`;
+    });
+    html += '<th>TOTAL</th>';
+    html += '</tr><tr>';
+    html += '<th></th>';
+    portafolios.forEach(portafolio => {
+        html += '<th>PTS</th>';
+        html += '<th>NOTA</th>';
+        html += '<th>%</th>';
+    });
+    html += '<th>%</th>';
+    html += '</tr></thead>';
+    
+    // Fila de configuración
+    html += '<tbody>';
+    html += '<tr class="config-row">';
+    html += '<td class="student-name">CONFIGURACIÓN</td>';
+    portafolios.forEach((portafolio, idx) => {
+        html += `<td class="editable"><input type="number" value="${portafolio.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosPortafolio(${idx}, this.value)" title="Puntos máximos del portafolio"></td>`;
+        html += '<td class="calculated">-------</td>';
+        
+        // Celda de peso con botón eliminar integrado
+        html += `<td class="editable" style="position:relative;">
+            <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" title="% de peso del portafolio" style="padding-right:30px;width:80px;">
+            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:2px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
+        </td>`;
+    });
+    
+    // Calcular la suma total de los pesos
+    const totalPeso = portafolios.reduce((sum, portafolio) => sum + portafolio.peso, 0);
+    const totalClass = totalPeso > 100 ? 'total-excedido' : '';
+    html += `<td class="calculated ${totalClass}">${totalPeso}%</td>`;
+    html += '</tr>';
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return; // Saltar estudiantes vacíos
+        
+        html += '<tr>';
+        html += `<td class="student-name">${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}</td>`;
+        
+        let totalPorcentaje = 0;
+        
+        portafolios.forEach((portafolio, portafolioIdx) => {
+            const evaluacion = obtenerPortafolio(estIdx, portafolioIdx);
+            const nota = calcularNota(evaluacion.puntos, portafolio.puntosMaximos);
+            const porcentaje = calcularPorcentaje(evaluacion.puntos, portafolio.puntosMaximos);
+            const porcentajePonderado = (nota * portafolio.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${portafolio.puntosMaximos}" step="0.1" onchange="actualizarPuntosPortafolio(${estIdx}, ${portafolioIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="calculated">${nota.toFixed(1)}</td>`;
+            html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
+        });
+        
+        html += `<td class="calculated">${totalPorcentaje.toFixed(1)}%</td>`;
+        html += '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+// Función para obtener evaluación de portafolio
+function obtenerPortafolio(estIdx, portafolioIdx) {
+    if (!portafoliosEstudiantes[estIdx] || !portafoliosEstudiantes[estIdx][portafolioIdx]) {
+        return { puntos: 0 };
+    }
+    return portafoliosEstudiantes[estIdx][portafolioIdx];
+}
+
+// Función para actualizar puntos máximos de portafolio
+function actualizarPuntosMaximosPortafolio(portafolioIdx, valor) {
+    portafolios[portafolioIdx].puntosMaximos = parseFloat(valor) || 30;
+    guardarPortafolio();
+    renderPortafolio();
+}
+
+// Función para actualizar peso de portafolio
+function actualizarPesoPortafolio(portafolioIdx, valor) {
+    portafolios[portafolioIdx].peso = parseFloat(valor) || 10;
+    guardarPortafolio();
+    renderPortafolio();
+}
+
+// Función para actualizar puntos de portafolio
+function actualizarPuntosPortafolio(estIdx, portafolioIdx, valor) {
+    if (!portafoliosEstudiantes[estIdx]) {
+        portafoliosEstudiantes[estIdx] = [];
+    }
+    if (!portafoliosEstudiantes[estIdx][portafolioIdx]) {
+        portafoliosEstudiantes[estIdx][portafolioIdx] = { puntos: 0 };
+    }
+    portafoliosEstudiantes[estIdx][portafolioIdx].puntos = parseFloat(valor) || 0;
+    guardarPortafolio();
+    renderPortafolio();
+}
+
+// Función para obtener nombre de portafolio
+function obtenerNombrePortafolio(posicion) {
+    return `Portafolio ${posicion}`;
+}
+
+// Función para actualizar nombres de todos los portafolios
+function actualizarNombresPortafolios() {
+    portafolios.forEach((portafolio, index) => {
+        portafolio.nombre = obtenerNombrePortafolio(index + 1);
+    });
+}
+
+// Función para agregar nuevo portafolio
+function agregarPortafolio() {
+    portafolios.push({
+        nombre: '', // Se actualizará automáticamente
+        puntosMaximos: 30,
+        peso: 10
+    });
+    
+    // Actualizar nombres de todos los portafolios
+    actualizarNombresPortafolios();
+    
+    // Agregar evaluaciones para todos los estudiantes existentes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!portafoliosEstudiantes[estIdx]) {
+            portafoliosEstudiantes[estIdx] = [];
+        }
+        portafoliosEstudiantes[estIdx].push({ puntos: 0 });
+    });
+    
+    guardarPortafolio();
+    renderPortafolio();
+    mostrarAlerta(`Portafolio "${portafolios[portafolios.length - 1].nombre}" agregado`, 'exito');
+}
+
+// Función para eliminar portafolio
+function eliminarPortafolio(portafolioIdx) {
+    const nombrePortafolio = portafolios[portafolioIdx].nombre;
+    
+    if (confirm(`¿Seguro que deseas eliminar el portafolio "${nombrePortafolio}"? Esta acción no se puede deshacer.`)) {
+        portafolios.splice(portafolioIdx, 1);
+        
+        // Eliminar evaluaciones de ese portafolio para todos los estudiantes
+        portafoliosEstudiantes.forEach(estudiante => {
+            if (estudiante && estudiante[portafolioIdx]) {
+                estudiante.splice(portafolioIdx, 1);
+            }
+        });
+        
+        // Actualizar nombres de todos los portafolios
+        actualizarNombresPortafolios();
+        
+        guardarPortafolio();
+        renderPortafolio();
+        mostrarAlerta(`Portafolio "${nombrePortafolio}" eliminado`, 'info');
+    }
+}
+
+// Función para exportar portafolio
+function exportarPortafolio() {
+    const wb = XLSX.utils.book_new();
+    
+    // Preparar datos para exportar
+    const datos = [];
+    
+    // Fila de configuración
+    const configRow = ['CONFIGURACIÓN'];
+    const totalPeso = portafolios.reduce((sum, portafolio) => sum + portafolio.peso, 0);
+    portafolios.forEach(portafolio => {
+        configRow.push(portafolio.puntosMaximos, '-------', portafolio.peso);
+    });
+    configRow.push(`${totalPeso}%`);
+    datos.push(configRow);
+    
+    // Filas de estudiantes
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!estudiante.nombre && !estudiante.apellido1) return;
+        
+        const row = [`${estudiante.nombre} ${estudiante.apellido1} ${estudiante.apellido2}`];
+        let totalPorcentaje = 0;
+        
+        portafolios.forEach((portafolio, portafolioIdx) => {
+            const evaluacion = obtenerPortafolio(estIdx, portafolioIdx);
+            const nota = calcularNota(evaluacion.puntos, portafolio.puntosMaximos);
+            const porcentajePonderado = (nota * portafolio.peso) / 100;
+            totalPorcentaje += porcentajePonderado;
+            
+            row.push(evaluacion.puntos, nota.toFixed(1), porcentajePonderado.toFixed(1) + '%');
+        });
+        
+        row.push(totalPorcentaje.toFixed(1) + '%');
+        datos.push(row);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(datos);
+    XLSX.utils.book_append_sheet(wb, ws, 'Portafolio');
+    
+    XLSX.writeFile(wb, 'evaluacion_portafolios.xlsx');
+    mostrarAlerta('Portafolio exportado correctamente', 'exito');
+}
+
+// Función para guardar portafolio
+function guardarPortafolio() {
+    const datos = {
+        portafolios: portafolios,
+        portafoliosEstudiantes: portafoliosEstudiantes
+    };
+    localStorage.setItem('portafolioData', JSON.stringify(datos));
+}
+
+// Función para cargar portafolio
+function cargarPortafolio() {
+    try {
+        const datosGuardados = localStorage.getItem('portafolioData');
+        if (datosGuardados) {
+            const datos = JSON.parse(datosGuardados);
+            portafolios = datos.portafolios || [];
+            portafoliosEstudiantes = datos.portafoliosEstudiantes || [];
+            
+            // Actualizar nombres de portafolios
+            actualizarNombresPortafolios();
+        }
+    } catch (error) {
+        console.error('Error al cargar portafolio:', error);
+        portafolios = [];
+        portafoliosEstudiantes = [];
+    }
+}
+
+// Función para sincronizar estudiantes en portafolio
+function sincronizarEstudiantesPortafolio() {
+    // Agregar portafolios faltantes para estudiantes nuevos
+    estudiantes.forEach((estudiante, estIdx) => {
+        if (!portafoliosEstudiantes[estIdx]) {
+            portafoliosEstudiantes[estIdx] = [];
+        }
+        
+        // Agregar evaluaciones faltantes
+        while (portafoliosEstudiantes[estIdx].length < portafolios.length) {
+            portafoliosEstudiantes[estIdx].push({ puntos: 0 });
+        }
+    });
+    
+    // Eliminar evaluaciones de estudiantes que ya no existen
+    portafoliosEstudiantes.splice(estudiantes.length);
+}

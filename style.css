@@ -2905,3 +2905,899 @@ body.dark-mode .trabajo-cotidiano-table .config-row button:hover {
 body.dark-mode .texto-alerta {
     color: #ff6b6b !important;
 }
+
+/* ===== SECCIÓN PROYECTO ===== */
+.proyecto-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.proyecto-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    pointer-events: none;
+    border-radius: 15px;
+}
+
+.proyecto-container h3 {
+    color: #ffffff;
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.proyecto-container h3::before {
+    content: '🔬';
+    font-size: 1.2em;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.proyecto-instructions {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.proyecto-instructions::before {
+    content: '💡';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.proyecto-instructions p {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.proyecto-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-agregar-proyecto, .btn-exportar-proyecto {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-agregar-proyecto::before, .btn-exportar-proyecto::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-agregar-proyecto:hover::before, .btn-exportar-proyecto:hover::before {
+    left: 100%;
+}
+
+.btn-agregar-proyecto:hover, .btn-exportar-proyecto:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.proyecto-table-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.proyecto-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    pointer-events: none;
+    border-radius: 15px;
+}
+
+.proyecto-table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.proyecto-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.proyecto-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9em;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.proyecto-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #e1e8ed;
+    vertical-align: middle;
+    font-size: 0.9em;
+}
+
+.proyecto-table .config-row {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    color: #495057;
+}
+
+.proyecto-table .config-row:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+}
+
+.proyecto-table tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+}
+
+.proyecto-table tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.proyecto-table tbody tr:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.proyecto-table tbody tr:hover .student-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.proyecto-table tbody tr:hover .calculated {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.proyecto-table tbody tr:hover .editable {
+    background: white;
+    color: #2c3e50;
+    border-color: #667eea;
+}
+
+.proyecto-table .config-row:hover {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #2c3e50;
+}
+
+.proyecto-table .editable {
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.3s ease;
+    min-width: 60px;
+}
+
+.proyecto-table .editable:hover {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: scale(1.02);
+}
+
+.proyecto-table .calculated {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.proyecto-table .total-excedido {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    color: white;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.proyecto-table input[type="number"] {
+    width: 100%;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    min-width: 60px;
+    box-sizing: border-box;
+}
+
+.proyecto-table .config-row input[type="number"] {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #dee2e6;
+    font-weight: 700;
+    color: #495057;
+}
+
+.proyecto-table input[type="number"]::-webkit-outer-spin-button,
+.proyecto-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.proyecto-table input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.proyecto-table input[type="number"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    transform: scale(1.02);
+}
+
+.proyecto-table .config-row input[type="number"]:focus {
+    border-color: #ffc107;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+    transform: scale(1.02);
+}
+
+.proyecto-table .student-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 15px;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    min-width: 150px;
+}
+
+/* ===== SECCIÓN PORTAFOLIO ===== */
+.portafolio-container {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: 0 8px 32px rgba(240, 147, 251, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.portafolio-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    pointer-events: none;
+    border-radius: 15px;
+}
+
+.portafolio-container h3 {
+    color: #ffffff;
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.portafolio-container h3::before {
+    content: '📁';
+    font-size: 1.2em;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.portafolio-instructions {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.portafolio-instructions::before {
+    content: '💡';
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.portafolio-instructions p {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.portafolio-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-agregar-portafolio, .btn-exportar-portafolio {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-agregar-portafolio::before, .btn-exportar-portafolio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-agregar-portafolio:hover::before, .btn-exportar-portafolio:hover::before {
+    left: 100%;
+}
+
+.btn-agregar-portafolio:hover, .btn-exportar-portafolio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+}
+
+.portafolio-table-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.portafolio-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(240, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%);
+    pointer-events: none;
+    border-radius: 15px;
+}
+
+.portafolio-table-responsive {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.portafolio-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.portafolio-table th {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9em;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.portafolio-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #e1e8ed;
+    vertical-align: middle;
+    font-size: 0.9em;
+}
+
+.portafolio-table .config-row {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    font-weight: 600;
+    color: #495057;
+}
+
+.portafolio-table .config-row:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+}
+
+.portafolio-table tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+}
+
+.portafolio-table tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.portafolio-table tbody tr:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.portafolio-table tbody tr:hover .student-name {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.portafolio-table tbody tr:hover .calculated {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.portafolio-table tbody tr:hover .editable {
+    background: white;
+    color: #2c3e50;
+    border-color: #f093fb;
+}
+
+.portafolio-table .config-row:hover {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: #2c3e50;
+}
+
+.portafolio-table .editable {
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.3s ease;
+    min-width: 60px;
+}
+
+.portafolio-table .editable:hover {
+    border-color: #f093fb;
+    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.1);
+    transform: scale(1.02);
+}
+
+.portafolio-table .calculated {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.portafolio-table .total-excedido {
+    background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+    color: white;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 8px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.portafolio-table input[type="number"] {
+    width: 100%;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    min-width: 60px;
+    box-sizing: border-box;
+}
+
+.portafolio-table .config-row input[type="number"] {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #dee2e6;
+    font-weight: 700;
+    color: #495057;
+}
+
+.portafolio-table input[type="number"]::-webkit-outer-spin-button,
+.portafolio-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.portafolio-table input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.portafolio-table input[type="number"]:focus {
+    outline: none;
+    border-color: #f093fb;
+    box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+    transform: scale(1.02);
+}
+
+.portafolio-table .config-row input[type="number"]:focus {
+    border-color: #ffc107;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+    transform: scale(1.02);
+}
+
+.portafolio-table .student-name {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 15px;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    min-width: 150px;
+}
+
+/* ===== MODO OSCURO PARA PROYECTO ===== */
+body.dark-mode .proyecto-container {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.4);
+}
+
+body.dark-mode .proyecto-container::before {
+    background: linear-gradient(45deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+}
+
+body.dark-mode .proyecto-instructions {
+    background: rgba(44, 62, 80, 0.9);
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-instructions p {
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-actions {
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+body.dark-mode .proyecto-table-container {
+    background: rgba(44, 62, 80, 0.9);
+}
+
+body.dark-mode .proyecto-table-container::before {
+    background: linear-gradient(45deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+body.dark-mode .proyecto-table {
+    background: #2c3e50;
+}
+
+body.dark-mode .proyecto-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.dark-mode .proyecto-table td {
+    border-bottom: 1px solid #34495e;
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-table .config-row {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-table .config-row:hover {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+body.dark-mode .proyecto-table .editable {
+    background: #34495e;
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-table .editable:hover {
+    border-color: #667eea;
+    background: #2c3e50;
+}
+
+body.dark-mode .proyecto-table .calculated {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+body.dark-mode .proyecto-table .student-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.dark-mode .proyecto-table input[type="number"] {
+    background: #34495e;
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-table .config-row input[type="number"] {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .proyecto-table input[type="number"]:focus {
+    border-color: #667eea;
+    background: #2c3e50;
+}
+
+body.dark-mode .proyecto-table .config-row input[type="number"]:focus {
+    border-color: #ffc107;
+    background: #34495e;
+}
+
+body.dark-mode .proyecto-table tbody tr:nth-child(odd) {
+    background: #34495e;
+}
+
+body.dark-mode .proyecto-table tbody tr:nth-child(even) {
+    background: #2c3e50;
+}
+
+body.dark-mode .proyecto-table tbody tr:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.dark-mode .proyecto-table tbody tr:hover .student-name {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.dark-mode .proyecto-table tbody tr:hover .calculated {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.dark-mode .proyecto-table tbody tr:hover .editable {
+    background: #34495e;
+    color: #ecf0f1;
+    border-color: #667eea;
+}
+
+body.dark-mode .proyecto-table .config-row:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: #2c3e50;
+}
+
+body.dark-mode .proyecto-table .total-excedido {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+/* ===== MODO OSCURO PARA PORTAFOLIO ===== */
+body.dark-mode .portafolio-container {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.4);
+}
+
+body.dark-mode .portafolio-container::before {
+    background: linear-gradient(45deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+}
+
+body.dark-mode .portafolio-instructions {
+    background: rgba(44, 62, 80, 0.9);
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-instructions p {
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-actions {
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+body.dark-mode .portafolio-table-container {
+    background: rgba(44, 62, 80, 0.9);
+}
+
+body.dark-mode .portafolio-table-container::before {
+    background: linear-gradient(45deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);
+}
+
+body.dark-mode .portafolio-table {
+    background: #2c3e50;
+}
+
+body.dark-mode .portafolio-table th {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.dark-mode .portafolio-table td {
+    border-bottom: 1px solid #34495e;
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-table .config-row {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-table .config-row:hover {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+body.dark-mode .portafolio-table .editable {
+    background: #34495e;
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-table .editable:hover {
+    border-color: #f093fb;
+    background: #2c3e50;
+}
+
+body.dark-mode .portafolio-table .calculated {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+body.dark-mode .portafolio-table .student-name {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.dark-mode .portafolio-table input[type="number"] {
+    background: #34495e;
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-table .config-row input[type="number"] {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    border-color: #4a5568;
+    color: #ecf0f1;
+}
+
+body.dark-mode .portafolio-table input[type="number"]:focus {
+    border-color: #f093fb;
+    background: #2c3e50;
+}
+
+body.dark-mode .portafolio-table .config-row input[type="number"]:focus {
+    border-color: #ffc107;
+    background: #34495e;
+}
+
+body.dark-mode .portafolio-table tbody tr:nth-child(odd) {
+    background: #34495e;
+}
+
+body.dark-mode .portafolio-table tbody tr:nth-child(even) {
+    background: #2c3e50;
+}
+
+body.dark-mode .portafolio-table tbody tr:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.dark-mode .portafolio-table tbody tr:hover .student-name {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.dark-mode .portafolio-table tbody tr:hover .calculated {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+body.dark-mode .portafolio-table tbody tr:hover .editable {
+    background: #34495e;
+    color: #ecf0f1;
+    border-color: #f093fb;
+}
+
+body.dark-mode .portafolio-table .config-row:hover {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: #2c3e50;
+}
+
+body.dark-mode .portafolio-table .total-excedido {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}

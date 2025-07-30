@@ -195,6 +195,52 @@
         </div>
     </div>
 
+    <!-- Sección de Evaluación de Proyecto -->
+    <div class="proyecto-container">
+        <h3>🔬 Evaluación de Proyecto</h3>
+        <div class="proyecto-instructions">
+            <p><strong>💡 Instrucciones:</strong> SE EDITA SOLO LO QUE ESTÁ EN BLANCO. PUEDE CAMBIAR LOS PUNTOS MÁXIMOS DE CADA PROYECTO Y EL % DE PESO, LO DEMÁS SE CALCULA AUTOMÁTICAMENTE.</p>
+        </div>
+        
+        <div class="proyecto-actions">
+            <button onclick="agregarProyecto()" class="btn-agregar-proyecto">
+                <span>➕</span> Agregar Proyecto
+            </button>
+            <button onclick="exportarProyecto()" class="btn-exportar-proyecto">
+                <span>📤</span> Exportar Proyecto
+            </button>
+        </div>
+
+        <div class="proyecto-table-container">
+            <div class="proyecto-table-responsive">
+                <div id="proyecto-app"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Evaluación de Portafolio -->
+    <div class="portafolio-container">
+        <h3>📁 Evaluación de Portafolio</h3>
+        <div class="portafolio-instructions">
+            <p><strong>💡 Instrucciones:</strong> SE EDITA SOLO LO QUE ESTÁ EN BLANCO. PUEDE CAMBIAR LOS PUNTOS MÁXIMOS DE CADA PORTAFOLIO Y EL % DE PESO, LO DEMÁS SE CALCULA AUTOMÁTICAMENTE.</p>
+        </div>
+        
+        <div class="portafolio-actions">
+            <button onclick="agregarPortafolio()" class="btn-agregar-portafolio">
+                <span>➕</span> Agregar Portafolio
+            </button>
+            <button onclick="exportarPortafolio()" class="btn-exportar-portafolio">
+                <span>📤</span> Exportar Portafolio
+            </button>
+        </div>
+
+        <div class="portafolio-table-container">
+            <div class="portafolio-table-responsive">
+                <div id="portafolio-app"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html> 
