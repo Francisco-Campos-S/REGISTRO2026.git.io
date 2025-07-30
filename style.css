@@ -2510,7 +2510,6 @@ body.dark-mode .celda-asistencia-multiple button:hover {
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-    overflow: hidden;
     border: 1px solid rgba(0,0,0,0.05);
     position: relative;
 }
@@ -2529,6 +2528,9 @@ body.dark-mode .celda-asistencia-multiple button:hover {
 .evaluacion-table-responsive {
     overflow-x: auto;
     max-width: 100%;
+    /* Chrome-specific fixes for sticky positioning */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
 }
 
 /* Tabla de evaluación */
@@ -2700,9 +2702,13 @@ body.dark-mode .evaluacion-table tbody tr:nth-child(even) {
     text-align: left;
     padding-left: 12px;
     min-width: 150px;
+    position: -webkit-sticky;
     position: sticky;
     left: 0;
     z-index: 15;
+    /* Chrome-specific fixes */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Modo oscuro para evaluación */
@@ -3074,7 +3080,9 @@ body.dark-mode .texto-alerta {
 
 .proyecto-table-responsive {
     overflow-x: auto;
-    border-radius: 10px;
+    /* Chrome-specific fixes for sticky positioning */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
 }
 
 .proyecto-table {
@@ -3082,8 +3090,6 @@ body.dark-mode .texto-alerta {
     min-width: 800px;
     border-collapse: collapse;
     background: white;
-    border-radius: 10px;
-    overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
@@ -3243,9 +3249,13 @@ body.dark-mode .texto-alerta {
     text-align: left;
     padding-left: 12px;
     min-width: 150px;
+    position: -webkit-sticky;
     position: sticky;
     left: 0;
     z-index: 15;
+    /* Chrome-specific fixes */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* ===== SECCIÓN PORTAFOLIO ===== */
@@ -3389,7 +3399,9 @@ body.dark-mode .texto-alerta {
 
 .portafolio-table-responsive {
     overflow-x: auto;
-    border-radius: 10px;
+    /* Chrome-specific fixes for sticky positioning */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
 }
 
 .portafolio-table {
@@ -3397,8 +3409,6 @@ body.dark-mode .texto-alerta {
     min-width: 800px;
     border-collapse: collapse;
     background: white;
-    border-radius: 10px;
-    overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
@@ -3558,9 +3568,13 @@ body.dark-mode .texto-alerta {
     text-align: left;
     padding-left: 12px;
     min-width: 150px;
+    position: -webkit-sticky;
     position: sticky;
     left: 0;
     z-index: 15;
+    /* Chrome-specific fixes */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* ===== MODO OSCURO PARA PROYECTO ===== */
