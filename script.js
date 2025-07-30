@@ -301,21 +301,16 @@ function renderAsistencia() {
     actualizarContador();
     configurarHoverFilas();
     
-    // Debug: contar alertas
+    // Validar alertas tempranas
     setTimeout(() => {
         const celdasConAlerta = document.querySelectorAll('td[style*="background:#ffeaea"]');
-        console.log('Celdas con alerta encontradas:', celdasConAlerta.length);
-        
-        // Test simple: verificar que al menos una celda tiene el texto de alerta
         const todasLasCeldas = document.querySelectorAll('td');
         let alertasEncontradas = 0;
         todasLasCeldas.forEach(celda => {
             if (celda.textContent.includes('ALERTA TEMPRANA')) {
                 alertasEncontradas++;
-                console.log('Alerta encontrada en celda:', celda.textContent);
             }
         });
-        console.log('Total de alertas por texto encontradas:', alertasEncontradas);
     }, 100);
 }
 
@@ -612,7 +607,7 @@ function calcularPorcentajeAsistencia(totales) {
     else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
     else porcentajeAsistencia = 0;
     
-    console.log('Porcentaje de asistencia calculado:', porcentajeAsistencia, 'Porcentaje ausencia:', porcentajeAusencia);
+    
     return porcentajeAsistencia;
 }
 
@@ -633,10 +628,7 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     console.log('Evaluando alerta para:', estudiante.nombre, 'Porcentaje:', porcentajeAsistencia, 'Diferencia:', diferencia, 'Valor alerta:', valorAlerta);
     
     // Mostrar alerta temprana si la diferencia es mayor al valor configurado
-
-    
-        if (diferencia > valorAlerta) {
-        console.log('ALERTA ACTIVADA para:', estudiante.nombre);
+    if (diferencia > valorAlerta) {
         return '<span class="texto-alerta">⚠️ ALERTA TEMPRANA</span>';
     } else {
         return '-';
@@ -698,7 +690,7 @@ function actualizarAsistenciaTipoMultiple(estIdx, diaIdx, ausenciaIdx, valor) {
     if (ausenciaIdx === 0 && (valor === 'Ausente' || valor === 'Justificada')) {
         const leccionesDia = Number(dias[diaIdx].lecciones) || 0;
         estudiantes[estIdx].asistenciaDias[diaIdx].ausencias[ausenciaIdx].cantidad = leccionesDia;
-        console.log(`Precargando ${valor.toLowerCase()} con ${leccionesDia} lecciones para estudiante ${estIdx + 1}, día ${diaIdx + 1}`);
+
     }
     
     guardarDatos();
@@ -750,18 +742,34 @@ function eliminarAusencia(estIdx, diaIdx, ausenciaIdx) {
 }
 
 function actualizarFechaDia(idx, fecha) {
+    // Validar formato de fecha
+    if (!fecha || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+        mostrarAlerta('Formato de fecha inválido. Use YYYY-MM-DD', 'error');
+        return;
+    }
+    
+    // Validar que la fecha sea válida
+    const fechaObj = new Date(fecha);
+    if (isNaN(fechaObj.getTime())) {
+        mostrarAlerta('Fecha inválida', 'error');
+        return;
+    }
+    
     dias[idx].fecha = fecha;
     guardarDatos();
     renderAsistencia();
 }
 
 function actualizarLeccionesDia(idx, valor) {
-    console.log(`=== ACTUALIZANDO LECCIONES DÍA ${idx + 1} ===`);
-    console.log('Valor recibido:', valor, 'tipo:', typeof valor);
-    console.log('Valor convertido a Number:', Number(valor));
+    // Validar que el valor sea un número válido
+    const valorNumerico = Number(valor);
+    if (isNaN(valorNumerico) || valorNumerico < 0) {
+        mostrarAlerta('El número de lecciones debe ser un valor válido mayor o igual a 0', 'error');
+        return;
+    }
     
     const valorAnterior = Number(dias[idx].lecciones) || 0;
-    dias[idx].lecciones = Number(valor);
+    dias[idx].lecciones = valorNumerico;
     
 
     
@@ -1072,10 +1080,20 @@ function cargarPlantilla(event) {
             
             mostrarAlerta('Datos importados y agregados correctamente', 'exito');
             
-        } catch (error) {
-            console.error('Error al importar:', error);
-            mostrarAlerta('Error al importar el archivo', 'error');
+            } catch (error) {
+        console.error('Error al importar:', error);
+        let mensajeError = 'Error al importar el archivo';
+        
+        if (error.message.includes('Invalid file format')) {
+            mensajeError = 'El archivo no es un archivo Excel válido (.xlsx)';
+        } else if (error.message.includes('Empty workbook')) {
+            mensajeError = 'El archivo Excel está vacío';
+        } else if (error.message.includes('Cannot read')) {
+            mensajeError = 'No se puede leer el archivo. Verifique que no esté corrupto';
         }
+        
+        mostrarAlerta(mensajeError, 'error');
+    }
     };
     
     reader.readAsArrayBuffer(file);
@@ -1226,7 +1244,7 @@ function configurarHoverFilas() {
         fila.addEventListener('mouseleave', mouseleaveHandler);
     });
     
-    console.log('Hover configurado correctamente');
+    
 }
 
 // ===== STICKY CSS PURO - SIN JAVASCRIPT MANUAL =====
@@ -1235,7 +1253,7 @@ function configurarHoverFilas() {
 function implementarStickyManual() {
     // Ya no necesitamos JavaScript manual, CSS sticky funciona correctamente
     // Solo asegurar que los estilos estén aplicados
-    console.log('Sticky CSS aplicado correctamente');
+    
 }
 
 // ===== EVALUACIÓN DE PRUEBAS =====
@@ -1369,22 +1387,24 @@ function calcularPorcentaje(puntos, puntosMaximos) {
 
 // Función para actualizar puntos máximos de una prueba
 function actualizarPuntosMaximos(pruebaIdx, valor) {
-    pruebas[pruebaIdx].puntosMaximos = parseInt(valor) || 0;
+    const puntos = Number(valor);
+    if (isNaN(puntos) || puntos < 0 || puntos > 1000) {
+        mostrarAlerta('Los puntos máximos deben estar entre 0 y 1000', 'error');
+        return;
+    }
+    pruebas[pruebaIdx].puntosMaximos = puntos;
     guardarEvaluacion();
     renderEvaluacion();
 }
 
 // Función para actualizar peso de una prueba
 function actualizarPeso(pruebaIdx, valor) {
-    const peso = parseInt(valor) || 0;
-    // Validar que esté entre 0 y 100
-    if (peso < 0) {
-        pruebas[pruebaIdx].peso = 0;
-    } else if (peso > 100) {
-        pruebas[pruebaIdx].peso = 100;
-    } else {
-        pruebas[pruebaIdx].peso = peso;
+    const peso = Number(valor);
+    if (isNaN(peso) || peso < 0 || peso > 100) {
+        mostrarAlerta('El peso debe estar entre 0 y 100', 'error');
+        return;
     }
+    pruebas[pruebaIdx].peso = peso;
     
     // Calcular el total de pesos
     const totalPeso = pruebas.reduce((sum, prueba) => sum + prueba.peso, 0);
@@ -1401,7 +1421,12 @@ function actualizarPeso(pruebaIdx, valor) {
 // Función para actualizar puntos de un estudiante
 function actualizarPuntos(estIdx, pruebaIdx, valor) {
     const evaluacion = obtenerEvaluacion(estIdx, pruebaIdx);
-    evaluacion.puntos = Number(valor) || 0;
+    const puntos = Number(valor);
+    if (isNaN(puntos) || puntos < 0) {
+        mostrarAlerta('Los puntos deben ser un número válido mayor o igual a 0', 'error');
+        return;
+    }
+    evaluacion.puntos = puntos;
     guardarEvaluacion();
     renderEvaluacion();
 }
