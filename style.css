@@ -3326,11 +3326,11 @@ body.dark-mode .texto-alerta {
 
 /* ===== SECCIÓN PORTAFOLIO ===== */
 .portafolio-container {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     border-radius: 15px;
     padding: 25px;
     margin: 30px 0;
-    box-shadow: 0 8px 32px rgba(76, 29, 149, 0.3);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25);
     position: relative;
     overflow: hidden;
 }
@@ -3405,7 +3405,7 @@ body.dark-mode .texto-alerta {
 }
 
 .btn-agregar-portafolio, .btn-exportar-portafolio {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -3414,7 +3414,7 @@ body.dark-mode .texto-alerta {
     font-weight: 600;
     font-size: 0.9em;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(76, 29, 149, 0.4);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -3439,7 +3439,7 @@ body.dark-mode .texto-alerta {
 
 .btn-agregar-portafolio:hover, .btn-exportar-portafolio:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 29, 149, 0.6);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
 }
 
 .portafolio-table-container {
@@ -3458,7 +3458,7 @@ body.dark-mode .texto-alerta {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(76, 29, 149, 0.05) 0%, rgba(55, 48, 163, 0.05) 100%);
+    background: linear-gradient(45deg, rgba(139, 92, 246, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%);
     pointer-events: none;
     border-radius: 15px;
 }
@@ -3479,7 +3479,7 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table th {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     padding: 15px 10px;
     text-align: center;
@@ -3519,30 +3519,30 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table tbody tr:hover {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     transform: scale(1.01);
     transition: all 0.2s ease;
 }
 
 .portafolio-table tbody tr:hover .student-name {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
 }
 
 .portafolio-table tbody tr:hover .calculated {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
 }
 
 .portafolio-table tbody tr:hover .editable {
     background: white;
     color: #2c3e50;
-    border-color: #4c1d95;
+    border-color: #8b5cf6;
 }
 
 .portafolio-table .config-row:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
     color: #ffffff;
 }
 
@@ -3559,13 +3559,13 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table .editable:hover {
-    border-color: #4c1d95;
-    box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.1);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
     transform: scale(1.02);
 }
 
 .portafolio-table .calculated {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     font-weight: 700;
     border-radius: 6px;
@@ -3616,15 +3616,15 @@ body.dark-mode .texto-alerta {
 
 .portafolio-table input[type="number"]:focus {
     outline: none;
-    border-color: #4c1d95;
-    box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.2);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
     transform: scale(1.02);
 }
 
 .portafolio-table .config-row input[type="number"]:focus {
-    border-color: #7c3aed;
+    border-color: #a78bfa;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
     transform: scale(1.02);
 }
 
@@ -3776,8 +3776,8 @@ body.dark-mode .proyecto-table .total-excedido {
 
 /* ===== MODO OSCURO PARA PORTAFOLIO ===== */
 body.dark-mode .portafolio-container {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.4);
+    background: linear-gradient(135deg, #5b21b6 0%, #4c1d95 100%);
+    box-shadow: 0 8px 32px rgba(91, 33, 182, 0.3);
 }
 
 body.dark-mode .portafolio-container::before {
@@ -3804,7 +3804,7 @@ body.dark-mode .portafolio-table-container {
 }
 
 body.dark-mode .portafolio-table-container::before {
-    background: linear-gradient(45deg, rgba(76, 29, 149, 0.1) 0%, rgba(55, 48, 163, 0.1) 100%);
+    background: linear-gradient(45deg, rgba(139, 92, 246, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
 }
 
 body.dark-mode .portafolio-table {
@@ -3812,7 +3812,7 @@ body.dark-mode .portafolio-table {
 }
 
 body.dark-mode .portafolio-table th {
-    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
 }
 
 body.dark-mode .portafolio-table td {
@@ -3836,7 +3836,7 @@ body.dark-mode .portafolio-table .editable {
 }
 
 body.dark-mode .portafolio-table .editable:hover {
-    border-color: #7c3aed;
+    border-color: #a78bfa;
     background: #2c3e50;
 }
 
@@ -3861,12 +3861,12 @@ body.dark-mode .portafolio-table .config-row input[type="number"] {
 }
 
 body.dark-mode .portafolio-table input[type="number"]:focus {
-    border-color: #7c3aed;
+    border-color: #a78bfa;
     background: #2c3e50;
 }
 
 body.dark-mode .portafolio-table .config-row input[type="number"]:focus {
-    border-color: #7c3aed;
+    border-color: #a78bfa;
     background: #34495e;
 }
 
@@ -3879,25 +3879,25 @@ body.dark-mode .portafolio-table tbody tr:nth-child(even) {
 }
 
 body.dark-mode .portafolio-table tbody tr:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .student-name {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .calculated {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .editable {
     background: #34495e;
     color: #ecf0f1;
-    border-color: #7c3aed;
+    border-color: #a78bfa;
 }
 
 body.dark-mode .portafolio-table .config-row:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
     color: #ffffff;
 }
 
