@@ -462,11 +462,7 @@ function generarFilasEstudiantes() {
         html += `<td style="font-weight:bold;color:#000;text-align:center;">${porcentajeAsistencia}</td>`;
         
         const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
-        if (accionHtml === '⚠️ ALERTA TEMPRANA') {
-            html += `<td class="celda-alerta-temprana" style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;'>${accionHtml}</td>`;
-        } else {
-            html += `<td style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;background:#f9f9f9;color:#999;'>${accionHtml}</td>`;
-        }
+        html += `<td style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;'>${accionHtml}</td>`;
         html += `</tr>`;
     }
     
@@ -639,15 +635,10 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     // Mostrar alerta temprana si la diferencia es mayor al valor configurado
 
     
-    if (diferencia > valorAlerta && 
-        estudiante.nombre && estudiante.nombre.trim() !== '' &&
-        estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
-        
+        if (diferencia > valorAlerta) {
         console.log('ALERTA ACTIVADA para:', estudiante.nombre);
-        return '⚠️ ALERTA TEMPRANA';
-        
+        return '<span class="texto-alerta">⚠️ ALERTA TEMPRANA</span>';
     } else {
-
         return '-';
     }
 }
