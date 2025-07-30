@@ -1864,7 +1864,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 
 /* ===== SECCIÓN DE TRABAJO COTIDIANO ===== */
 .trabajo-cotidiano-container {
-    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
     border: 1px solid var(--color-border);
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.1);
@@ -1881,13 +1881,13 @@ body.dark-mode .tareas-table .config-row button:hover {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff9800 0%, #ff5722 50%, #f44336 100%);
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
 }
 
 .trabajo-cotidiano-container h3 {
     font-size: 2em;
     margin-bottom: 25px;
-    color: #ff5722;
+    color: #2e7d32;
     text-align: center;
     display: flex;
     align-items: center;
@@ -1904,12 +1904,12 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-instructions {
-    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-    border: 2px solid #ff9800;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    border: 2px solid #4caf50;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -1926,7 +1926,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 .trabajo-cotidiano-instructions p {
     font-size: 1.05em;
     line-height: 1.4;
-    color: #e65100;
+    color: #2e7d32;
     margin: 0;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     font-weight: 600;
@@ -1946,7 +1946,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .btn-agregar-dia-trabajo, .btn-exportar-trabajo {
-    background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     color: #fff;
     border: none;
     border-radius: 12px;
@@ -1955,7 +1955,7 @@ body.dark-mode .tareas-table .config-row button:hover {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
     gap: 10px;
     display: flex;
     align-items: center;
@@ -1982,9 +1982,9 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .btn-agregar-dia-trabajo:hover, .btn-exportar-trabajo:hover {
-    background: linear-gradient(135deg, #ff5722 0%, #f44336 100%);
+    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.5);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
 }
 
 .escala-config {
@@ -1994,19 +1994,19 @@ body.dark-mode .tareas-table .config-row button:hover {
     background: rgba(255,255,255,0.8);
     padding: 10px 15px;
     border-radius: 8px;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
 }
 
 .escala-config label {
     font-weight: 600;
-    color: #e65100;
+    color: #2e7d32;
     font-size: 1em;
 }
 
 .escala-config input {
     width: 60px;
     padding: 8px 12px;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 6px;
     text-align: center;
     font-size: 1em;
@@ -2017,9 +2017,9 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .escala-config input:focus {
-    border-color: #ff5722;
+    border-color: #388e3c;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.05);
 }
 
@@ -2039,7 +2039,7 @@ body.dark-mode .tareas-table .config-row button:hover {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ff9800 0%, #ff5722 50%, #f44336 100%);
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
 }
 
 .trabajo-cotidiano-table-responsive {
@@ -2054,7 +2054,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table th {
-    background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     color: #fff;
     padding: 15px 10px;
     border: none;
@@ -2075,15 +2075,15 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table .config-row {
-    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%) !important;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important;
     font-weight: 600;
-    color: #e65100;
-    border-bottom: 2px solid #ff9800;
+    color: #2e7d32;
+    border-bottom: 2px solid #4caf50;
 }
 
 .trabajo-cotidiano-table .config-row:hover {
-    background: #fff3e0 !important;
-    color: #f57c00;
+    background: #c8e6c9 !important;
+    color: #1b5e20;
 }
 
 .trabajo-cotidiano-table tbody tr:nth-child(odd) {
@@ -2095,30 +2095,30 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table tbody tr:hover {
-    background: #fff3e0 !important;
+    background: #e8f5e8 !important;
     transition: background-color 0.2s ease;
 }
 
 .trabajo-cotidiano-table tbody tr:hover .student-name,
 .trabajo-cotidiano-table tbody tr:hover .calculated,
 .trabajo-cotidiano-table tbody tr:hover .editable {
-    background: #fff3e0 !important;
+    background: #e8f5e8 !important;
     color: inherit;
 }
 
 .trabajo-cotidiano-table .editable {
     background: #fff !important;
-    border: 2px solid #ff9800 !important;
+    border: 2px solid #4caf50 !important;
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
     font-weight: 500;
     transition: all 0.2s ease;
 }
 
 .trabajo-cotidiano-table .editable:hover {
     background: #ffffff !important;
-    border-color: #ff5722 !important;
-    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+    border-color: #388e3c !important;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .trabajo-cotidiano-table .calculated {
@@ -2135,21 +2135,21 @@ body.dark-mode .tareas-table .config-row button:hover {
     z-index: 5;
     background: inherit !important;
     font-weight: 600;
-    color: #ff5722;
+    color: #2e7d32;
     border-right: 2px solid #e9ecef;
 }
 
 .trabajo-cotidiano-table input[type="number"] {
     width: 80px;
     padding: 8px 10px;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 6px;
     text-align: center;
     font-size: 1em;
     background: #fff;
     transition: all 0.2s ease;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
     color: #333;
     display: block;
     margin: 0 auto;
@@ -2166,52 +2166,52 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table input[type="number"]:focus {
-    border-color: #ff5722;
+    border-color: #388e3c;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.02);
 }
 
 .trabajo-cotidiano-table input[type="date"] {
     width: 150px;
     padding: 10px 12px;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 6px;
     text-align: center;
     font-size: 1.1em;
     background: #fff;
     transition: all 0.2s ease;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
 }
 
 .trabajo-cotidiano-table input[type="date"]:focus {
-    border-color: #ff5722;
+    border-color: #388e3c;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.02);
 }
 
 .trabajo-cotidiano-table input[type="checkbox"] {
     width: 20px;
     height: 20px;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 4px;
     background: #fff;
     cursor: pointer;
     transition: all 0.2s ease;
-    accent-color: #ff5722;
+    accent-color: #388e3c;
 }
 
 .trabajo-cotidiano-table input[type="checkbox"]:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.1);
 }
 
 .trabajo-cotidiano-table input[type="checkbox"]:checked {
-    background: #ff5722;
-    border-color: #ff5722;
+    background: #388e3c;
+    border-color: #388e3c;
 }
 
 /* Modo oscuro para trabajo cotidiano */
@@ -2222,11 +2222,11 @@ body.dark-mode .trabajo-cotidiano-container {
 }
 
 body.dark-mode .trabajo-cotidiano-container::before {
-    background: linear-gradient(90deg, #ff9800 0%, #ff5722 50%, #f44336 100%);
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
 }
 
 body.dark-mode .trabajo-cotidiano-container h3 {
-    color: #ff9800;
+    color: #81c784;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
@@ -2235,10 +2235,10 @@ body.dark-mode .trabajo-cotidiano-container h3::before {
 }
 
 body.dark-mode .trabajo-cotidiano-instructions {
-    background: linear-gradient(135deg, #3e3a1e 0%, #2d2a1e 100%);
-    border: 2px solid #ff9800;
-    color: #ffd54f;
-    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.1);
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
 }
 
 body.dark-mode .trabajo-cotidiano-instructions::before {
@@ -2246,7 +2246,7 @@ body.dark-mode .trabajo-cotidiano-instructions::before {
 }
 
 body.dark-mode .trabajo-cotidiano-instructions p {
-    color: #ffd54f;
+    color: #a5d6a7;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     font-weight: 600;
 }
@@ -2258,17 +2258,17 @@ body.dark-mode .trabajo-cotidiano-actions {
 
 body.dark-mode .escala-config {
     background: rgba(255,255,255,0.1);
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
 }
 
 body.dark-mode .escala-config label {
-    color: #ffd54f;
+    color: #a5d6a7;
 }
 
 body.dark-mode .escala-config input {
     background: #ffffff;
     color: #000;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
 }
 
 body.dark-mode .trabajo-cotidiano-table-container {
@@ -2277,7 +2277,7 @@ body.dark-mode .trabajo-cotidiano-table-container {
 }
 
 body.dark-mode .trabajo-cotidiano-table-container::before {
-    background: linear-gradient(90deg, #ff9800 0%, #ff5722 50%, #f44336 100%);
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
 }
 
 body.dark-mode .trabajo-cotidiano-table {
@@ -2285,7 +2285,7 @@ body.dark-mode .trabajo-cotidiano-table {
 }
 
 body.dark-mode .trabajo-cotidiano-table th {
-    background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     border: none;
     color: #fff;
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
@@ -2297,28 +2297,28 @@ body.dark-mode .trabajo-cotidiano-table td {
 }
 
 body.dark-mode .trabajo-cotidiano-table .config-row {
-    background: linear-gradient(135deg, #3e3a1e 0%, #2d2a1e 100%) !important;
-    border-bottom: 2px solid #ff9800;
-    color: #ffd54f;
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
 }
 
 body.dark-mode .trabajo-cotidiano-table .config-row:hover {
-    background: #f39c12 !important;
-    color: #2c3e50;
+    background: #388e3c !important;
+    color: #ffffff;
 }
 
 body.dark-mode .trabajo-cotidiano-table .editable {
     background: #ffffff !important;
-    border: 2px solid #ff9800 !important;
+    border: 2px solid #4caf50 !important;
     color: #000;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
     border-radius: 6px;
 }
 
 body.dark-mode .trabajo-cotidiano-table .editable:hover {
     background: #ffffff !important;
     color: #000;
-    border-color: #ff5722 !important;
+    border-color: #388e3c !important;
 }
 
 body.dark-mode .trabajo-cotidiano-table .calculated {
@@ -2331,17 +2331,17 @@ body.dark-mode .trabajo-cotidiano-table .calculated {
 
 body.dark-mode .trabajo-cotidiano-table .student-name {
     background: inherit !important;
-    color: #ff9800;
+    color: #81c784;
     font-weight: 600;
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="number"] {
     background: #ffffff;
     color: #000;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 6px;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
     display: block;
     margin: 0 auto;
 }
@@ -2349,44 +2349,44 @@ body.dark-mode .trabajo-cotidiano-table input[type="number"] {
 body.dark-mode .trabajo-cotidiano-table input[type="date"] {
     background: #ffffff;
     color: #000;
-    border: 2px solid #ff9800;
+    border: 2px solid #4caf50;
     border-radius: 6px;
     font-weight: 500;
-    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
     width: 150px;
     padding: 10px 12px;
     font-size: 1.1em;
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
-    border-color: #ff5722;
+    border-color: #388e3c;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.02);
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
-    border-color: #ff5722;
+    border-color: #388e3c;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.02);
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
     background: #ffffff;
-    border: 2px solid #ff9800;
-    accent-color: #ff5722;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.1);
 }
 
 body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
-    background: #ff5722;
-    border-color: #ff5722;
+    background: #388e3c;
+    border-color: #388e3c;
 }
 
 body.dark-mode .trabajo-cotidiano-table tbody tr:nth-child(odd) {
@@ -3326,11 +3326,11 @@ body.dark-mode .texto-alerta {
 
 /* ===== SECCIÓN PORTAFOLIO ===== */
 .portafolio-container {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     border-radius: 15px;
     padding: 25px;
     margin: 30px 0;
-    box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 8px 32px rgba(76, 29, 149, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -3405,7 +3405,7 @@ body.dark-mode .texto-alerta {
 }
 
 .btn-agregar-portafolio, .btn-exportar-portafolio {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -3414,7 +3414,7 @@ body.dark-mode .texto-alerta {
     font-weight: 600;
     font-size: 0.9em;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 4px 15px rgba(76, 29, 149, 0.4);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -3439,7 +3439,7 @@ body.dark-mode .texto-alerta {
 
 .btn-agregar-portafolio:hover, .btn-exportar-portafolio:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+    box-shadow: 0 6px 20px rgba(76, 29, 149, 0.6);
 }
 
 .portafolio-table-container {
@@ -3458,7 +3458,7 @@ body.dark-mode .texto-alerta {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(240, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%);
+    background: linear-gradient(45deg, rgba(76, 29, 149, 0.05) 0%, rgba(55, 48, 163, 0.05) 100%);
     pointer-events: none;
     border-radius: 15px;
 }
@@ -3479,7 +3479,7 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table th {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
     padding: 15px 10px;
     text-align: center;
@@ -3519,31 +3519,31 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table tbody tr:hover {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
     transform: scale(1.01);
     transition: all 0.2s ease;
 }
 
 .portafolio-table tbody tr:hover .student-name {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
 }
 
 .portafolio-table tbody tr:hover .calculated {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
 }
 
 .portafolio-table tbody tr:hover .editable {
     background: white;
     color: #2c3e50;
-    border-color: #3b82f6;
+    border-color: #4c1d95;
 }
 
 .portafolio-table .config-row:hover {
-    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-    color: #2c3e50;
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    color: #ffffff;
 }
 
 .portafolio-table .editable {
@@ -3559,13 +3559,13 @@ body.dark-mode .texto-alerta {
 }
 
 .portafolio-table .editable:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #4c1d95;
+    box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.1);
     transform: scale(1.02);
 }
 
 .portafolio-table .calculated {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
     color: white;
     font-weight: 700;
     border-radius: 6px;
@@ -3616,15 +3616,15 @@ body.dark-mode .texto-alerta {
 
 .portafolio-table input[type="number"]:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    border-color: #4c1d95;
+    box-shadow: 0 0 0 3px rgba(76, 29, 149, 0.2);
     transform: scale(1.02);
 }
 
 .portafolio-table .config-row input[type="number"]:focus {
-    border-color: #ffc107;
+    border-color: #7c3aed;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
     transform: scale(1.02);
 }
 
@@ -3804,7 +3804,7 @@ body.dark-mode .portafolio-table-container {
 }
 
 body.dark-mode .portafolio-table-container::before {
-    background: linear-gradient(45deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    background: linear-gradient(45deg, rgba(76, 29, 149, 0.1) 0%, rgba(55, 48, 163, 0.1) 100%);
 }
 
 body.dark-mode .portafolio-table {
@@ -3812,7 +3812,7 @@ body.dark-mode .portafolio-table {
 }
 
 body.dark-mode .portafolio-table th {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, #4c1d95 0%, #3730a3 100%);
 }
 
 body.dark-mode .portafolio-table td {
@@ -3836,7 +3836,7 @@ body.dark-mode .portafolio-table .editable {
 }
 
 body.dark-mode .portafolio-table .editable:hover {
-    border-color: #f59e0b;
+    border-color: #7c3aed;
     background: #2c3e50;
 }
 
@@ -3861,12 +3861,12 @@ body.dark-mode .portafolio-table .config-row input[type="number"] {
 }
 
 body.dark-mode .portafolio-table input[type="number"]:focus {
-    border-color: #f59e0b;
+    border-color: #7c3aed;
     background: #2c3e50;
 }
 
 body.dark-mode .portafolio-table .config-row input[type="number"]:focus {
-    border-color: #ffc107;
+    border-color: #7c3aed;
     background: #34495e;
 }
 
@@ -3879,26 +3879,26 @@ body.dark-mode .portafolio-table tbody tr:nth-child(even) {
 }
 
 body.dark-mode .portafolio-table tbody tr:hover {
-    background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .student-name {
-    background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .calculated {
-    background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 body.dark-mode .portafolio-table tbody tr:hover .editable {
     background: #34495e;
     color: #ecf0f1;
-    border-color: #60a5fa;
+    border-color: #7c3aed;
 }
 
 body.dark-mode .portafolio-table .config-row:hover {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    color: #2c3e50;
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    color: #ffffff;
 }
 
 body.dark-mode .portafolio-table .total-excedido {
@@ -4180,3 +4180,31 @@ body.dark-mode .resumen-btn:hover {
         transform: translateY(0);
     }
 }
+
+/* ===== ESTILOS PARA TABLA DE ASISTENCIA ===== */
+
+/* Paso zebra para tabla de asistencia */
+.asistencia-table tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+.asistencia-table tbody tr:nth-child(even) {
+    background: #e8f4f8;
+}
+
+/* Paso zebra en modo oscuro para tabla de asistencia */
+body.dark-mode .asistencia-table tbody tr:nth-child(odd) {
+    background: #2c3e50;
+}
+
+body.dark-mode .asistencia-table tbody tr:nth-child(even) {
+    background: #1a252f;
+}
+
+/* Hover effects para tabla de asistencia */
+.asistencia-table tbody tr:hover {
+    background: #e3f2fd !important;
+    transition: background-color 0.2s ease;
+}
+
+/* ===== BARRA DE ACCIONES DE ASISTENCIA ===== */

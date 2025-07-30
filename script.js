@@ -336,7 +336,7 @@ function limpiarEstudiantesVacios() {
 
 function renderTablaVacia() {
     let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-    html += `<table border="1" aria-label="Tabla de asistencia">`;
+    html += `<table border="1" class="asistencia-table" aria-label="Tabla de asistencia">`;
             html += '<thead><tr>';
         html += '<th class="numero">#</th><th class="nombre">Nombre</th><th class="cedula">Cédula</th><th class="apellido1">Primer apellido</th><th class="apellido2">Segundo apellido</th>';
     
@@ -354,7 +354,7 @@ function renderTablaVacia() {
 
 function generarEncabezadoTabla() {
     let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-    html += `<table border="1" aria-label="Tabla de asistencia">`;
+    html += `<table border="1" class="asistencia-table" aria-label="Tabla de asistencia">`;
     html += '<thead>';
     html += '<tr>' +
         '<th rowspan="2" class="numero">#</th>' +
@@ -409,7 +409,7 @@ function contarAusentesDia(diaIndex) {
     }
     return Math.round(ausentesDia * 100) / 100; // Redondear a 2 decimales
 }
-
+  
 function generarEncabezadoDia(diaIndex, ausentesDia) {
     let html = `<th>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
