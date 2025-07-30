@@ -863,6 +863,12 @@ input[type="number"]:focus {
     vertical-align: middle;
 }
 
+/* Estilo específico para el botón +Indicador en Trabajo Cotidiano */
+.trabajo-cotidiano-table .btn-agregar-dia {
+    background: linear-gradient(90deg, #3b82f6 60%, #2563eb 100%) !important;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.10) !important;
+}
+
 th .header-dia-flex {
     display: flex;
     align-items: center;
@@ -883,10 +889,28 @@ th input[type="date"] {
     opacity: 1;
 }
 
+/* Hover específico para el botón +Indicador en Trabajo Cotidiano */
+.trabajo-cotidiano-table .btn-agregar-dia:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%) !important;
+    box-shadow: 0 6px 18px rgba(59,130,246,0.18) !important;
+}
+
 body.dark-mode .btn-agregar-dia {
     background: linear-gradient(90deg, #66bb6a 60%, #43a047 100%);
     color: #fff;
     box-shadow: 0 2px 8px rgba(102,187,106,0.13);
+}
+
+/* Modo oscuro específico para el botón +Indicador en Trabajo Cotidiano */
+body.dark-mode .trabajo-cotidiano-table .btn-agregar-dia {
+    background: linear-gradient(90deg, #60a5fa 60%, #3b82f6 100%) !important;
+    box-shadow: 0 2px 8px rgba(96,165,250,0.13) !important;
+}
+
+/* Hover en modo oscuro específico para el botón +Indicador en Trabajo Cotidiano */
+body.dark-mode .trabajo-cotidiano-table .btn-agregar-dia:hover {
+    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%) !important;
+    box-shadow: 0 6px 18px rgba(96,165,250,0.18) !important;
 }
 
 /* ===== SELECTORES DE ASISTENCIA CON COLORES ===== */
@@ -964,7 +988,7 @@ body.dark-mode .select-justificada {
     transform: translateX(-50%);
     min-width: 280px;
     max-width: 90vw;
-    z-index: 9999;
+    z-index: 10001;
     font-size: 1.12em;
     font-weight: 600;
     box-shadow: var(--shadow-strong);
@@ -1817,7 +1841,6 @@ body.dark-mode .tareas-table input[type="number"]:focus {
 
 body.dark-mode .tareas-table .config-row input[type="number"]:focus {
     border-color: #f57c00;
-    background: #ffffff;
     box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.3);
     transform: scale(1.02);
 }
@@ -2173,7 +2196,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table input[type="date"] {
-    width: 150px;
+    width: 180px;
     padding: 10px 12px;
     border: 2px solid #4caf50;
     border-radius: 6px;
@@ -2185,9 +2208,25 @@ body.dark-mode .tareas-table .config-row button:hover {
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
 }
 
+/* Específico para Trabajo Cotidiano - asegurar que el año sea visible */
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-year-field {
+    min-width: 5ch !important;
+    width: auto !important;
+}
+
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-month-field {
+    min-width: 3ch !important;
+    width: auto !important;
+}
+
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-day-field {
+    min-width: 3ch !important;
+    width: auto !important;
+}
+
 .trabajo-cotidiano-table input[type="date"]:focus {
     border-color: #388e3c;
-    outline: none;
+    background: #fff;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
     transform: scale(1.02);
 }
@@ -2353,7 +2392,7 @@ body.dark-mode .trabajo-cotidiano-table input[type="date"] {
     border-radius: 6px;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-    width: 150px;
+    width: 180px;
     padding: 10px 12px;
     font-size: 1.1em;
 }
@@ -2528,7 +2567,3332 @@ body.dark-mode .trabajo-cotidiano-table input[type="date"] {
     border-radius: 6px;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-    width: 150px;
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
+    padding: 10px 12px;
+    font-size: 1.1em;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"] {
+    background: #ffffff;
+    border: 2px solid #4caf50;
+    accent-color: #388e3c;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:focus {
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
+    background: #388e3c;
+    border-color: #388e3c;
+}
+
+/* Modo oscuro para trabajo cotidiano */
+body.dark-mode .trabajo-cotidiano-container {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3 {
+    color: #81c784;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .trabajo-cotidiano-container h3::before {
+    opacity: 0.8;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%);
+    border: 2px solid #4caf50;
+    color: #a5d6a7;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-instructions::before {
+    opacity: 0.4;
+}
+
+body.dark-mode .trabajo-cotidiano-instructions p {
+    color: #a5d6a7;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-actions {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+}
+
+body.dark-mode .escala-config {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .escala-config label {
+    color: #a5d6a7;
+}
+
+body.dark-mode .escala-config input {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+}
+
+body.dark-mode .trabajo-cotidiano-table-container {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-mode .trabajo-cotidiano-table-container::before {
+    background: linear-gradient(90deg, #4caf50 0%, #388e3c 50%, #2e7d32 100%);
+}
+
+body.dark-mode .trabajo-cotidiano-table {
+    background: #1a202c;
+}
+
+body.dark-mode .trabajo-cotidiano-table th {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border: none;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .trabajo-cotidiano-table td {
+    border: none;
+    color: #fff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row {
+    background: linear-gradient(135deg, #1e3e1e 0%, #1a2d1a 100%) !important;
+    border-bottom: 2px solid #4caf50;
+    color: #a5d6a7;
+}
+
+body.dark-mode .trabajo-cotidiano-table .config-row:hover {
+    background: #388e3c !important;
+    color: #ffffff;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable {
+    background: #ffffff !important;
+    border: 2px solid #4caf50 !important;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    border-radius: 6px;
+}
+
+body.dark-mode .trabajo-cotidiano-table .editable:hover {
+    background: #ffffff !important;
+    color: #000;
+    border-color: #388e3c !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table .calculated {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+    color: #ffffff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+body.dark-mode .trabajo-cotidiano-table .student-name {
+    background: inherit !important;
+    color: #81c784;
+    font-weight: 600;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="number"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    background: #ffffff;
+    color: #000;
+    border: 2px solid #4caf50;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+    width: 180px;
     padding: 10px 12px;
     font-size: 1.1em;
 }
@@ -4380,6 +7744,58 @@ body.dark-mode .asistencia-table tbody tr:nth-child(even) {
 .asistencia-table tbody tr:hover {
     background: #e3f2fd !important;
     transition: background-color 0.2s ease;
+}
+
+/* ===== SOLUCIÓN ESPECÍFICA PARA INPUT DE FECHA EN TRABAJO COTIDIANO ===== */
+/* Asegurar que el año sea visible en el input de fecha */
+.trabajo-cotidiano-table input[type="date"] {
+    width: 200px !important;
+    min-width: 200px !important;
+    padding: 10px 15px !important;
+}
+
+/* Reglas específicas para los pseudo-elementos del input de fecha */
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-year-field {
+    min-width: 6ch !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-month-field {
+    min-width: 4ch !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+.trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-day-field {
+    min-width: 4ch !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+/* Versión para modo oscuro */
+body.dark-mode .trabajo-cotidiano-table input[type="date"] {
+    width: 200px !important;
+    min-width: 200px !important;
+    padding: 10px 15px !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-year-field {
+    min-width: 6ch !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-month-field {
+    min-width: 4ch !important;
+    width: auto !important;
+    display: inline-block !important;
+}
+
+body.dark-mode .trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edit-day-field {
+    min-width: 4ch !important;
+    width: auto !important;
+    display: inline-block !important;
 }
 
 /* ===== BARRA DE ACCIONES DE ASISTENCIA ===== */

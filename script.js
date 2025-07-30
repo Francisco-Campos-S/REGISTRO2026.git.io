@@ -516,7 +516,7 @@ function generarCeldaAsistencia(estIndex, diaIndex, dia) {
         
         // Botón eliminar ausencia (solo si hay más de una)
         if (dia.ausencias.length > 1) {
-            html += `<button onclick="eliminarAusencia(${estIndex},${diaIndex},${ausenciaIndex})" style="background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.8em;cursor:pointer;" title="Eliminar ausencia">×</button>`;
+            html += `<button onclick="eliminarAusencia(${estIndex},${diaIndex},${ausenciaIndex})" style="background:#e11d48;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.8em;cursor:pointer;" title="Eliminar ausencia">×</button>`;
         }
         
         html += `</div>`;
@@ -943,6 +943,41 @@ function mostrarAlerta(mensaje, tipo) {
     alerta.setAttribute('role', 'alert');
     alerta.setAttribute('aria-live', 'assertive');
     
+    // Add additional styling to ensure visibility
+    alerta.style.zIndex = '10001';
+    alerta.style.position = 'fixed';
+    alerta.style.top = '220px';
+    alerta.style.left = '50%';
+    alerta.style.transform = 'translateX(-50%)';
+    alerta.style.minWidth = '280px';
+    alerta.style.maxWidth = '90vw';
+    alerta.style.fontSize = '1.12em';
+    alerta.style.fontWeight = '600';
+    alerta.style.borderRadius = '15px';
+    alerta.style.padding = '16px 28px';
+    alerta.style.letterSpacing = '0.5px';
+    alerta.style.border = '2px solid rgba(255,255,255,0.2)';
+    alerta.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    alerta.style.willChange = 'transform, box-shadow';
+    
+    // Set background based on type
+    if (tipo === 'exito') {
+        alerta.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        alerta.style.color = '#fff';
+        alerta.style.border = '2px solid rgba(16, 185, 129, 0.3)';
+        alerta.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.2)';
+    } else if (tipo === 'error') {
+        alerta.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        alerta.style.color = '#fff';
+        alerta.style.border = '2px solid rgba(239, 68, 68, 0.3)';
+        alerta.style.boxShadow = '0 8px 32px rgba(239, 68, 68, 0.2)';
+    } else if (tipo === 'info') {
+        alerta.style.background = 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)';
+        alerta.style.color = '#fff';
+        alerta.style.border = '2px solid rgba(99, 102, 241, 0.3)';
+        alerta.style.boxShadow = '0 8px 32px rgba(99, 102, 241, 0.2)';
+    }
+    
     document.body.appendChild(alerta);
     
     // Animación de salida suave
@@ -1270,7 +1305,7 @@ function renderEvaluacion() {
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
             <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
+            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
         </td>`;
     });
     
@@ -1583,7 +1618,7 @@ function renderTareas() {
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
             <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" title="% de peso de la tarea" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
+            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#059669;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
         </td>`;
     });
     
@@ -1869,7 +1904,7 @@ function renderTrabajoCotidiano() {
     
     // Si no hay días de trabajo configurados, mostrar mensaje
     if (diasTrabajo.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📋 No hay indicadores de trabajo cotidiano configurados</h3><p>Agregue al menos un indicador para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya indicadores disponibles.</em></p><br><button onclick="agregarDiaTrabajo()" style="background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primer Indicador</button></div>';
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; background: #f9f9f9; border-radius: 8px; margin: 20px 0;"><h3>📋 No hay indicadores de trabajo cotidiano configurados</h3><p>Agregue al menos un indicador para comenzar a evaluar a los estudiantes.</p><p><em>Los estudiantes se ocultarán automáticamente cuando no haya indicadores disponibles.</em></p><br><button onclick="agregarDiaTrabajo()" style="background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px;">➕ Agregar Primer Indicador</button></div>';
         return;
     }
     
@@ -1883,7 +1918,7 @@ function renderTrabajoCotidiano() {
         html += '<th colspan="1">No hay días configurados</th>';
     } else {
         diasTrabajo.forEach((dia, idx) => {
-            html += `<th colspan="1">Indicador ${idx + 1}${idx === diasTrabajo.length - 1 ? ' <button onclick="agregarDiaTrabajo();" class="btn-agregar-dia" title="Agregar indicador" style="margin-left:8px;padding:2px 6px;font-size:0.7em;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;">+ Indicador</button>' : ''}</th>`;
+            html += `<th colspan="1">Indicador ${idx + 1}${idx === diasTrabajo.length - 1 ? ' <button onclick="agregarDiaTrabajo();" class="btn-agregar-dia" title="Agregar indicador" style="margin-left:8px;padding:2px 6px;font-size:0.7em;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;">+ Indicador</button>' : ''}</th>`;
         });
     }
     
@@ -1914,7 +1949,7 @@ function renderTrabajoCotidiano() {
             
             html += `<td class="editable" style="position:relative;">
                 <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:40px;width:150px;font-size:1.1em;">
-                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
+                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#7c3aed;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
             </td>`;
         });
     } else {
@@ -2212,6 +2247,13 @@ function agregarDiaTrabajo() {
 }
 
 function eliminarDiaTrabajo(diaIdx) {
+    // Mostrar confirmación antes de eliminar
+    const confirmacion = confirm(`¿Está seguro de que desea eliminar el día ${diaIdx + 1}?`);
+    
+    if (!confirmacion) {
+        return; // Si el usuario cancela, no hacer nada
+    }
+    
     // Preservar datos de inputs antes de re-renderizar
     preservarDatosInputs();
     
@@ -2222,7 +2264,6 @@ function eliminarDiaTrabajo(diaIdx) {
     sincronizarEstudiantesTrabajoCotidiano();
     
     guardarTrabajoCotidiano();
-    renderTrabajoCotidiano();
     
     // Verificar si se eliminó el último día
     if (diasTrabajo.length === 0) {
@@ -2230,6 +2271,11 @@ function eliminarDiaTrabajo(diaIdx) {
     } else {
         mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
     }
+    
+    // Delay the re-rendering to ensure alert is visible
+    setTimeout(() => {
+        renderTrabajoCotidiano();
+    }, 100);
 }
 
 function configurarEscalaMaxima() {
@@ -2494,7 +2540,7 @@ function renderProyecto() {
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
             <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" title="% de peso del proyecto" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
+            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#0891b2;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
         </td>`;
     });
     
@@ -2775,7 +2821,7 @@ function renderPortafolio() {
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
             <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" title="% de peso del portafolio" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ff4757;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
+            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#9333ea;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
         </td>`;
     });
     
