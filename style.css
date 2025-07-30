@@ -958,6 +958,52 @@ body.dark-mode tbody tr.fila-focus-activa {
     position: relative !important;
 }
 
+/* ===== ALERTAS TEMPRANAS ===== */
+.alerta-temprana {
+    background: #ffeaea !important;
+    color: #e74c3c !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-weight: bold !important;
+    border: 2.5px solid #e74c3c !important;
+    font-size: 1.08em !important;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    z-index: 10 !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    word-wrap: normal !important;
+    word-break: keep-all !important;
+}
+
+body.dark-mode .alerta-temprana {
+    background: #2d1b1b !important;
+    color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3) !important;
+}
+
+/* Estilos específicos para Chrome */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .alerta-temprana {
+        -webkit-appearance: none !important;
+        -webkit-box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
+        -webkit-border-radius: 6px !important;
+        -webkit-transform: translateZ(0) !important;
+        -webkit-backface-visibility: hidden !important;
+        -webkit-perspective: 1000px !important;
+    }
+    
+    body.dark-mode .alerta-temprana {
+        -webkit-box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3) !important;
+    }
+}
+
 /* ===== ANIMACIONES MEJORADAS ===== */
 @keyframes slideInDown {
     0% { 
@@ -2847,4 +2893,20 @@ body.dark-mode .trabajo-cotidiano-table .config-row button {
 body.dark-mode .trabajo-cotidiano-table .config-row button:hover {
     background: #ff3742;
     box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+}
+
+/* Estilos para celdas de alerta temprana */
+.celda-alerta-temprana {
+    background-color: #ffeaea !important;
+    color: #e74c3c !important;
+    font-weight: bold !important;
+    border: 2px solid #e74c3c !important;
+    border-radius: 4px !important;
+}
+
+/* Modo oscuro para celdas de alerta */
+body.dark-mode .celda-alerta-temprana {
+    background-color: #4a1a1a !important;
+    color: #ff6b6b !important;
+    border-color: #ff6b6b !important;
 }

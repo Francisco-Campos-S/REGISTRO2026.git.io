@@ -236,6 +236,17 @@ function sincronizarInputAlerta() {
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
         renderAsistencia(); // Re-renderizar para actualizar alertas
+        
+        // Forzar re-renderizado en Chrome
+        setTimeout(() => {
+            const alertas = document.querySelectorAll('.alerta-temprana');
+            alertas.forEach(alerta => {
+                alerta.style.display = 'none';
+                setTimeout(() => {
+                    alerta.style.display = 'inline-block';
+                }, 10);
+            });
+        }, 100);
     };
     
     // También agregar evento onchange para mayor compatibilidad
@@ -247,6 +258,17 @@ function sincronizarInputAlerta() {
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
         renderAsistencia();
+        
+        // Forzar re-renderizado en Chrome
+        setTimeout(() => {
+            const alertas = document.querySelectorAll('.alerta-temprana');
+            alertas.forEach(alerta => {
+                alerta.style.display = 'none';
+                setTimeout(() => {
+                    alerta.style.display = 'inline-block';
+                }, 10);
+            });
+        }, 100);
     };
     
     // Verificar que el input esté realmente configurado
@@ -278,6 +300,23 @@ function renderAsistencia() {
     document.getElementById('app').innerHTML = html;
     actualizarContador();
     configurarHoverFilas();
+    
+    // Debug: contar alertas
+    setTimeout(() => {
+        const celdasConAlerta = document.querySelectorAll('td[style*="background:#ffeaea"]');
+        console.log('Celdas con alerta encontradas:', celdasConAlerta.length);
+        
+        // Test simple: verificar que al menos una celda tiene el texto de alerta
+        const todasLasCeldas = document.querySelectorAll('td');
+        let alertasEncontradas = 0;
+        todasLasCeldas.forEach(celda => {
+            if (celda.textContent.includes('ALERTA TEMPRANA')) {
+                alertasEncontradas++;
+                console.log('Alerta encontrada en celda:', celda.textContent);
+            }
+        });
+        console.log('Total de alertas por texto encontradas:', alertasEncontradas);
+    }, 100);
 }
 
 function limpiarEstudiantesVacios() {
@@ -423,7 +462,11 @@ function generarFilasEstudiantes() {
         html += `<td style="font-weight:bold;color:#000;text-align:center;">${porcentajeAsistencia}</td>`;
         
         const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
-        html += `<td style='font-size:1em;padding:2px 0;text-align:center;'>${accionHtml}</td>`;
+        if (accionHtml === '⚠️ ALERTA TEMPRANA') {
+            html += `<td class="celda-alerta-temprana" style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;'>${accionHtml}</td>`;
+        } else {
+            html += `<td style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;background:#f9f9f9;color:#999;'>${accionHtml}</td>`;
+        }
         html += `</tr>`;
     }
     
@@ -573,12 +616,11 @@ function calcularPorcentajeAsistencia(totales) {
     else if (porcentajeAusencia < 90) porcentajeAsistencia = 1;
     else porcentajeAsistencia = 0;
     
+    console.log('Porcentaje de asistencia calculado:', porcentajeAsistencia, 'Porcentaje ausencia:', porcentajeAusencia);
     return porcentajeAsistencia;
 }
 
 function generarAccionAlerta(porcentajeAsistencia, estudiante) {
-    let accionHtml = '';
-    
     // Obtener el valor actual del input de alerta temprana
     let inputAlerta = document.getElementById('alertaTempranaInput');
     let valorAlerta = 2; // Valor por defecto
@@ -586,29 +628,28 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     if (inputAlerta) {
         valorAlerta = parseInt(inputAlerta.value) || 2;
     } else {
-        // Fallback: usar window.valorExtra si el input no está disponible
         valorAlerta = window.valorExtra || 2;
     }
     
     // Calcular la diferencia: 10 - %asistencia
     let diferencia = 10 - porcentajeAsistencia;
     
-
+    console.log('Evaluando alerta para:', estudiante.nombre, 'Porcentaje:', porcentajeAsistencia, 'Diferencia:', diferencia, 'Valor alerta:', valorAlerta);
     
     // Mostrar alerta temprana si la diferencia es mayor al valor configurado
-    // Se activa cuando (10 - %asistencia) > valor_alerta
+
+    
     if (diferencia > valorAlerta && 
-        estudiante.cedula && estudiante.cedula.trim() !== '' &&
         estudiante.nombre && estudiante.nombre.trim() !== '' &&
         estudiante.apellido1 && estudiante.apellido1.trim() !== '') {
-        accionHtml = `<span style='background:#ffeaea;color:#e74c3c;border-radius:6px;padding:4px 12px;font-weight:bold;border:2.5px solid #e74c3c;font-size:1.08em;box-shadow:0 2px 8px #e74c3c33;'>⚠️ Alerta temprana</span>`;
-        // Alerta activada
+        
+        console.log('ALERTA ACTIVADA para:', estudiante.nombre);
+        return '⚠️ ALERTA TEMPRANA';
+        
     } else {
-        // No se activa alerta
 
+        return '-';
     }
-    
-    return accionHtml;
 }
 
 // ===== FUNCIONES DE ACTUALIZACIÓN =====
