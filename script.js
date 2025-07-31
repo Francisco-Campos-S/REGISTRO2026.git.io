@@ -4547,69 +4547,54 @@ function calcularNotaPortafolio(estudiante) {
 
 function calcularNotaFinal(estudiante) {
     let sumaTotal = 0;
-    let contador = 0;
-    
-    console.log('=== CALCULANDO NOTA FINAL PARA:', estudiante.nombre || 'Estudiante', '===');
-    
-    // Usar porcentajes directos de cada sección (sin recalcular)
+    let totalPeso = 0;
+
+    // Trabajo Cotidiano
     if (hayDatosActivosTrabajoCotidiano()) {
         const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(estudiante);
-        console.log('✓ Trabajo Cotidiano (directo):', trabajoCotidiano);
+        const pesoTrabajo = Number(valorTotalTrabajo) || 35;
         sumaTotal += trabajoCotidiano;
-        contador++;
-    } else {
-        console.log('❌ Trabajo Cotidiano: No activo');
+        totalPeso += pesoTrabajo;
     }
-    
+
+    // Tareas
     if (hayDatosActivosTareas()) {
-        const tareas = obtenerPorcentajeTareasDirecto(estudiante);
-        console.log('✓ Tareas (directo):', tareas);
-        sumaTotal += tareas;
-        contador++;
-    } else {
-        console.log('❌ Tareas: No activo');
+        const tareasPorcentaje = obtenerPorcentajeTareasDirecto(estudiante);
+        const pesoTareas = (typeof tareas !== 'undefined' && Array.isArray(tareas)) ? tareas.reduce((sum, t) => sum + (Number(t.peso) || 0), 0) : 0;
+        sumaTotal += tareasPorcentaje;
+        totalPeso += pesoTareas;
     }
-    
+
+    // Pruebas
     if (hayDatosActivosPruebas()) {
-        const pruebas = obtenerPorcentajePruebasDirecto(estudiante);
-        console.log('✓ Pruebas (directo):', pruebas);
-        sumaTotal += pruebas;
-        contador++;
-    } else {
-        console.log('❌ Pruebas: No activo');
+        const pruebasPorcentaje = obtenerPorcentajePruebasDirecto(estudiante);
+        const pesoPruebas = (typeof pruebas !== 'undefined' && Array.isArray(pruebas)) ? pruebas.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        sumaTotal += pruebasPorcentaje;
+        totalPeso += pesoPruebas;
     }
-    
-    // Asistencia NO se incluye en la nota final (solo los 5 rubros principales)
-    if (hayDatosActivosAsistencia()) {
-        const asistencia = calcularNotaAsistencia(estudiante);
-        console.log('✓ Asistencia (no incluida en nota final):', asistencia);
-    } else {
-        console.log('❌ Asistencia: No activo');
-    }
-    
+
+    // Proyecto
     if (hayDatosActivosProyecto()) {
-        const proyecto = obtenerPorcentajeProyectoDirecto(estudiante);
-        console.log('✓ Proyecto (directo):', proyecto);
-        sumaTotal += proyecto;
-        contador++;
-    } else {
-        console.log('❌ Proyecto: No activo');
+        const proyectoPorcentaje = obtenerPorcentajeProyectoDirecto(estudiante);
+        const pesoProyecto = (typeof proyectos !== 'undefined' && Array.isArray(proyectos)) ? proyectos.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        sumaTotal += proyectoPorcentaje;
+        totalPeso += pesoProyecto;
     }
-    
+
+    // Portafolio
     if (hayDatosActivosPortafolio()) {
-        const portafolio = obtenerPorcentajePortafolioDirecto(estudiante);
-        console.log('✓ Portafolio (directo):', portafolio);
-        sumaTotal += portafolio;
-        contador++;
-    } else {
-        console.log('❌ Portafolio: No activo');
+        const portafolioPorcentaje = obtenerPorcentajePortafolioDirecto(estudiante);
+        const pesoPortafolio = (typeof portafolios !== 'undefined' && Array.isArray(portafolios)) ? portafolios.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        sumaTotal += portafolioPorcentaje;
+        totalPeso += pesoPortafolio;
     }
-    
-    // La nota final es la SUMA DIRECTA de los 5 rubros principales (sin asistencia)
-    const notaFinal = sumaTotal;
-    console.log('📊 Suma total de 5 rubros:', sumaTotal, '| Contador:', contador, '| Nota final:', notaFinal);
-    console.log('=== FIN CÁLCULO NOTA FINAL ===');
-    
+
+    // Normalizar la nota final a 100 si los pesos suman más de 0
+    let notaFinal = 0;
+    if (totalPeso > 0) {
+        notaFinal = sumaTotal / totalPeso * 100;
+    }
+
     return notaFinal;
 }
 
@@ -5310,6 +5295,7 @@ function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
         );
         
         if (estIndex === -1 || !trabajoCotidianoEstudiantes || !trabajoCotidianoEstudiantes[estIndex]) {
+            console.log('🔍 Trabajo Cotidiano: Estudiante no encontrado o sin datos');
             return 0.0;
         }
         
@@ -5339,6 +5325,15 @@ function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
             }
         }
         
+        console.log('🔍 Trabajo Cotidiano - Detalles:', {
+            estudiante: estudiante.nombre || 'N/A',
+            totalNotas,
+            diasTrabajo: diasTrabajo.length,
+            escalaMaxima,
+            valorTotalTrabajo,
+            porcentajeFinal
+        });
+        
         return porcentajeFinal;
     } catch (error) {
         console.error('Error en obtenerPorcentajeTrabajoCotidianoDirecto:', error);
@@ -5356,11 +5351,13 @@ function obtenerPorcentajeTareasDirecto(estudiante) {
         );
         
         if (estIndex === -1 || !tareasEstudiantes || !tareasEstudiantes[estIndex]) {
+            console.log('🔍 Tareas: Estudiante no encontrado o sin datos');
             return 0.0;
         }
         
         // Calcular como en la sección de TAREAS: suma de porcentajes individuales
         let totalPorcentaje = 0;
+        const detalles = [];
         
         tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
             if (tareaEst && tareaEst.puntos !== undefined && tareas && tareas[tareaIdx]) {
@@ -5371,8 +5368,15 @@ function obtenerPorcentajeTareasDirecto(estudiante) {
                 if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
                     const porcentajeIndividual = (puntos / puntosMaximos) * peso;
                     totalPorcentaje += porcentajeIndividual;
+                    detalles.push({ tarea: tareaIdx + 1, puntos, puntosMaximos, peso, porcentajeIndividual });
                 }
             }
+        });
+        
+        console.log('🔍 Tareas - Detalles:', {
+            estudiante: estudiante.nombre || 'N/A',
+            totalPorcentaje,
+            detalles
         });
         
         return totalPorcentaje;
@@ -5392,11 +5396,13 @@ function obtenerPorcentajePruebasDirecto(estudiante) {
         );
         
         if (estIndex === -1 || !evaluacionesEstudiantes || !evaluacionesEstudiantes[estIndex]) {
+            console.log('🔍 Pruebas: Estudiante no encontrado o sin datos');
             return 0.0;
         }
         
         // Calcular como en la sección de PRUEBAS: suma de porcentajes individuales
         let totalPorcentaje = 0;
+        const detalles = [];
         
         evaluacionesEstudiantes[estIndex].forEach((evaluacion, pruebaIdx) => {
             if (evaluacion && evaluacion.puntos !== undefined && pruebas && pruebas[pruebaIdx]) {
@@ -5407,8 +5413,15 @@ function obtenerPorcentajePruebasDirecto(estudiante) {
                 if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
                     const porcentajeIndividual = (puntos / puntosMaximos) * peso;
                     totalPorcentaje += porcentajeIndividual;
+                    detalles.push({ prueba: pruebaIdx + 1, puntos, puntosMaximos, peso, porcentajeIndividual });
                 }
             }
+        });
+        
+        console.log('🔍 Pruebas - Detalles:', {
+            estudiante: estudiante.nombre || 'N/A',
+            totalPorcentaje,
+            detalles
         });
         
         return totalPorcentaje;
@@ -5428,11 +5441,13 @@ function obtenerPorcentajeProyectoDirecto(estudiante) {
         );
         
         if (estIndex === -1 || !proyectosEstudiantes || !proyectosEstudiantes[estIndex]) {
+            console.log('🔍 Proyecto: Estudiante no encontrado o sin datos');
             return 0.0;
         }
         
         // Calcular como en la sección de PROYECTO: suma de porcentajes individuales
         let totalPorcentaje = 0;
+        const detalles = [];
         
         proyectosEstudiantes[estIndex].forEach((proyecto, proyectoIdx) => {
             if (proyecto && proyecto.puntos !== undefined && proyectos && proyectos[proyectoIdx]) {
@@ -5443,8 +5458,15 @@ function obtenerPorcentajeProyectoDirecto(estudiante) {
                 if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
                     const porcentajeIndividual = (puntos / puntosMaximos) * peso;
                     totalPorcentaje += porcentajeIndividual;
+                    detalles.push({ proyecto: proyectoIdx + 1, puntos, puntosMaximos, peso, porcentajeIndividual });
                 }
             }
+        });
+        
+        console.log('🔍 Proyecto - Detalles:', {
+            estudiante: estudiante.nombre || 'N/A',
+            totalPorcentaje,
+            detalles
         });
         
         return totalPorcentaje;
@@ -5464,11 +5486,13 @@ function obtenerPorcentajePortafolioDirecto(estudiante) {
         );
         
         if (estIndex === -1 || !portafoliosEstudiantes || !portafoliosEstudiantes[estIndex]) {
+            console.log('🔍 Portafolio: Estudiante no encontrado o sin datos');
             return 0.0;
         }
         
         // Calcular como en la sección de PORTAFOLIO: suma de porcentajes individuales
         let totalPorcentaje = 0;
+        const detalles = [];
         
         portafoliosEstudiantes[estIndex].forEach((portafolio, portafolioIdx) => {
             if (portafolio && portafolio.puntos !== undefined && portafolios && portafolios[portafolioIdx]) {
@@ -5479,8 +5503,15 @@ function obtenerPorcentajePortafolioDirecto(estudiante) {
                 if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
                     const porcentajeIndividual = (puntos / puntosMaximos) * peso;
                     totalPorcentaje += porcentajeIndividual;
+                    detalles.push({ portafolio: portafolioIdx + 1, puntos, puntosMaximos, peso, porcentajeIndividual });
                 }
             }
+        });
+        
+        console.log('🔍 Portafolio - Detalles:', {
+            estudiante: estudiante.nombre || 'N/A',
+            totalPorcentaje,
+            detalles
         });
         
         return totalPorcentaje;
