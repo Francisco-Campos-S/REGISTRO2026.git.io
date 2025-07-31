@@ -96,7 +96,7 @@
             <button onclick="scrollToSection('indicadores')" class="menu-btn indicadores-btn">
                 <span>📊</span> Indicadores
             </button>
-            <button onclick="scrollToSection('sea-periodo')" class="menu-btn sea-periodo-btn">
+            <button onclick="scrollToSection('sea-periodo-app')" class="menu-btn sea-periodo-btn">
                 <span>📊</span> SEA I PERIÓDO
             </button>
             <button onclick="scrollToSection('trabajo-cotidiano')" class="menu-btn trabajo-btn">
@@ -186,6 +186,9 @@
             <button onclick="exportarIndicadores()" class="btn-exportar-indicadores">
                 <span>📤</span> Exportar Indicadores
             </button>
+            <button onclick="limpiarCompletamenteTodo()" class="btn-limpieza-radical" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                <span>💥</span> Limpieza Radical
+            </button>
             <input type="file" id="inputIndicadores" accept=".xlsx" style="display:none" onchange="cargarIndicadores(event)">
         </div>
 
@@ -203,69 +206,7 @@
         </div>
     </div>
 
-    <!-- Sección SEA I PERIÓDO -->
-    <div class="sea-periodo-container" id="sea-periodo">
-        <h3>📊 SEA I PERIÓDO</h3>
-        <div class="sea-periodo-instructions">
-            <p><strong>💡 Instrucciones:</strong> RESUMEN GENERAL DE TODAS LAS EVALUACIONES. LA NOTA FINAL SE CALCULA AUTOMÁTICAMENTE SUMANDO TODOS LOS RUBROS ACTIVOS.</p>
-        </div>
-        
-        <div class="sea-periodo-actions">
-            <button onclick="scrollToMenu()" class="btn-volver-menu">
-                <span>🏠</span> Volver al Menú
-            </button>
-            <button onclick="exportarSeaPeriodo()" class="btn-exportar-sea-periodo">
-                <span>📤</span> Exportar Resumen
-            </button>
-            <button onclick="actualizarResumenSeaPeriodo()" class="btn-actualizar-sea-periodo">
-                <span>🔄</span> Actualizar Resumen
-            </button>
-                            <button onclick="agregarDatosPrueba()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <span>🔄</span> Sincronizar Datos
-                </button>
-                <button onclick="testearDatos()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); margin-left: 10px;">
-                    <span>🧪</span> Testear Datos
-                </button>
-                               <button onclick="generarDatosReales()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); margin-left: 10px;">
-                   <span>📝</span> Generar Datos Reales
-               </button>
-               <button onclick="diagnosticarEstudianteEspecifico()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); margin-left: 10px;">
-                   <span>🔍</span> Diagnosticar Estudiante
-               </button>
-               <button onclick="limpiarYRegenerarDatos()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%); margin-left: 10px;">
-                   <span>🧹</span> Limpiar y Regenerar
-               </button>
-               <button onclick="restaurarDatosOriginales()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%); margin-left: 10px;">
-                   <span>🔄</span> Restaurar Datos
-               </button>
-               <button onclick="verificarDatosExistentes()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); margin-left: 10px;">
-                   <span>🔍</span> Verificar Datos
-               </button>
-               <button onclick="ingresarDatosManualmente()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #7c2d12 0%, #92400e 100%); margin-left: 10px;">
-                   <span>✏️</span> Ingresar Manual
-               </button>
-               <button onclick="diagnosticarTrabajoCotidiano()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%); margin-left: 10px;">
-                   <span>📚</span> Diag. Trabajo
-               </button>
-               <button onclick="diagnosticarPruebas()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #be185d 0%, #a21caf 100%); margin-left: 10px;">
-                   <span>🧪</span> Diag. Pruebas
-               </button>
-               <button onclick="sincronizarPorcentajesFinales()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); margin-left: 10px;">
-                   <span>📊</span> Sincronizar %
-               </button>
-               <button onclick="actualizarResumenSeaPeriodo()" class="btn-agregar-datos-prueba" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); margin-left: 10px;">
-                   <span>🔄</span> Usar % Directos
-               </button>
-        </div>
 
-        <div class="sea-periodo-content">
-            <div class="sea-periodo-table-container">
-                <div class="sea-periodo-table-responsive">
-                    <div id="sea-periodo-app"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Sección de Trabajo Cotidiano -->
     <div class="trabajo-cotidiano-container" id="trabajo-cotidiano">
@@ -402,6 +343,35 @@
             </div>
         </div>
     </div>
+
+    <!-- Sección de SEA I Período -->
+    <section id="sea-periodo-app" class="app-section">
+        <h3>📊 SEA I PERIÓDO</h3>
+        <div class="sea-periodo-instructions">
+            <p><strong>💡 Instrucciones:</strong> RESUMEN GENERAL DE TODAS LAS EVALUACIONES. SE MUESTRAN LOS PORCENTAJES FINALES DE CADA SECCIÓN Y LA NOTA FINAL SE CALCULA AUTOMÁTICAMENTE SUMANDO LOS 5 RUBROS PRINCIPALES (SIN ASISTENCIA).</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button onclick="scrollToMenu()" class="btn-volver-menu">
+                <span>🏠</span> Volver al Menú
+            </button>
+            <button onclick="renderSeaPeriodo()" class="btn-actualizar-sea" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                <span>🔄</span> Actualizar Resumen
+            </button>
+            <button onclick="testearSea()" class="btn-test-sea" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                <span>🧪</span> Test SEA
+            </button>
+            <button onclick="exportarSeaPeriodo()" class="btn-exportar-resumen">
+                <span>📤</span> Exportar Resumen
+            </button>
+            <!-- Botón de prueba simple -->
+            <button onclick="alert('SEA funciona!')" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                <span>✅</span> Prueba SEA
+            </button>
+        </div>
+
+        <div id="sea-periodo-content" class="content-section"></div>
+    </section>
 
     <script src="script.js"></script>
 </body>

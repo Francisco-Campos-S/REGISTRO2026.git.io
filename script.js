@@ -2462,8 +2462,12 @@ function eliminarDiaTrabajo(diaIdx) {
     // Delay the re-rendering to ensure alert is visible
     setTimeout(() => {
         renderTrabajoCotidiano();
-        // Actualizar resumen SEA I PERIÓDO
-        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        
+        // Actualizar SEA I Período si está visible
+        const seaSection = document.getElementById('sea-periodo-app');
+        if (seaSection && seaSection.style.display !== 'none') {
+            renderSeaPeriodo();
+        }
     }, 100);
 }
 
@@ -3277,12 +3281,21 @@ function scrollToSection(sectionId) {
         // Mostrar alerta de navegación
         const sectionNames = {
             'asistencia': 'Asistencia',
+            'indicadores': 'Indicadores',
+            'sea-periodo-app': 'SEA I Período',
             'trabajo-cotidiano': 'Trabajo Cotidiano',
             'tareas': 'Tareas',
             'evaluacion': 'Evaluación',
             'proyecto': 'Proyecto',
             'portafolio': 'Portafolio'
         };
+        
+        // Forzar actualización del SEA I Período si se navega a esa sección
+        if (sectionId === 'sea-periodo-app') {
+            setTimeout(() => {
+                renderSeaPeriodo();
+            }, 100);
+        }
         
         mostrarAlerta(`Navegando a: ${sectionNames[sectionId]}`, 'info');
     }
@@ -3333,10 +3346,10 @@ function configurarNavegacionTeclado() {
 
 // Función para agregar indicadores de navegación
 function agregarIndicadoresNavegacion() {
-    // Agregar indicador de sección actual en el scroll
-    window.addEventListener('scroll', function() {
-        const sections = ['asistencia', 'trabajo-cotidiano', 'tareas', 'evaluacion', 'proyecto', 'portafolio'];
-        const scrollPosition = window.scrollY + 100;
+            // Agregar indicador de sección actual en el scroll
+        window.addEventListener('scroll', function() {
+            const sections = ['asistencia', 'indicadores', 'sea-periodo-app', 'trabajo-cotidiano', 'tareas', 'evaluacion', 'proyecto', 'portafolio'];
+            const scrollPosition = window.scrollY + 100;
         
         sections.forEach(sectionId => {
             const section = document.getElementById(sectionId);
@@ -3567,6 +3580,35 @@ function agregarIndicador() {
     
     guardarIndicadores();
     renderIndicadores();
+    
+    // Sincronizar datos de trabajo cotidiano para el nuevo indicador
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach(estudiante => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // Asegurar que existe el objeto indicadores
+                        if (!estudiante[diaIdx].indicadores) {
+                            estudiante[diaIdx].indicadores = {};
+                        }
+                        
+                        // Agregar el nuevo indicador con valor 0
+                        estudiante[diaIdx].indicadores[nuevoId] = 0;
+                        
+                        // Asegurar que todos los indicadores existentes estén presentes
+                        indicadores.forEach(indicador => {
+                            if (!estudiante[diaIdx].indicadores.hasOwnProperty(indicador.id)) {
+                                estudiante[diaIdx].indicadores[indicador.id] = 0;
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        guardarTrabajoCotidiano();
+        renderTrabajoCotidiano();
+    }
+    
     mostrarAlerta('Indicador agregado y lista ordenada correctamente', 'exito');
 }
 
@@ -3606,11 +3648,58 @@ function eliminarIndicador() {
     // Eliminar el indicador específico
     const indicadorEliminado = indicadores.splice(indexEliminar, 1)[0];
     
+    // LIMPIEZA COMPLETA Y RADICAL
+    console.log('=== LIMPIEZA RADICAL DE DATOS ===');
+    
+    // Guardar el ID del indicador eliminado
+    const idEliminado = indicadorEliminado.id;
+    console.log('Indicador eliminado ID:', idEliminado);
+    
+    // Limpiar completamente todos los datos de trabajo cotidiano
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // LIMPIEZA RADICAL - Resetear completamente
+                        estudiante[diaIdx] = {
+                            fecha: estudiante[diaIdx].fecha || '',
+                            nota: 0,
+                            asistencia: false,
+                            indicadores: {}
+                        };
+                        console.log(`LIMPIEZA RADICAL: Estudiante ${estIdx}, Día ${diaIdx}`);
+                    }
+                });
+            }
+        });
+    }
+    
     // Ordenar indicadores por número después de eliminar
     ordenarIndicadores();
     
     guardarIndicadores();
     renderIndicadores();
+    
+    // Regenerar SOLO con los indicadores actuales
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach(estudiante => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // Agregar SOLO los indicadores que existen actualmente
+                        indicadores.forEach(indicador => {
+                            estudiante[diaIdx].indicadores[indicador.id] = 0;
+                        });
+                    }
+                });
+            }
+        });
+        guardarTrabajoCotidiano();
+        renderTrabajoCotidiano();
+        console.log('✅ REGENERACIÓN COMPLETA FINALIZADA');
+        console.log('Indicadores actuales:', indicadores.map(i => i.id));
+    }
     
     // Limpiar el input
     inputEliminar.value = '';
@@ -3807,9 +3896,15 @@ function hayDatosActivosPortafolio() {
 }
 
 function renderSeaPeriodo() {
-    const container = document.getElementById('sea-periodo-app');
+    console.log('=== INICIANDO RENDERIZACIÓN SEA I PERIÓDO ===');
+    
+    // Buscar el contenedor correcto
+    const container = document.getElementById('sea-periodo-content');
+    console.log('Contenedor encontrado:', !!container);
+    
     if (!container) {
-        console.log('ERROR: No se encontró el contenedor sea-periodo-app');
+        console.log('ERROR: No se encontró el contenedor sea-periodo-content');
+        alert('ERROR: No se encontró el contenedor sea-periodo-content');
         return;
     }
 
@@ -3818,110 +3913,212 @@ function renderSeaPeriodo() {
 
     // Verificar si hay estudiantes
     if (estudiantes.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No hay estudiantes registrados para mostrar el resumen.</p>';
+        container.innerHTML = '<div style="background: #fef3c7; padding: 20px; border-radius: 8px; text-align: center;"><p style="color: #92400e; font-weight: bold;">📚 No hay estudiantes registrados para mostrar el resumen.</p></div>';
+        console.log('No hay estudiantes para mostrar');
         return;
     }
 
-    // Determinar columnas dinámicas basadas en datos activos
-    const columnas = [];
+    // Crear tabla simple y directa
+    let html = '<div style="background: #dbeafe; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;"><h4 style="color: #1e40af; margin: 0;">📊 RESUMEN SEA I PERIÓDO</h4></div>';
     
-    // Siempre agregar la columna ESTUDIANTE primero
-    columnas.push('ESTUDIANTE');
-    console.log('✓ Agregada columna: ESTUDIANTE');
-    
-    // Agregar todas las columnas de evaluación (siempre mostrar todas)
-    columnas.push('TRABAJO COTIDIANO');
-    console.log('✓ Agregada columna: TRABAJO COTIDIANO');
-    columnas.push('TAREAS');
-    console.log('✓ Agregada columna: TAREAS');
-    columnas.push('PRUEBAS');
-    console.log('✓ Agregada columna: PRUEBAS');
-    columnas.push('ASISTENCIA');
-    console.log('✓ Agregada columna: ASISTENCIA');
-    columnas.push('PROYECTO');
-    console.log('✓ Agregada columna: PROYECTO');
-    columnas.push('PORTAFOLIO');
-    console.log('✓ Agregada columna: PORTAFOLIO');
-    
-    console.log('Columnas activas:', columnas);
-    
-    // DEBUG: Verificar estado de variables
-    console.log('=== DEBUG VARIABLES ===');
-    console.log('diasTrabajo:', diasTrabajo);
-    console.log('trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
-    console.log('tareas:', tareas);
-    console.log('tareasEstudiantes:', tareasEstudiantes);
-    console.log('pruebas:', pruebas);
-    console.log('evaluacionesEstudiantes:', evaluacionesEstudiantes);
-    console.log('proyectos:', proyectos);
-    console.log('proyectosEstudiantes:', proyectosEstudiantes);
-    console.log('portafolios:', portafolios);
-    console.log('portafoliosEstudiantes:', portafoliosEstudiantes);
-    console.log('========================');
-    
-    // Siempre agregar la columna NOTA si hay al menos una columna de datos
-    if (columnas.length > 1) { // Más de 1 porque ya tenemos ESTUDIANTE
-        columnas.push('NOTA');
-        console.log('✓ Agregada columna: NOTA');
-    } else {
-        container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No hay evaluaciones activas para mostrar el resumen.</p>';
-        console.log('❌ No hay columnas activas, mostrando mensaje');
-        return;
-    }
-
-    let html = '<table class="sea-periodo-table">';
-    html += '<thead><tr>';
-    
-    // Generar encabezados
-    columnas.forEach(columna => {
-        html += `<th>${columna}</th>`;
-    });
-    
+    html += '<table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
+    html += '<thead><tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">👤 ESTUDIANTE</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📚 TRABAJO COTIDIANO</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📝 TAREAS</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">🧪 PRUEBAS</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📅 ASISTENCIA</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📋 PROYECTO</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📁 PORTAFOLIO</th>';
+    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">🏆 NOTA FINAL</th>';
     html += '</tr></thead><tbody>';
 
-    // Generar filas de estudiantes
+    // Generar filas de estudiantes con datos reales
     estudiantes.forEach((estudiante, index) => {
-        html += '<tr>';
-        
-        // Nombre del estudiante (primera columna)
         const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
-        html += `<td class="estudiante-nombre">${nombreCompleto || `Estudiante ${index + 1}`}</td>`;
         
-        // Trabajo Cotidiano (usar porcentaje directo)
-        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(estudiante);
-        html += `<td>${trabajoCotidiano.toFixed(1).replace('.', ',')}%</td>`;
+        // Calcular porcentajes reales
+        const trabajoCotidiano = Number(obtenerPorcentajeTrabajoCotidianoDirecto(estudiante)) || 0;
+        const tareas = Number(obtenerPorcentajeTareasDirecto(estudiante)) || 0;
+        const pruebas = Number(obtenerPorcentajePruebasDirecto(estudiante)) || 0;
+        const asistencia = Number(calcularNotaAsistencia(estudiante)) || 0;
+        const proyecto = Number(obtenerPorcentajeProyectoDirecto(estudiante)) || 0;
+        const portafolio = Number(obtenerPorcentajePortafolioDirecto(estudiante)) || 0;
+        const notaFinal = Number(calcularNotaFinal(estudiante)) || 0;
         
-        // Tareas (usar porcentaje directo)
-        const tareas = obtenerPorcentajeTareasDirecto(estudiante);
-        html += `<td>${tareas.toFixed(1).replace('.', ',')}%</td>`;
+        console.log(`Estudiante ${index + 1}:`, {
+            trabajoCotidiano,
+            tareas,
+            pruebas,
+            asistencia,
+            proyecto,
+            portafolio,
+            notaFinal
+        });
         
-        // Pruebas (usar porcentaje directo)
-        const pruebas = obtenerPorcentajePruebasDirecto(estudiante);
-        html += `<td>${pruebas.toFixed(1).replace('.', ',')}%</td>`;
+        html += '<tr style="border-bottom: 1px solid #e5e7eb;">';
         
-        // Asistencia (usar cálculo directo)
-        const asistencia = calcularNotaAsistencia(estudiante);
-        html += `<td>${asistencia.toFixed(1).replace('.', ',')}%</td>`;
+        // Nombre del estudiante
+        html += `<td style="padding: 10px; text-align: left; font-weight: bold; background: #f8fafc;">${nombreCompleto || `Estudiante ${index + 1}`}</td>`;
         
-        // Proyecto (usar porcentaje directo)
-        const proyecto = obtenerPorcentajeProyectoDirecto(estudiante);
-        html += `<td>${proyecto.toFixed(1).replace('.', ',')}%</td>`;
+        // Trabajo Cotidiano
+        const trabajoCotidianoFormateado = Number(trabajoCotidiano).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${trabajoCotidianoFormateado}%</td>`;
         
-        // Portafolio (usar porcentaje directo)
-        const portafolio = obtenerPorcentajePortafolioDirecto(estudiante);
-        html += `<td>${portafolio.toFixed(1).replace('.', ',')}%</td>`;
+        // Tareas
+        const tareasFormateado = Number(tareas).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${tareasFormateado}%</td>`;
+        
+        // Pruebas
+        const pruebasFormateado = Number(pruebas).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${pruebasFormateado}%</td>`;
+        
+        // Asistencia
+        const asistenciaFormateado = Number(asistencia).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${asistenciaFormateado}%</td>`;
+        
+        // Proyecto
+        const proyectoFormateado = Number(proyecto).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${proyectoFormateado}%</td>`;
+        
+        // Portafolio
+        const portafolioFormateado = Number(portafolio).toFixed(1).replace('.', ',');
+        html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${portafolioFormateado}%</td>`;
         
         // Nota Final
-        const notaFinal = calcularNotaFinal(estudiante);
-        html += `<td class="nota-final">${notaFinal.toFixed(1).replace('.', ',')}</td>`;
+        const notaFinalFormateado = Number(notaFinal).toFixed(1).replace('.', ',');
+        const estadoNota = notaFinal >= 70 ? 'APROBADO' : 'REPROBADO';
+        const colorNota = notaFinal >= 70 ? '#bbf7d0' : '#fecaca';
+        const colorTexto = notaFinal >= 70 ? '#166534' : '#dc2626';
+        
+        html += `<td style="padding: 10px; text-align: center; background-color: ${colorNota}; color: ${colorTexto}; font-weight: bold;">
+            <strong>${notaFinalFormateado}%</strong><br>
+            <span style="font-size: 0.8em; opacity: 0.8;">${estadoNota}</span>
+        </td>`;
         
         html += '</tr>';
     });
 
     html += '</tbody></table>';
-    console.log('HTML generado:', html.substring(0, 200) + '...');
+    
+    // Insertar en el contenedor
     container.innerHTML = html;
     console.log('=== FIN RENDERIZACIÓN SEA I PERIÓDO ===');
+    console.log('✅ Tabla generada correctamente');
+    console.log('📍 Contenedor donde se insertó:', container);
+    console.log('📏 Tamaño del HTML generado:', html.length, 'caracteres');
+    
+    // Verificar que la tabla se insertó correctamente
+    const tablaGenerada = container.querySelector('table');
+    if (tablaGenerada) {
+        console.log('✅ Tabla encontrada en el DOM');
+        console.log('📊 Filas en la tabla:', tablaGenerada.querySelectorAll('tbody tr').length);
+        mostrarAlerta('✅ Tabla del SEA generada correctamente!', 'exito');
+    } else {
+        console.log('❌ No se encontró la tabla en el DOM');
+        mostrarAlerta('❌ Error: No se pudo generar la tabla del SEA', 'error');
+    }
+}
+
+// Funciones auxiliares para el SEA
+function obtenerIconoColumna(columna) {
+    const iconos = {
+        'ESTUDIANTE': '👤',
+        'TRABAJO COTIDIANO': '📚',
+        'TAREAS': '📝',
+        'PRUEBAS': '🧪',
+        'ASISTENCIA': '📅',
+        'PROYECTO': '📋',
+        'PORTAFOLIO': '📁',
+        'NOTA FINAL': '🏆'
+    };
+    return iconos[columna] || '📊';
+}
+
+function obtenerEstiloNota(nota) {
+    if (nota >= 90) return 'background-color: #dcfce7; color: #166534;';
+    if (nota >= 80) return 'background-color: #dbeafe; color: #1e40af;';
+    if (nota >= 70) return 'background-color: #fef3c7; color: #92400e;';
+    if (nota >= 60) return 'background-color: #fed7aa; color: #ea580c;';
+    return 'background-color: #fecaca; color: #dc2626;';
+}
+
+function obtenerEstiloNotaFinal(nota) {
+    if (nota >= 90) return 'background-color: #bbf7d0; color: #166534; font-weight: bold;';
+    if (nota >= 80) return 'background-color: #bfdbfe; color: #1e40af; font-weight: bold;';
+    if (nota >= 70) return 'background-color: #fde68a; color: #92400e; font-weight: bold;';
+    if (nota >= 60) return 'background-color: #fdba74; color: #ea580c; font-weight: bold;';
+    return 'background-color: #fca5a5; color: #dc2626; font-weight: bold;';
+}
+
+function obtenerEstadoNota(nota) {
+    return nota >= 70 ? 'APROBADO' : 'REPROBADO';
+}
+
+// Función de prueba para diagnosticar el SEA
+function testearSea() {
+    console.log('=== TESTEANDO SEA I PERIÓDO ===');
+    
+    // Verificar contenedor
+    const container = document.getElementById('sea-periodo-content');
+    console.log('Contenedor encontrado:', !!container);
+    
+    // Verificar estudiantes
+    console.log('Número de estudiantes:', estudiantes.length);
+    console.log('Estudiantes:', estudiantes);
+    
+    // Verificar datos de trabajo cotidiano
+    console.log('Días de trabajo:', diasTrabajo);
+    console.log('Datos de trabajo cotidiano:', trabajoCotidianoEstudiantes);
+    
+    // Verificar datos de tareas
+    console.log('Tareas:', tareas);
+    console.log('Datos de tareas:', tareasEstudiantes);
+    
+    // Verificar datos de pruebas
+    console.log('Pruebas:', pruebas);
+    console.log('Datos de evaluaciones:', evaluacionesEstudiantes);
+    
+    // Verificar datos de proyecto
+    console.log('Proyectos:', proyectos);
+    console.log('Datos de proyectos:', proyectosEstudiantes);
+    
+    // Verificar datos de portafolio
+    console.log('Portafolios:', portafolios);
+    console.log('Datos de portafolios:', portafoliosEstudiantes);
+    
+    // Probar cálculos
+    if (estudiantes.length > 0) {
+        const primerEstudiante = estudiantes[0];
+        console.log('Primer estudiante:', primerEstudiante);
+        
+        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(primerEstudiante);
+        const tareas = obtenerPorcentajeTareasDirecto(primerEstudiante);
+        const pruebas = obtenerPorcentajePruebasDirecto(primerEstudiante);
+        const asistencia = calcularNotaAsistencia(primerEstudiante);
+        const proyecto = obtenerPorcentajeProyectoDirecto(primerEstudiante);
+        const portafolio = obtenerPorcentajePortafolioDirecto(primerEstudiante);
+        const notaFinal = calcularNotaFinal(primerEstudiante);
+        
+        console.log('Cálculos del primer estudiante:');
+        console.log('- Trabajo Cotidiano:', trabajoCotidiano);
+        console.log('- Tareas:', tareas);
+        console.log('- Pruebas:', pruebas);
+        console.log('- Asistencia:', asistencia);
+        console.log('- Proyecto:', proyecto);
+        console.log('- Portafolio:', portafolio);
+        console.log('- Nota Final:', notaFinal);
+    }
+    
+    // Intentar renderizar
+    try {
+        renderSeaPeriodo();
+        console.log('✅ Renderizado completado');
+    } catch (error) {
+        console.error('❌ Error al renderizar:', error);
+    }
+    
+    console.log('=== FIN TEST SEA ===');
 }
 
 // Funciones de cálculo para cada rubro
@@ -5169,22 +5366,33 @@ function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
             return 0.0;
         }
         
-        // Calcular promedio de las notas (ya están en escala 0-100)
+        // Usar la misma fórmula que actualizarCalculosTrabajoCotidiano()
         let totalNotas = 0;
-        let contadorNotas = 0;
         
-        trabajoCotidianoEstudiantes[estIndex].forEach((dia) => {
-            if (dia && (typeof dia.nota === 'number' || (typeof dia.nota === 'string' && dia.nota.trim() !== ''))) {
-                const nota = Number(dia.nota);
-                if (!isNaN(nota)) {
-                    totalNotas += nota;
-                    contadorNotas++;
+        diasTrabajo.forEach((dia, diaIdx) => {
+            if (trabajoCotidianoEstudiantes[estIndex] && 
+                trabajoCotidianoEstudiantes[estIndex][diaIdx]) {
+                const nota = trabajoCotidianoEstudiantes[estIndex][diaIdx].nota;
+                if (nota !== null && nota !== undefined && !isNaN(Number(nota))) {
+                    totalNotas += Number(nota);
                 }
             }
         });
         
-        // Retornar el PROMEDIO, no la suma
-        return contadorNotas > 0 ? totalNotas / contadorNotas : 0.0;
+        // Cálculo consistente con la sección de Trabajo Cotidiano
+        let porcentajeFinal = 0;
+        if (diasTrabajo.length > 0) {
+            const totalNotasNum = Number(totalNotas) || 0;
+            const diasTrabajoNum = Number(diasTrabajo.length) || 1;
+            const escalaMaximaNum = Number(escalaMaxima) || 10;
+            const valorTotalTrabajoNum = Number(valorTotalTrabajo) || 30;
+            
+            if (!isNaN(totalNotasNum) && !isNaN(diasTrabajoNum) && !isNaN(escalaMaximaNum) && !isNaN(valorTotalTrabajoNum) && escalaMaximaNum > 0) {
+                porcentajeFinal = (totalNotasNum / (diasTrabajoNum * escalaMaximaNum)) * valorTotalTrabajoNum;
+            }
+        }
+        
+        return porcentajeFinal;
     } catch (error) {
         console.error('Error en obtenerPorcentajeTrabajoCotidianoDirecto:', error);
         return 0.0;
@@ -5337,4 +5545,437 @@ function obtenerPorcentajePortafolioDirecto(estudiante) {
 
 // ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
 
+// ===== FUNCIÓN PARA SINCRONIZAR PORCENTAJES FINALES =====
+function sincronizarPorcentajesFinales() {
+    console.log('🔄 === SINCRONIZANDO PORCENTAJES FINALES ===');
+    
+    // Sincronizar trabajo cotidiano - multiplicar por 10 para convertir a porcentaje
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        console.log('📚 Sincronizando trabajo cotidiano...');
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            estudiante.forEach((dia, diaIdx) => {
+                if (dia && dia.nota !== null && dia.nota !== undefined) {
+                    // Convertir de escala 0-10 a escala 0-100 (multiplicar por 10)
+                    const valorOriginal = parseFloat(dia.nota) || 0;
+                    const valorPorcentaje = valorOriginal * 10;
+                    dia.nota = valorPorcentaje;
+                    console.log(`  Estudiante ${estIdx}, Día ${diaIdx}: ${valorOriginal} → ${valorPorcentaje}`);
+                }
+            });
+        });
+    }
+    
+    // Sincronizar tareas - ya están en porcentaje correcto
+    console.log('📝 Tareas ya están en porcentaje correcto');
+    
+    // Sincronizar pruebas - ya están en porcentaje correcto
+    console.log('🧪 Pruebas ya están en porcentaje correcto');
+    
+    // Sincronizar proyectos - ya están en porcentaje correcto
+    console.log('📋 Proyectos ya están en porcentaje correcto');
+    
+    // Sincronizar portafolios - ya están en porcentaje correcto
+    console.log('📁 Portafolios ya están en porcentaje correcto');
+    
+    // Guardar los datos sincronizados
+    console.log('💾 Guardando datos sincronizados...');
+    guardarTrabajoCotidiano();
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Porcentajes finales sincronizados correctamente', 'exito');
+    console.log('🔄 === FIN SINCRONIZACIÓN PORCENTAJES ===');
+}
 
+// ===== FUNCIONES PARA OBTENER PORCENTAJES DIRECTOS =====
+function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !trabajoCotidianoEstudiantes || !trabajoCotidianoEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Usar la misma fórmula que actualizarCalculosTrabajoCotidiano()
+        let totalNotas = 0;
+        
+        diasTrabajo.forEach((dia, diaIdx) => {
+            if (trabajoCotidianoEstudiantes[estIndex] && 
+                trabajoCotidianoEstudiantes[estIndex][diaIdx]) {
+                const nota = trabajoCotidianoEstudiantes[estIndex][diaIdx].nota;
+                if (nota !== null && nota !== undefined && !isNaN(Number(nota))) {
+                    totalNotas += Number(nota);
+                }
+            }
+        });
+        
+        // Cálculo consistente con la sección de Trabajo Cotidiano
+        let porcentajeFinal = 0;
+        if (diasTrabajo.length > 0) {
+            const totalNotasNum = Number(totalNotas) || 0;
+            const diasTrabajoNum = Number(diasTrabajo.length) || 1;
+            const escalaMaximaNum = Number(escalaMaxima) || 10;
+            const valorTotalTrabajoNum = Number(valorTotalTrabajo) || 30;
+            
+            if (!isNaN(totalNotasNum) && !isNaN(diasTrabajoNum) && !isNaN(escalaMaximaNum) && !isNaN(valorTotalTrabajoNum) && escalaMaximaNum > 0) {
+                porcentajeFinal = (totalNotasNum / (diasTrabajoNum * escalaMaximaNum)) * valorTotalTrabajoNum;
+            }
+        }
+        
+        return porcentajeFinal;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeTrabajoCotidianoDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajeTareasDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !tareasEstudiantes || !tareasEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de TAREAS: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
+            if (tareaEst && tareaEst.puntos !== undefined && tareas && tareas[tareaIdx]) {
+                const puntos = Number(tareaEst.puntos) || 0;
+                const puntosMaximos = Number(tareas[tareaIdx].puntosMaximos) || 0;
+                const peso = Number(tareas[tareaIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeTareasDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajePruebasDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !evaluacionesEstudiantes || !evaluacionesEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PRUEBAS: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        evaluacionesEstudiantes[estIndex].forEach((evaluacion, pruebaIdx) => {
+            if (evaluacion && evaluacion.puntos !== undefined && pruebas && pruebas[pruebaIdx]) {
+                const puntos = Number(evaluacion.puntos) || 0;
+                const puntosMaximos = Number(pruebas[pruebaIdx].puntosMaximos) || 0;
+                const peso = Number(pruebas[pruebaIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajePruebasDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajeProyectoDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !proyectosEstudiantes || !proyectosEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PROYECTO: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        proyectosEstudiantes[estIndex].forEach((proyecto, proyectoIdx) => {
+            if (proyecto && proyecto.puntos !== undefined && proyectos && proyectos[proyectoIdx]) {
+                const puntos = Number(proyecto.puntos) || 0;
+                const puntosMaximos = Number(proyectos[proyectoIdx].puntosMaximos) || 0;
+                const peso = Number(proyectos[proyectoIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeProyectoDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajePortafolioDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !portafoliosEstudiantes || !portafoliosEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PORTAFOLIO: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        portafoliosEstudiantes[estIndex].forEach((portafolio, portafolioIdx) => {
+            if (portafolio && portafolio.puntos !== undefined && portafolios && portafolios[portafolioIdx]) {
+                const puntos = Number(portafolio.puntos) || 0;
+                const puntosMaximos = Number(portafolios[portafolioIdx].puntosMaximos) || 0;
+                const peso = Number(portafolios[portafolioIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajePortafolioDirecto:', error);
+        return 0.0;
+    }
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
+
+// ===== FUNCIÓN PARA SINCRONIZAR PORCENTAJES FINALES =====
+function sincronizarPorcentajesFinales() {
+    console.log('🔄 === SINCRONIZANDO PORCENTAJES FINALES ===');
+    
+    // Sincronizar trabajo cotidiano - multiplicar por 10 para convertir a porcentaje
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        console.log('📚 Sincronizando trabajo cotidiano...');
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            estudiante.forEach((dia, diaIdx) => {
+                if (dia && dia.nota !== null && dia.nota !== undefined) {
+                    // Convertir de escala 0-10 a escala 0-100 (multiplicar por 10)
+                    const valorOriginal = parseFloat(dia.nota) || 0;
+                    const valorPorcentaje = valorOriginal * 10;
+                    dia.nota = valorPorcentaje;
+                    console.log(`  Estudiante ${estIdx}, Día ${diaIdx}: ${valorOriginal} → ${valorPorcentaje}`);
+                }
+            });
+        });
+    }
+    
+    // Sincronizar tareas - ya están en porcentaje correcto
+    console.log('📝 Tareas ya están en porcentaje correcto');
+    
+    // Sincronizar pruebas - ya están en porcentaje correcto
+    console.log('🧪 Pruebas ya están en porcentaje correcto');
+    
+    // Sincronizar proyectos - ya están en porcentaje correcto
+    console.log('📋 Proyectos ya están en porcentaje correcto');
+    
+    // Sincronizar portafolios - ya están en porcentaje correcto
+    console.log('📁 Portafolios ya están en porcentaje correcto');
+    
+    // Guardar los datos sincronizados
+    console.log('💾 Guardando datos sincronizados...');
+    guardarTrabajoCotidiano();
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Porcentajes finales sincronizados correctamente', 'exito');
+    console.log('🔄 === FIN SINCRONIZACIÓN PORCENTAJES ===');
+}
+
+// ===== FUNCIONES DE DIAGNÓSTICO PARA INDICADORES =====
+
+// Función de diagnóstico específica para indicadores
+function diagnosticarIndicadores() {
+    console.log('=== DIAGNÓSTICO DE INDICADORES ===');
+    console.log('Indicadores actuales:', indicadores);
+    console.log('Número de indicadores:', indicadores.length);
+    
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        console.log('Datos de trabajo cotidiano encontrados');
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante) {
+                console.log(`Estudiante ${estIdx}:`, estudiante.length, 'días');
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx] && estudiante[diaIdx].indicadores) {
+                        console.log(`  Día ${diaIdx}:`, estudiante[diaIdx].indicadores);
+                    }
+                });
+            }
+        });
+    } else {
+        console.log('No hay datos de trabajo cotidiano');
+    }
+}
+
+// Función para limpiar completamente todos los datos de indicadores
+function limpiarCompletamenteIndicadores() {
+    console.log('=== LIMPIANDO COMPLETAMENTE INDICADORES ===');
+    
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // Limpiar completamente
+                        estudiante[diaIdx].indicadores = {};
+                        console.log(`Limpiado estudiante ${estIdx}, día ${diaIdx}`);
+                    }
+                });
+            }
+        });
+        guardarTrabajoCotidiano();
+        renderTrabajoCotidiano();
+        console.log('✅ Datos limpiados completamente');
+    }
+}
+
+// Función para forzar la limpieza y regeneración de indicadores
+function forzarLimpiezaIndicadores() {
+    console.log('=== FORZANDO LIMPIEZA DE INDICADORES ===');
+    
+    // Limpiar completamente
+    limpiarCompletamenteIndicadores();
+    
+    // Regenerar con solo los indicadores actuales
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // Asegurar que existe el objeto indicadores
+                        if (!estudiante[diaIdx].indicadores) {
+                            estudiante[diaIdx].indicadores = {};
+                        }
+                        
+                        // Agregar solo los indicadores que existen actualmente
+                        indicadores.forEach(indicador => {
+                            estudiante[diaIdx].indicadores[indicador.id] = 0;
+                        });
+                    }
+                });
+            }
+        });
+        guardarTrabajoCotidiano();
+        renderTrabajoCotidiano();
+        console.log('✅ Indicadores regenerados correctamente');
+        mostrarAlerta('Indicadores limpiados y regenerados correctamente', 'exito');
+    }
+}
+
+// Función para limpiar completamente todos los datos de trabajo cotidiano
+function limpiarCompletamenteTrabajoCotidiano() {
+    console.log('=== LIMPIANDO COMPLETAMENTE TRABAJO COTIDIANO ===');
+    
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            if (estudiante) {
+                diasTrabajo.forEach((dia, diaIdx) => {
+                    if (estudiante[diaIdx]) {
+                        // Limpiar completamente todos los datos
+                        estudiante[diaIdx] = {
+                            fecha: estudiante[diaIdx].fecha || '',
+                            nota: 0,
+                            asistencia: false,
+                            indicadores: {}
+                        };
+                        console.log(`Limpiado completamente estudiante ${estIdx}, día ${diaIdx}`);
+                    }
+                });
+            }
+        });
+        guardarTrabajoCotidiano();
+        renderTrabajoCotidiano();
+        console.log('✅ Datos de trabajo cotidiano limpiados completamente');
+        mostrarAlerta('Datos de trabajo cotidiano limpiados completamente', 'exito');
+    }
+}
+
+// Función para limpiar completamente el localStorage y regenerar
+function limpiarCompletamenteTodo() {
+    console.log('=== LIMPIEZA RADICAL COMPLETA ===');
+    
+    // Limpiar localStorage de trabajo cotidiano
+    localStorage.removeItem('trabajoCotidianoEstudiantes');
+    localStorage.removeItem('diasTrabajo');
+    
+    // Reinicializar arrays
+    trabajoCotidianoEstudiantes = [];
+    diasTrabajo = [];
+    
+    // Regenerar estructura básica
+    if (estudiantes.length > 0) {
+        trabajoCotidianoEstudiantes = estudiantes.map(() => []);
+        diasTrabajo = [];
+        
+        // Agregar un día por defecto
+        diasTrabajo.push({
+            fecha: new Date().toISOString().split('T')[0],
+            lecciones: 1
+        });
+        
+        // Inicializar datos para cada estudiante
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            estudiante[0] = {
+                fecha: diasTrabajo[0].fecha,
+                nota: 0,
+                asistencia: false,
+                indicadores: {}
+            };
+            
+            // Agregar indicadores actuales con valor 0
+            indicadores.forEach(indicador => {
+                estudiante[0].indicadores[indicador.id] = 0;
+            });
+        });
+    }
+    
+    guardarTrabajoCotidiano();
+    renderTrabajoCotidiano();
+    console.log('✅ LIMPIEZA RADICAL COMPLETA FINALIZADA');
+    mostrarAlerta('Limpieza radical completa finalizada', 'exito');
+}
+
+// Inicializar la aplicación cuando el DOM esté listo
+esperarDOMListo();

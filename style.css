@@ -8631,3 +8631,630 @@ body.dark-mode .trabajo-cotidiano-table input[type="date"]::-webkit-datetime-edi
 }
 
 /* ===== BARRA DE ACCIONES DE ASISTENCIA ===== */
+
+/* ===== ESTILOS PARA EL RESUMEN SEA I PERIÓDO MEJORADO ===== */
+
+/* Mensaje cuando no hay datos */
+.no-data-message {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-soft);
+    margin: 20px 0;
+}
+
+.no-data-message p {
+    font-size: 1.2em;
+    color: var(--color-text);
+    margin: 0;
+    opacity: 0.8;
+}
+
+body.dark-mode .no-data-message {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.9) 100%);
+}
+
+/* Estadísticas generales */
+.estadisticas-generales {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+}
+
+.estadisticas-generales h4 {
+    color: var(--color-primario);
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(203, 213, 225, 0.3);
+    transition: var(--transition);
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-label {
+    font-weight: 500;
+    color: var(--color-text);
+    font-size: 0.95em;
+}
+
+.stat-value {
+    font-weight: 700;
+    color: var(--color-primario);
+    font-size: 1.1em;
+}
+
+body.dark-mode .estadisticas-generales {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+body.dark-mode .stat-item {
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(71, 85, 105, 0.8) 100%);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+/* Tabla mejorada */
+.sea-periodo-table.improved {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-strong);
+    border: none;
+}
+
+.sea-periodo-table.improved th {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+    font-weight: 600;
+    padding: 16px 12px;
+    text-align: center;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.sea-periodo-table.improved th:first-child {
+    text-align: left;
+}
+
+.sea-periodo-table.improved td {
+    padding: 12px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid rgba(203, 213, 225, 0.2);
+    transition: var(--transition);
+}
+
+.sea-periodo-table.improved td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+/* Celdas editables */
+.editable-cell {
+    position: relative;
+    padding: 8px !important;
+}
+
+.editable-cell input[type="number"] {
+    width: 80px;
+    padding: 6px 8px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.editable-cell input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    background: white;
+}
+
+.editable-cell .unit {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text);
+    font-size: 0.9em;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Celdas de solo lectura */
+.readonly-cell {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Celda de nota final */
+.nota-final-cell {
+    position: relative;
+    font-weight: 700;
+    font-size: 1.1em;
+    text-align: center;
+    padding: 12px 8px !important;
+}
+
+.nota-status {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 500;
+    margin-top: 4px;
+    opacity: 0.9;
+}
+
+/* Controles del resumen */
+.controles-resumen {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.btn-recalcular, .btn-exportar-detallado, .btn-grafico {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+}
+
+.btn-recalcular {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+}
+
+.btn-recalcular:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-exportar-detallado {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.btn-exportar-detallado:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-grafico {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.btn-grafico:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Modal del gráfico */
+.modal-grafico {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content-grafico {
+    background: var(--color-table-bg);
+    border-radius: var(--border-radius-lg);
+    padding: 0;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    box-shadow: var(--shadow-strong);
+    animation: slideInUp 0.3s ease-out;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.grafico-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.grafico-barras h4, .grafico-estadisticas h4 {
+    color: var(--color-primario);
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.barras-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.barra-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.barra-label {
+    width: 60px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.barra-container {
+    flex: 1;
+    height: 30px;
+    background: rgba(203, 213, 225, 0.3);
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.barra {
+    height: 100%;
+    border-radius: 15px;
+    position: relative;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.barra-valor {
+    color: white;
+    font-weight: 700;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.stats-visual {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-visual {
+    text-align: center;
+}
+
+.stat-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    position: relative;
+    font-weight: 700;
+    color: white;
+    font-size: 1.1em;
+}
+
+.stat-visual p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .stat-item {
+        padding: 10px 12px;
+    }
+    
+    .controles-resumen {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-recalcular, .btn-exportar-detallado, .btn-grafico {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .grafico-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stats-visual {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .modal-content-grafico {
+        max-width: 95%;
+        max-height: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .estadisticas-generales {
+        padding: 20px 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sea-periodo-table.improved th,
+    .sea-periodo-table.improved td {
+        padding: 8px 6px;
+        font-size: 0.9em;
+    }
+    
+    .editable-cell input[type="number"] {
+        width: 60px;
+        font-size: 0.9em;
+    }
+}
+
+/* Modo oscuro para el resumen mejorado */
+body.dark-mode .estadisticas-generales h4 {
+    color: var(--color-exito);
+}
+
+body.dark-mode .stat-value {
+    color: var(--color-exito);
+}
+
+body.dark-mode .editable-cell input[type="number"] {
+    background: rgba(51, 65, 85, 0.9);
+    color: var(--color-text);
+    border-color: rgba(71, 85, 105, 0.5);
+}
+
+body.dark-mode .editable-cell input[type="number"]:focus {
+    background: var(--color-table-bg);
+    border-color: var(--color-exito);
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+}
+
+body.dark-mode .readonly-cell {
+    color: var(--color-text);
+}
+
+body.dark-mode .modal-content-grafico {
+    background: var(--color-table-bg);
+}
+
+body.dark-mode .barra-container {
+    background: rgba(71, 85, 105, 0.3);
+}
+
+body.dark-mode .stat-visual p {
+    color: var(--color-text);
+}
+
+/* ===== ESTILOS PARA SEA I PERIÓDO ===== */
+#sea-periodo-app {
+    display: block;
+    padding: 20px;
+    background: var(--bg-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.sea-periodo-instructions {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sea-periodo-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--bg-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sea-periodo-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    border: none;
+}
+
+.sea-periodo-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sea-periodo-table .estudiante-nombre {
+    text-align: left;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.sea-periodo-table .readonly-cell {
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.sea-periodo-table .nota-final-cell {
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.nota-status {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 2px;
+    opacity: 0.8;
+}
+
+.btn-exportar-resumen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-exportar-resumen:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.btn-actualizar-sea {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+}
+
+.btn-actualizar-sea:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+.btn-test-sea {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+}
+
+.btn-test-sea:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+body.dark-mode #sea-periodo-app {
+    background: var(--bg-color);
+}
+
+body.dark-mode .sea-periodo-instructions {
+    background: linear-gradient(135deg, #4c1d95 0%, #581c87 100%);
+}
+
+body.dark-mode .sea-periodo-table {
+    background: var(--bg-color);
+}
+
+body.dark-mode .sea-periodo-table th {
+    background: linear-gradient(135deg, #4c1d95 0%, #581c87 100%);
+}
+
+body.dark-mode .sea-periodo-table td {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .sea-periodo-table .estudiante-nombre {
+    color: var(--text-color);
+}
