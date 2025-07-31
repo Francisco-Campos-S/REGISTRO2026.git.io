@@ -1024,7 +1024,16 @@ function eliminarDia(idx) {
 
 function eliminarEstudiante(idx) {
     if (confirm('¿Seguro que deseas eliminar este estudiante? Esta acción no se puede deshacer.')) {
+        // Eliminar estudiante de la lista principal
         estudiantes.splice(idx, 1);
+        
+        // Eliminar datos del estudiante de todas las secciones de evaluación
+        evaluacionesEstudiantes.splice(idx, 1);
+        tareasEstudiantes.splice(idx, 1);
+        trabajoCotidianoEstudiantes.splice(idx, 1);
+        proyectosEstudiantes.splice(idx, 1);
+        portafoliosEstudiantes.splice(idx, 1);
+        
         guardarDatos();
         
         // Renderizar todas las secciones para sincronizar después de eliminar
@@ -1387,13 +1396,7 @@ function cargarPlantilla(event) {
             guardarDatos();
             renderAsistencia();
             
-            // Sincronizar y renderizar todas las secciones
-            sincronizarEstudiantesEvaluacion();
-            sincronizarEstudiantesTareas();
-            sincronizarEstudiantesTrabajoCotidiano();
-            sincronizarEstudiantesProyecto();
-            sincronizarEstudiantesPortafolio();
-            
+            // Renderizar todas las secciones (sin sincronizar para preservar la lógica de datos)
             setTimeout(() => {
                 renderEvaluacion();
                 renderTareas();
