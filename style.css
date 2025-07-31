@@ -8085,7 +8085,7 @@ body.dark-mode .indicadores-actions input[type="number"]:focus {
     justify-content: center;
 }
 
-.btn-exportar-sea-periodo, .btn-actualizar-sea-periodo {
+.btn-exportar-sea-periodo, .btn-actualizar-sea-periodo, .btn-agregar-datos-prueba {
     background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
     color: white;
     border: none;
@@ -8100,7 +8100,7 @@ body.dark-mode .indicadores-actions input[type="number"]:focus {
     overflow: hidden;
 }
 
-.btn-exportar-sea-periodo::before, .btn-actualizar-sea-periodo::before {
+.btn-exportar-sea-periodo::before, .btn-actualizar-sea-periodo::before, .btn-agregar-datos-prueba::before {
     content: '';
     position: absolute;
     top: 0;
@@ -8111,11 +8111,11 @@ body.dark-mode .indicadores-actions input[type="number"]:focus {
     transition: left 0.5s;
 }
 
-.btn-exportar-sea-periodo:hover::before, .btn-actualizar-sea-periodo:hover::before {
+.btn-exportar-sea-periodo:hover::before, .btn-actualizar-sea-periodo:hover::before, .btn-agregar-datos-prueba:hover::before {
     left: 100%;
 }
 
-.btn-exportar-sea-periodo:hover, .btn-actualizar-sea-periodo:hover {
+.btn-exportar-sea-periodo:hover, .btn-actualizar-sea-periodo:hover, .btn-agregar-datos-prueba:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
 }

@@ -1,7 +1,7 @@
 // ===== CONFIGURACIÓN GLOBAL =====
 console.log('📜 SCRIPT.JS CARGADO - VERSIÓN CORREGIDA');
-console.log('🔧 TODAS LAS LLAMADAS A renderSeaPeriodo() COMENTADAS TEMPORALMENTE');
-console.log('🚫 BUCLE INFINITO DETENIDO - LISTO PARA DIAGNÓSTICO');
+console.log('🔧 FUNCIONES DE SEA PERIÓDO HABILITADAS');
+console.log('✅ SISTEMA LISTO PARA USO');
 // SOLUCIÓN SIMPLIFICADA PARA ALERTAS TEMPRANAS:
 // Se ha restaurado el estado original del sistema, manteniendo solo la funcionalidad básica
 // de alertas tempranas sin modificar los estilos originales de las columnas de datos.
@@ -141,7 +141,7 @@ function inicializarAplicacion() {
     renderProyecto();
     renderPortafolio();
     renderIndicadores();
-    // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    renderSeaPeriodo();
     
     // Configurar navegación
     configurarNavegacionTeclado();
@@ -2134,19 +2134,32 @@ function renderTrabajoCotidiano() {
             html += '<td class="editable"><input type="number" value="" disabled title="Agregue un día primero" style="width: 80px; padding: 8px; border: 2px solid #ccc; border-radius: 6px; text-align: center; background: #f5f5f5; color: #999;"></td>';
         }
         
-        // Calcular porcentaje final
+        // Calcular porcentaje final con validación robusta
         let totalNotas = 0;
         
         diasTrabajo.forEach((dia, diaIdx) => {
-            if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+            if (trabajoCotidianoEstudiantes && 
+                trabajoCotidianoEstudiantes[estIdx] && 
+                trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
                 const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
-                if (nota !== null && nota !== undefined) {
-                    totalNotas += nota;
+                if (nota !== null && nota !== undefined && !isNaN(Number(nota))) {
+                    totalNotas += Number(nota);
                 }
             }
         });
         
-        const porcentajeFinal = diasTrabajo.length > 0 ? (totalNotas / (diasTrabajo.length * escalaMaxima)) * valorTotalTrabajo : 0;
+        // Cálculo original pero con validaciones robustas
+        let porcentajeFinal = 0;
+        if (diasTrabajo.length > 0) {
+            const totalNotasNum = Number(totalNotas) || 0;
+            const diasTrabajoNum = Number(diasTrabajo.length) || 1;
+            const escalaMaximaNum = Number(escalaMaxima) || 10;
+            const valorTotalTrabajoNum = Number(valorTotalTrabajo) || 30;
+            
+            if (!isNaN(totalNotasNum) && !isNaN(diasTrabajoNum) && !isNaN(escalaMaximaNum) && !isNaN(valorTotalTrabajoNum) && escalaMaximaNum > 0) {
+                porcentajeFinal = (totalNotasNum / (diasTrabajoNum * escalaMaximaNum)) * valorTotalTrabajoNum;
+            }
+        }
         
 
         
@@ -2274,10 +2287,16 @@ function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
     // Guardar la nota
     trabajoCotidianoEstudiantes[estIdx][diaIdx].nota = nota;
     
-    // Actualizar solo los cálculos sin re-renderizar toda la tabla
+    // Actualizar inmediatamente los cálculos
     actualizarCalculosTrabajoCotidiano();
     
+    // Guardar datos
     guardarTrabajoCotidiano();
+    
+    // Forzar actualización visual inmediata
+    setTimeout(() => {
+        actualizarCalculosTrabajoCotidiano();
+    }, 50);
 }
 
 function preservarDatosInputs() {
@@ -2331,17 +2350,30 @@ function actualizarCalculosTrabajoCotidiano() {
         let totalNotas = 0;
         
         diasTrabajo.forEach((dia, diaIdx) => {
-            if (trabajoCotidianoEstudiantes[estIdx] && trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
+            if (trabajoCotidianoEstudiantes && 
+                trabajoCotidianoEstudiantes[estIdx] && 
+                trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
                 const nota = trabajoCotidianoEstudiantes[estIdx][diaIdx].nota;
-                if (nota !== null && nota !== undefined) {
-                    totalNotas += nota;
+                if (nota !== null && nota !== undefined && !isNaN(Number(nota))) {
+                    totalNotas += Number(nota);
                 }
             }
         });
         
-        const porcentajeFinal = diasTrabajo.length > 0 ? (totalNotas / (diasTrabajo.length * escalaMaxima)) * valorTotalTrabajo : 0;
+        // Cálculo original pero con validaciones robustas
+        let porcentajeFinal = 0;
+        if (diasTrabajo.length > 0) {
+            const totalNotasNum = Number(totalNotas) || 0;
+            const diasTrabajoNum = Number(diasTrabajo.length) || 1;
+            const escalaMaximaNum = Number(escalaMaxima) || 10;
+            const valorTotalTrabajoNum = Number(valorTotalTrabajo) || 30;
+            
+            if (!isNaN(totalNotasNum) && !isNaN(diasTrabajoNum) && !isNaN(escalaMaximaNum) && !isNaN(valorTotalTrabajoNum) && escalaMaximaNum > 0) {
+                porcentajeFinal = (totalNotasNum / (diasTrabajoNum * escalaMaximaNum)) * valorTotalTrabajoNum;
+            }
+        }
         
-        // Buscar la fila del estudiante
+        // Buscar la fila del estudiante y actualizar inmediatamente
         const container = document.getElementById('trabajo-cotidiano-app');
         if (!container) {
             return;
@@ -2359,8 +2391,16 @@ function actualizarCalculosTrabajoCotidiano() {
             if (porcentajeCell) {
                 const valorPorcentaje = porcentajeFinal.toFixed(1) + '%';
                 porcentajeCell.textContent = valorPorcentaje;
+                porcentajeCell.className = 'calculated'; // Asegurar que mantiene la clase
             }
         }
+        
+        // También actualizar el resumen SEA PERIÓDO si está visible
+        setTimeout(() => {
+            if (document.getElementById('sea-periodo-app')) {
+                renderSeaPeriodo();
+            }
+        }, 100);
     });
 }
 
@@ -3459,7 +3499,7 @@ function sincronizarTodasLasSecciones() {
         renderProyecto();
         renderPortafolio();
         renderIndicadores();
-        // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        renderSeaPeriodo();
     }, 100);
 }
 
@@ -3785,31 +3825,23 @@ function renderSeaPeriodo() {
     // Determinar columnas dinámicas basadas en datos activos
     const columnas = [];
     
-    // Verificar si hay datos activos en cada sección
-    if (hayDatosActivosTrabajoCotidiano()) {
-        columnas.push('TRABAJO COTIDIANO');
-        console.log('✓ Agregada columna: TRABAJO COTIDIANO');
-    }
-    if (hayDatosActivosTareas()) {
-        columnas.push('TAREAS');
-        console.log('✓ Agregada columna: TAREAS');
-    }
-    if (hayDatosActivosPruebas()) {
-        columnas.push('PRUEBAS');
-        console.log('✓ Agregada columna: PRUEBAS');
-    }
-    if (hayDatosActivosAsistencia()) {
-        columnas.push('ASISTENCIA');
-        console.log('✓ Agregada columna: ASISTENCIA');
-    }
-    if (hayDatosActivosProyecto()) {
-        columnas.push('PROYECTO');
-        console.log('✓ Agregada columna: PROYECTO');
-    }
-    if (hayDatosActivosPortafolio()) {
-        columnas.push('PORTAFOLIO');
-        console.log('✓ Agregada columna: PORTAFOLIO');
-    }
+    // Siempre agregar la columna ESTUDIANTE primero
+    columnas.push('ESTUDIANTE');
+    console.log('✓ Agregada columna: ESTUDIANTE');
+    
+    // Agregar todas las columnas de evaluación (siempre mostrar todas)
+    columnas.push('TRABAJO COTIDIANO');
+    console.log('✓ Agregada columna: TRABAJO COTIDIANO');
+    columnas.push('TAREAS');
+    console.log('✓ Agregada columna: TAREAS');
+    columnas.push('PRUEBAS');
+    console.log('✓ Agregada columna: PRUEBAS');
+    columnas.push('ASISTENCIA');
+    console.log('✓ Agregada columna: ASISTENCIA');
+    columnas.push('PROYECTO');
+    console.log('✓ Agregada columna: PROYECTO');
+    columnas.push('PORTAFOLIO');
+    console.log('✓ Agregada columna: PORTAFOLIO');
     
     console.log('Columnas activas:', columnas);
     
@@ -3828,7 +3860,7 @@ function renderSeaPeriodo() {
     console.log('========================');
     
     // Siempre agregar la columna NOTA si hay al menos una columna de datos
-    if (columnas.length > 0) {
+    if (columnas.length > 1) { // Más de 1 porque ya tenemos ESTUDIANTE
         columnas.push('NOTA');
         console.log('✓ Agregada columna: NOTA');
     } else {
@@ -3851,45 +3883,33 @@ function renderSeaPeriodo() {
     estudiantes.forEach((estudiante, index) => {
         html += '<tr>';
         
-        // Nombre del estudiante
+        // Nombre del estudiante (primera columna)
         const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
         html += `<td class="estudiante-nombre">${nombreCompleto || `Estudiante ${index + 1}`}</td>`;
         
-        // Trabajo Cotidiano (si está activo)
-        if (hayDatosActivosTrabajoCotidiano()) {
-            const trabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
-            html += `<td>${trabajoCotidiano.toFixed(1).replace('.', ',')}</td>`;
-        }
+        // Trabajo Cotidiano (usar porcentaje directo)
+        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(estudiante);
+        html += `<td>${trabajoCotidiano.toFixed(1).replace('.', ',')}%</td>`;
         
-        // Tareas (si está activo)
-        if (hayDatosActivosTareas()) {
-            const tareas = calcularNotaTareas(estudiante);
-            html += `<td>${tareas.toFixed(1).replace('.', ',')}</td>`;
-        }
+        // Tareas (usar porcentaje directo)
+        const tareas = obtenerPorcentajeTareasDirecto(estudiante);
+        html += `<td>${tareas.toFixed(1).replace('.', ',')}%</td>`;
         
-        // Pruebas (si está activo)
-        if (hayDatosActivosPruebas()) {
-            const pruebas = calcularNotaPruebas(estudiante);
-            html += `<td>${pruebas.toFixed(1).replace('.', ',')}</td>`;
-        }
+        // Pruebas (usar porcentaje directo)
+        const pruebas = obtenerPorcentajePruebasDirecto(estudiante);
+        html += `<td>${pruebas.toFixed(1).replace('.', ',')}%</td>`;
         
-        // Asistencia (si está activo)
-        if (hayDatosActivosAsistencia()) {
-            const asistencia = calcularNotaAsistencia(estudiante);
-            html += `<td>${Math.round(asistencia)}</td>`;
-        }
+        // Asistencia (usar cálculo directo)
+        const asistencia = calcularNotaAsistencia(estudiante);
+        html += `<td>${asistencia.toFixed(1).replace('.', ',')}%</td>`;
         
-        // Proyecto (si está activo)
-        if (hayDatosActivosProyecto()) {
-            const proyecto = calcularNotaProyecto(estudiante);
-            html += `<td>${proyecto.toFixed(1).replace('.', ',')}</td>`;
-        }
+        // Proyecto (usar porcentaje directo)
+        const proyecto = obtenerPorcentajeProyectoDirecto(estudiante);
+        html += `<td>${proyecto.toFixed(1).replace('.', ',')}%</td>`;
         
-        // Portafolio (si está activo)
-        if (hayDatosActivosPortafolio()) {
-            const portafolio = calcularNotaPortafolio(estudiante);
-            html += `<td>${portafolio.toFixed(1).replace('.', ',')}</td>`;
-        }
+        // Portafolio (usar porcentaje directo)
+        const portafolio = obtenerPorcentajePortafolioDirecto(estudiante);
+        html += `<td>${portafolio.toFixed(1).replace('.', ',')}%</td>`;
         
         // Nota Final
         const notaFinal = calcularNotaFinal(estudiante);
@@ -3920,13 +3940,12 @@ function calcularNotaTrabajoCotidiano(estudiante) {
     console.log('trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
     console.log('diasTrabajo:', diasTrabajo);
     
-    // Buscar el estudiante en trabajo cotidiano
-    const estIndex = trabajoCotidianoEstudiantes ? 
-        trabajoCotidianoEstudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        ) : -1;
+    // Buscar el estudiante por índice (mismo orden que estudiantes)
+    const estIndex = estudiantes.findIndex(e => 
+        e.apellido1 === estudiante.apellido1 && 
+        e.apellido2 === estudiante.apellido2 && 
+        e.nombre === estudiante.nombre
+    );
     
     console.log('Índice encontrado:', estIndex);
     
@@ -3935,29 +3954,28 @@ function calcularNotaTrabajoCotidiano(estudiante) {
         return 0.0;
     }
     
-    // Obtener la nota final calculada de trabajo cotidiano
-    const estudianteTrabajo = trabajoCotidianoEstudiantes[estIndex];
-    if (estudianteTrabajo && estudianteTrabajo.notaFinal !== undefined) {
-        return parseFloat(estudianteTrabajo.notaFinal) || 0.0;
+    // Verificar si existe el estudiante en trabajo cotidiano
+    if (!trabajoCotidianoEstudiantes[estIndex]) {
+        console.log('Estudiante no encontrado en trabajo cotidiano');
+        return 0.0;
     }
     
-    // Si no hay nota final calculada, calcular manualmente
-    let totalPuntos = 0;
-    let totalMaximo = 0;
+    // Calcular nota promedio
+    let totalNotas = 0;
+    let contadorNotas = 0;
     
-    diasTrabajo.forEach((dia, diaIdx) => {
-        const nota = obtenerNotaTrabajo(estIndex, diaIdx);
-        if (nota && nota.puntos !== undefined && nota.puntosMaximos !== undefined) {
-            totalPuntos += parseFloat(nota.puntos) || 0;
-            totalMaximo += parseFloat(nota.puntosMaximos) || 0;
+    trabajoCotidianoEstudiantes[estIndex].forEach((notaDia, diaIdx) => {
+        if (notaDia && notaDia.nota !== null && notaDia.nota !== undefined) {
+            totalNotas += parseFloat(notaDia.nota) || 0;
+            contadorNotas++;
         }
     });
     
-    if (totalMaximo === 0) return 0.0;
+    if (contadorNotas === 0) return 0.0;
     
-    // Convertir a escala de 10
-    const porcentaje = (totalPuntos / totalMaximo) * 100;
-    return (porcentaje / 10);
+    // Calcular promedio (ya está en escala de 10)
+    const promedio = totalNotas / contadorNotas;
+    return promedio;
 }
 
 function calcularNotaTareas(estudiante) {
@@ -3975,13 +3993,12 @@ function calcularNotaTareas(estudiante) {
     console.log('tareasEstudiantes:', tareasEstudiantes);
     console.log('tareas:', tareas);
     
-    // Buscar el estudiante en tareas
-    const estIndex = tareasEstudiantes ? 
-        tareasEstudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        ) : -1;
+    // Buscar el estudiante por índice (mismo orden que estudiantes)
+    const estIndex = estudiantes.findIndex(e => 
+        e.apellido1 === estudiante.apellido1 && 
+        e.apellido2 === estudiante.apellido2 && 
+        e.nombre === estudiante.nombre
+    );
     
     console.log('Índice encontrado en tareas:', estIndex);
     
@@ -3990,29 +4007,28 @@ function calcularNotaTareas(estudiante) {
         return 0.0;
     }
     
-    // Obtener la nota final calculada de tareas
-    const estudianteTareas = tareasEstudiantes[estIndex];
-    if (estudianteTareas && estudianteTareas.notaFinal !== undefined) {
-        return parseFloat(estudianteTareas.notaFinal) || 0.0;
+    // Verificar si existe el estudiante en tareas
+    if (!tareasEstudiantes[estIndex]) {
+        console.log('Estudiante no encontrado en tareas');
+        return 0.0;
     }
     
-    // Si no hay nota final calculada, calcular manualmente
+    // Calcular nota promedio
     let totalPuntos = 0;
     let totalMaximo = 0;
     
-    tareas.forEach((tarea, tareaIdx) => {
-        const tareaEst = obtenerTarea(estIndex, tareaIdx);
-        if (tareaEst && tareaEst.puntos !== undefined && tareaEst.puntosMaximos !== undefined) {
+    tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
+        if (tareaEst && tareaEst.puntos !== undefined) {
             totalPuntos += parseFloat(tareaEst.puntos) || 0;
-            totalMaximo += parseFloat(tareaEst.puntosMaximos) || 0;
+            totalMaximo += parseFloat(tareas[tareaIdx].puntosMaximos) || 0;
         }
     });
     
     if (totalMaximo === 0) return 0.0;
     
-    // Convertir a escala de 10
-    const porcentaje = (totalPuntos / totalMaximo) * 100;
-    return (porcentaje / 10);
+    // Calcular nota en escala de 10
+    const nota = (totalPuntos / totalMaximo) * 10;
+    return nota;
 }
 
 function calcularNotaPruebas(estudiante) {
@@ -4030,13 +4046,12 @@ function calcularNotaPruebas(estudiante) {
     console.log('evaluacionesEstudiantes:', evaluacionesEstudiantes);
     console.log('pruebas:', pruebas);
     
-    // Buscar el estudiante en evaluaciones
-    const estIndex = evaluacionesEstudiantes ? 
-        evaluacionesEstudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        ) : -1;
+    // Buscar el estudiante por índice (mismo orden que estudiantes)
+    const estIndex = estudiantes.findIndex(e => 
+        e.apellido1 === estudiante.apellido1 && 
+        e.apellido2 === estudiante.apellido2 && 
+        e.nombre === estudiante.nombre
+    );
     
     console.log('Índice encontrado en pruebas:', estIndex);
     
@@ -4045,38 +4060,38 @@ function calcularNotaPruebas(estudiante) {
         return 0.0;
     }
     
-    // Obtener la nota final calculada de evaluaciones
-    const estudianteEvaluacion = evaluacionesEstudiantes[estIndex];
-    if (estudianteEvaluacion && estudianteEvaluacion.notaFinal !== undefined) {
-        return parseFloat(estudianteEvaluacion.notaFinal) || 0.0;
+    // Verificar si existe el estudiante en pruebas
+    if (!evaluacionesEstudiantes[estIndex]) {
+        console.log('Estudiante no encontrado en pruebas');
+        return 0.0;
     }
     
-    // Si no hay nota final calculada, calcular manualmente
+    // Calcular nota promedio
     let totalPuntos = 0;
     let totalMaximo = 0;
     
-    pruebas.forEach((prueba, pruebaIdx) => {
-        const evaluacion = obtenerEvaluacion(estIndex, pruebaIdx);
-        if (evaluacion && evaluacion.puntos !== undefined && evaluacion.puntosMaximos !== undefined) {
-            totalPuntos += parseFloat(evaluacion.puntos) || 0;
-            totalMaximo += parseFloat(evaluacion.puntosMaximos) || 0;
+    evaluacionesEstudiantes[estIndex].forEach((pruebaEst, pruebaIdx) => {
+        if (pruebaEst && pruebaEst.puntos !== undefined) {
+            totalPuntos += parseFloat(pruebaEst.puntos) || 0;
+            totalMaximo += parseFloat(pruebas[pruebaIdx].puntosMaximos) || 0;
         }
     });
     
     if (totalMaximo === 0) return 0.0;
     
-    // Convertir a escala de 10
-    const porcentaje = (totalPuntos / totalMaximo) * 100;
-    return (porcentaje / 10);
+    // Calcular nota en escala de 10
+    const nota = (totalPuntos / totalMaximo) * 10;
+    return nota;
 }
 
 function calcularNotaAsistencia(estudiante) {
     // Implementar cálculo basado en asistencia
     const totales = calcularTotalesEstudiante(estudiante);
-    const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
+    const notaAsistencia = calcularPorcentajeAsistencia(totales);
     
-    // Retornar el porcentaje exacto sin redondeo
-    return porcentajeAsistencia;
+    // La función calcularPorcentajeAsistencia ya retorna una nota de 0-10
+    // basada en el porcentaje de ausencia según las reglas del sistema
+    return notaAsistencia;
 }
 
 function calcularNotaProyecto(estudiante) {
@@ -4086,41 +4101,39 @@ function calcularNotaProyecto(estudiante) {
         return 0.0;
     }
     
-    // Buscar el estudiante en proyectos
-    const estIndex = proyectosEstudiantes ? 
-        proyectosEstudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        ) : -1;
+    // Buscar el estudiante por índice (mismo orden que estudiantes)
+    const estIndex = estudiantes.findIndex(e => 
+        e.apellido1 === estudiante.apellido1 && 
+        e.apellido2 === estudiante.apellido2 && 
+        e.nombre === estudiante.nombre
+    );
     
     if (estIndex === -1 || !proyectos || proyectos.length === 0) {
         return 0.0;
     }
     
-    // Obtener la nota final calculada de proyectos
-    const estudianteProyecto = proyectosEstudiantes[estIndex];
-    if (estudianteProyecto && estudianteProyecto.notaFinal !== undefined) {
-        return parseFloat(estudianteProyecto.notaFinal) || 0.0;
+    // Verificar si existe el estudiante en proyectos
+    if (!proyectosEstudiantes[estIndex]) {
+        console.log('Estudiante no encontrado en proyectos');
+        return 0.0;
     }
     
-    // Si no hay nota final calculada, calcular manualmente
+    // Calcular nota promedio
     let totalPuntos = 0;
     let totalMaximo = 0;
     
-    proyectos.forEach((proyecto, proyectoIdx) => {
-        const proyectoEst = obtenerProyecto(estIndex, proyectoIdx);
-        if (proyectoEst && proyectoEst.puntos !== undefined && proyectoEst.puntosMaximos !== undefined) {
+    proyectosEstudiantes[estIndex].forEach((proyectoEst, proyectoIdx) => {
+        if (proyectoEst && proyectoEst.puntos !== undefined) {
             totalPuntos += parseFloat(proyectoEst.puntos) || 0;
-            totalMaximo += parseFloat(proyectoEst.puntosMaximos) || 0;
+            totalMaximo += parseFloat(proyectos[proyectoIdx].puntosMaximos) || 0;
         }
     });
     
     if (totalMaximo === 0) return 0.0;
     
-    // Convertir a escala de 10
-    const porcentaje = (totalPuntos / totalMaximo) * 100;
-    return (porcentaje / 10);
+    // Calcular nota en escala de 10
+    const nota = (totalPuntos / totalMaximo) * 10;
+    return nota;
 }
 
 function calcularNotaPortafolio(estudiante) {
@@ -4130,114 +4143,111 @@ function calcularNotaPortafolio(estudiante) {
         return 0.0;
     }
     
-    // Buscar el estudiante en portafolios
-    const estIndex = portafoliosEstudiantes ? 
-        portafoliosEstudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        ) : -1;
+    // Buscar el estudiante por índice (mismo orden que estudiantes)
+    const estIndex = estudiantes.findIndex(e => 
+        e.apellido1 === estudiante.apellido1 && 
+        e.apellido2 === estudiante.apellido2 && 
+        e.nombre === estudiante.nombre
+    );
     
     if (estIndex === -1 || !portafolios || portafolios.length === 0) {
         return 0.0;
     }
     
-    // Obtener la nota final calculada de portafolios
-    const estudiantePortafolio = portafoliosEstudiantes[estIndex];
-    if (estudiantePortafolio && estudiantePortafolio.notaFinal !== undefined) {
-        return parseFloat(estudiantePortafolio.notaFinal) || 0.0;
+    // Verificar si existe el estudiante en portafolios
+    if (!portafoliosEstudiantes[estIndex]) {
+        console.log('Estudiante no encontrado en portafolios');
+        return 0.0;
     }
     
-    // Si no hay nota final calculada, calcular manualmente
+    // Calcular nota promedio
     let totalPuntos = 0;
     let totalMaximo = 0;
     
-    portafolios.forEach((portafolio, portafolioIdx) => {
-        const portafolioEst = obtenerPortafolio(estIndex, portafolioIdx);
-        if (portafolioEst && portafolioEst.puntos !== undefined && portafolioEst.puntosMaximos !== undefined) {
+    portafoliosEstudiantes[estIndex].forEach((portafolioEst, portafolioIdx) => {
+        if (portafolioEst && portafolioEst.puntos !== undefined) {
             totalPuntos += parseFloat(portafolioEst.puntos) || 0;
-            totalMaximo += parseFloat(portafolioEst.puntosMaximos) || 0;
+            totalMaximo += parseFloat(portafolios[portafolioIdx].puntosMaximos) || 0;
         }
     });
     
     if (totalMaximo === 0) return 0.0;
     
-    // Convertir a escala de 10
-    const porcentaje = (totalPuntos / totalMaximo) * 100;
-    return (porcentaje / 10);
+    // Calcular nota en escala de 10
+    const nota = (totalPuntos / totalMaximo) * 10;
+    return nota;
 }
 
 function calcularNotaFinal(estudiante) {
-    let suma = 0;
+    let sumaTotal = 0;
     let contador = 0;
     
     console.log('=== CALCULANDO NOTA FINAL PARA:', estudiante.nombre || 'Estudiante', '===');
     
-    // Sumar solo los rubros que tienen datos activos
+    // Usar porcentajes directos de cada sección (sin recalcular)
     if (hayDatosActivosTrabajoCotidiano()) {
-        const trabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
-        console.log('✓ Trabajo Cotidiano:', trabajoCotidiano);
-        suma += trabajoCotidiano;
+        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(estudiante);
+        console.log('✓ Trabajo Cotidiano (directo):', trabajoCotidiano);
+        sumaTotal += trabajoCotidiano;
         contador++;
     } else {
         console.log('❌ Trabajo Cotidiano: No activo');
     }
     
     if (hayDatosActivosTareas()) {
-        const tareas = calcularNotaTareas(estudiante);
-        console.log('✓ Tareas:', tareas);
-        suma += tareas;
+        const tareas = obtenerPorcentajeTareasDirecto(estudiante);
+        console.log('✓ Tareas (directo):', tareas);
+        sumaTotal += tareas;
         contador++;
     } else {
         console.log('❌ Tareas: No activo');
     }
     
     if (hayDatosActivosPruebas()) {
-        const pruebas = calcularNotaPruebas(estudiante);
-        console.log('✓ Pruebas:', pruebas);
-        suma += pruebas;
+        const pruebas = obtenerPorcentajePruebasDirecto(estudiante);
+        console.log('✓ Pruebas (directo):', pruebas);
+        sumaTotal += pruebas;
         contador++;
     } else {
         console.log('❌ Pruebas: No activo');
     }
     
+    // Asistencia NO se incluye en la nota final (solo los 5 rubros principales)
     if (hayDatosActivosAsistencia()) {
         const asistencia = calcularNotaAsistencia(estudiante);
-        console.log('✓ Asistencia:', asistencia);
-        suma += asistencia;
-        contador++;
+        console.log('✓ Asistencia (no incluida en nota final):', asistencia);
     } else {
         console.log('❌ Asistencia: No activo');
     }
     
     if (hayDatosActivosProyecto()) {
-        const proyecto = calcularNotaProyecto(estudiante);
-        console.log('✓ Proyecto:', proyecto);
-        suma += proyecto;
+        const proyecto = obtenerPorcentajeProyectoDirecto(estudiante);
+        console.log('✓ Proyecto (directo):', proyecto);
+        sumaTotal += proyecto;
         contador++;
     } else {
         console.log('❌ Proyecto: No activo');
     }
     
     if (hayDatosActivosPortafolio()) {
-        const portafolio = calcularNotaPortafolio(estudiante);
-        console.log('✓ Portafolio:', portafolio);
-        suma += portafolio;
+        const portafolio = obtenerPorcentajePortafolioDirecto(estudiante);
+        console.log('✓ Portafolio (directo):', portafolio);
+        sumaTotal += portafolio;
         contador++;
     } else {
         console.log('❌ Portafolio: No activo');
     }
     
-    // Calcular promedio
-    const promedio = contador > 0 ? suma / contador : 0;
-    console.log('📊 Suma total:', suma, '| Contador:', contador, '| Promedio:', promedio);
+    // La nota final es la SUMA DIRECTA de los 5 rubros principales (sin asistencia)
+    const notaFinal = sumaTotal;
+    console.log('📊 Suma total de 5 rubros:', sumaTotal, '| Contador:', contador, '| Nota final:', notaFinal);
     console.log('=== FIN CÁLCULO NOTA FINAL ===');
     
-    return promedio;
+    return notaFinal;
 }
 
 function actualizarResumenSeaPeriodo() {
-    // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    renderSeaPeriodo();
     mostrarAlerta('Resumen actualizado correctamente', 'exito');
 }
 
@@ -4297,5 +4307,1034 @@ function exportarSeaPeriodo() {
         mostrarAlerta('Error al exportar el resumen', 'error');
     }
 }
+
+// ===== FUNCIÓN PARA AGREGAR DATOS DE PRUEBA =====
+function agregarDatosPrueba() {
+    console.log('🔧 Sincronizando datos existentes para SEA PERIÓDO...');
+    
+    // Sincronizar datos existentes con la estructura correcta
+    sincronizarDatosExistentes();
+    console.log('🔄 Datos existentes sincronizados con estructura correcta');
+    
+    // La sincronización ya se realizó en sincronizarDatosExistentes()
+    console.log('✅ Datos sincronizados correctamente');
+    
+    // Mostrar información de debug
+    console.log('🔍 DEBUG - Datos actuales:');
+    console.log('- Estudiantes:', estudiantes.length);
+    console.log('- Pruebas:', pruebas.length);
+    console.log('- Tareas:', tareas.length);
+    console.log('- Proyectos:', proyectos.length);
+    console.log('- Portafolios:', portafolios.length);
+    
+    // Guardar todos los datos
+    guardarEvaluacion();
+    guardarTareas();
+    guardarTrabajoCotidiano();
+    guardarProyecto();
+    guardarPortafolio();
+    
+    // Actualizar el resumen
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Datos existentes sincronizados correctamente', 'exito');
+    console.log('✅ Datos existentes sincronizados correctamente');
+}
+
+// ===== FUNCIÓN PARA SINCRONIZAR DATOS EXISTENTES =====
+function sincronizarDatosExistentes() {
+    console.log('🔄 Iniciando sincronización de datos existentes...');
+    
+    if (estudiantes.length === 0) {
+        console.log('⚠️ No hay estudiantes para sincronizar');
+        return;
+    }
+    
+    // Recargar datos desde localStorage para obtener los datos reales
+    cargarEvaluacion();
+    cargarTareas();
+    cargarProyecto();
+    cargarPortafolio();
+    
+    console.log('📊 Datos recargados desde localStorage:');
+    console.log('- evaluacionesEstudiantes:', evaluacionesEstudiantes);
+    console.log('- tareasEstudiantes:', tareasEstudiantes);
+    console.log('- proyectosEstudiantes:', proyectosEstudiantes);
+    console.log('- portafoliosEstudiantes:', portafoliosEstudiantes);
+    
+    // Asegurar que los arrays de estudiantes tengan la longitud correcta y estén sincronizados con las evaluaciones
+    sincronizarEstudiantesEvaluacion();
+    sincronizarEstudiantesTareas();
+    sincronizarEstudiantesProyecto();
+    sincronizarEstudiantesPortafolio();
+
+    console.log('✅ Estructura de datos corregida y sincronizada');
+    console.log('🔄 Sincronización completada');
+}
+
+// ===== FUNCIÓN DE PRUEBA PARA VERIFICAR DATOS =====
+function testearDatos() {
+    console.log('🧪 === INICIANDO PRUEBA DE DATOS ===');
+    
+    // Verificar estudiantes
+    console.log('📋 ESTUDIANTES:');
+    estudiantes.forEach((est, idx) => {
+        console.log(`  ${idx}: ${est.nombre} ${est.apellido1} ${est.apellido2}`);
+    });
+    
+    // Verificar configuración de evaluaciones
+    console.log('📊 CONFIGURACIÓN DE EVALUACIONES:');
+    console.log('  Pruebas:', pruebas);
+    console.log('  Tareas:', tareas);
+    console.log('  Proyectos:', proyectos);
+    console.log('  Portafolios:', portafolios);
+    
+    // Verificar datos de trabajo cotidiano DETALLADO
+    console.log('🔍 DATOS DE TRABAJO COTIDIANO - DETALLADO:');
+    console.log('  Días de trabajo:', diasTrabajo);
+    console.log('  trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
+    
+    trabajoCotidianoEstudiantes.forEach((estudianteTrabajo, estIdx) => {
+        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
+        console.log(`    Array completo:`, estudianteTrabajo);
+        estudianteTrabajo.forEach((notaDia, diaIdx) => {
+            console.log(`    Día ${diaIdx}: ${notaDia.nota} puntos (objeto completo: ${JSON.stringify(notaDia)})`);
+        });
+    });
+    
+    // Verificar datos de tareas DETALLADO
+    console.log('🔍 DATOS DE TAREAS - DETALLADO:');
+    console.log('  Configuración tareas:', tareas);
+    console.log('  tareasEstudiantes:', tareasEstudiantes);
+    
+    tareasEstudiantes.forEach((estudianteTareas, estIdx) => {
+        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
+        console.log(`    Array completo:`, estudianteTareas);
+        estudianteTareas.forEach((tarea, tareaIdx) => {
+            console.log(`    Tarea ${tareaIdx}: ${tarea.puntos} puntos (objeto completo: ${JSON.stringify(tarea)})`);
+        });
+    });
+    
+    // Verificar datos de estudiantes - PRUEBAS
+    console.log('🔍 DATOS DE ESTUDIANTES - PRUEBAS:');
+    evaluacionesEstudiantes.forEach((estudiantePruebas, estIdx) => {
+        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
+        estudiantePruebas.forEach((prueba, pruebaIdx) => {
+            console.log(`    Prueba ${pruebaIdx}: ${prueba.puntos} puntos`);
+        });
+    });
+    
+    // Verificar datos de estudiantes - PROYECTOS
+    console.log('🔍 DATOS DE ESTUDIANTES - PROYECTOS:');
+    proyectosEstudiantes.forEach((estudianteProyectos, estIdx) => {
+        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
+        estudianteProyectos.forEach((proyecto, proyectoIdx) => {
+            console.log(`    Proyecto ${proyectoIdx}: ${proyecto.puntos} puntos`);
+        });
+    });
+    
+    // Verificar datos de estudiantes - PORTAFOLIOS
+    console.log('🔍 DATOS DE ESTUDIANTES - PORTAFOLIOS:');
+    portafoliosEstudiantes.forEach((estudiantePortafolios, estIdx) => {
+        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
+        estudiantePortafolios.forEach((portafolio, portafolioIdx) => {
+            console.log(`    Portafolio ${portafolioIdx}: ${portafolio.puntos} puntos`);
+        });
+    });
+    
+    // Probar cálculos individuales con DEBUG
+    console.log('🧮 PRUEBA DE CÁLCULOS CON DEBUG:');
+    estudiantes.forEach((estudiante, idx) => {
+        console.log(`\n📊 Cálculos para ${estudiante.nombre}:`);
+        
+        // Calcular nota de trabajo cotidiano con debug
+        console.log(`  --- TRABAJO COTIDIANO ---`);
+        const notaTrabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
+        console.log(`  RESULTADO: ${notaTrabajoCotidiano}`);
+        
+        // Calcular nota de tareas con debug
+        console.log(`  --- TAREAS ---`);
+        const notaTareas = calcularNotaTareas(estudiante);
+        console.log(`  RESULTADO: ${notaTareas}`);
+        
+        // Calcular nota de pruebas
+        const notaPruebas = calcularNotaPruebas(estudiante);
+        console.log(`  PRUEBAS: ${notaPruebas}`);
+        
+        // Calcular nota de asistencia
+        const notaAsistencia = calcularNotaAsistencia(estudiante);
+        console.log(`  ASISTENCIA: ${notaAsistencia}`);
+        
+        // Calcular nota de proyecto
+        const notaProyecto = calcularNotaProyecto(estudiante);
+        console.log(`  PROYECTO: ${notaProyecto}`);
+        
+        // Calcular nota de portafolio
+        const notaPortafolio = calcularNotaPortafolio(estudiante);
+        console.log(`  PORTAFOLIO: ${notaPortafolio}`);
+        
+        // Calcular nota final
+        const notaFinal = calcularNotaFinal(estudiante);
+        console.log(`  NOTA FINAL: ${notaFinal}`);
+    });
+    
+    console.log('🧪 === FIN PRUEBA DE DATOS ===');
+}
+
+// ===== FUNCIÓN PARA GENERAR DATOS REALES =====
+function generarDatosReales() {
+    console.log('📝 === GENERANDO DATOS REALES ===');
+    
+    // Generar datos de trabajo cotidiano
+    console.log('📝 Generando datos de trabajo cotidiano...');
+    
+    // Asegurar que hay días de trabajo
+    if (!diasTrabajo || diasTrabajo.length === 0) {
+        console.log('⚠️ No hay días de trabajo, creando días...');
+        diasTrabajo = [
+            { fecha: '2024-01-15', lecciones: 4 },
+            { fecha: '2024-01-16', lecciones: 4 },
+            { fecha: '2024-01-17', lecciones: 4 },
+            { fecha: '2024-01-18', lecciones: 4 }
+        ];
+    }
+    
+    // Generar notas de trabajo cotidiano para cada estudiante
+    trabajoCotidianoEstudiantes = estudiantes.map((estudiante, estIdx) => {
+        return diasTrabajo.map((dia, diaIdx) => {
+            // Generar notas realistas entre 6 y 10
+            const nota = Math.floor(Math.random() * 5) + 6; // 6-10
+            return {
+                nota: nota,
+                asistencia: Math.random() > 0.1 ? 1 : 0 // 90% asistencia
+            };
+        });
+    });
+    
+    console.log('✅ Datos de trabajo cotidiano generados:', trabajoCotidianoEstudiantes);
+    
+    // Generar datos de tareas
+    console.log('📝 Generando datos de tareas...');
+    
+    // Asegurar que hay tareas configuradas
+    if (!tareas || tareas.length === 0) {
+        console.log('⚠️ No hay tareas configuradas, creando tareas...');
+        tareas = [
+            { nombre: 'Tarea 1', puntosMaximos: 30, peso: 1 },
+            { nombre: 'Tarea 2', puntosMaximos: 25, peso: 1 }
+        ];
+    }
+    
+    // Generar puntos de tareas para cada estudiante
+    tareasEstudiantes = estudiantes.map((estudiante, estIdx) => {
+        return tareas.map((tarea, tareaIdx) => {
+            // Generar puntos realistas (70-100% del máximo)
+            const porcentaje = 0.7 + (Math.random() * 0.3); // 70-100%
+            const puntos = Math.round(tarea.puntosMaximos * porcentaje);
+            return { puntos: puntos };
+        });
+    });
+    
+    console.log('✅ Datos de tareas generados:', tareasEstudiantes);
+    
+    // Guardar los datos generados
+    guardarTrabajoCotidiano();
+    guardarTareas();
+    
+    console.log('💾 Datos guardados en localStorage');
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Datos reales generados correctamente', 'exito');
+    console.log('📝 === FIN GENERACIÓN DE DATOS REALES ===');
+}
+
+// ===== FUNCIÓN PARA LIMPIAR Y REGENERAR DATOS =====
+function limpiarYRegenerarDatos() {
+    console.log('🧹 === LIMPIANDO Y REGENERANDO DATOS ===');
+    
+    // Limpiar datos existentes
+    console.log('🧹 Limpiando datos existentes...');
+    
+    // Limpiar trabajo cotidiano
+    if (trabajoCotidianoEstudiantes) {
+        trabajoCotidianoEstudiantes = trabajoCotidianoEstudiantes.map(estudiante => {
+            return estudiante.map(dia => ({
+                nota: 0,
+                asistencia: 0
+            }));
+        });
+    }
+    
+    // Limpiar tareas
+    if (tareasEstudiantes) {
+        tareasEstudiantes = tareasEstudiantes.map(estudiante => {
+            return estudiante.map(tarea => ({
+                puntos: 0
+            }));
+        });
+    }
+    
+    // Limpiar pruebas
+    if (evaluacionesEstudiantes) {
+        evaluacionesEstudiantes = evaluacionesEstudiantes.map(estudiante => {
+            return estudiante.map(prueba => ({
+                puntos: 0
+            }));
+        });
+    }
+    
+    // Limpiar proyectos
+    if (proyectosEstudiantes) {
+        proyectosEstudiantes = proyectosEstudiantes.map(estudiante => {
+            return estudiante.map(proyecto => ({
+                puntos: 0
+            }));
+        });
+    }
+    
+    // Limpiar portafolios
+    if (portafoliosEstudiantes) {
+        portafoliosEstudiantes = portafoliosEstudiantes.map(estudiante => {
+            return estudiante.map(portafolio => ({
+                puntos: 0
+            }));
+        });
+    }
+    
+    console.log('✅ Datos limpiados');
+    
+    // Ahora generar nuevos datos
+    console.log('📝 Generando nuevos datos...');
+    
+    // Generar datos de trabajo cotidiano con notas más altas
+    if (diasTrabajo && diasTrabajo.length > 0) {
+        trabajoCotidianoEstudiantes = estudiantes.map((estudiante, estIdx) => {
+            return diasTrabajo.map((dia, diaIdx) => {
+                // Generar notas realistas entre 7 y 10 (más altas)
+                const nota = Math.floor(Math.random() * 4) + 7; // 7-10
+                return {
+                    nota: nota,
+                    asistencia: Math.random() > 0.1 ? 1 : 0
+                };
+            });
+        });
+    }
+    
+    // Generar datos de tareas con puntos más altos
+    if (tareas && tareas.length > 0) {
+        tareasEstudiantes = estudiantes.map((estudiante, estIdx) => {
+            return tareas.map((tarea, tareaIdx) => {
+                // Generar puntos realistas (80-100% del máximo)
+                const porcentaje = 0.8 + (Math.random() * 0.2); // 80-100%
+                const puntos = Math.round(tarea.puntosMaximos * porcentaje);
+                return { puntos: puntos };
+            });
+        });
+    }
+    
+    // Generar datos de pruebas con puntos más altos
+    if (pruebas && pruebas.length > 0) {
+        evaluacionesEstudiantes = estudiantes.map((estudiante, estIdx) => {
+            return pruebas.map((prueba, pruebaIdx) => {
+                // Generar puntos realistas (75-100% del máximo)
+                const porcentaje = 0.75 + (Math.random() * 0.25); // 75-100%
+                const puntos = Math.round(prueba.puntosMaximos * porcentaje);
+                return { puntos: puntos };
+            });
+        });
+    }
+    
+    // Generar datos de proyectos con puntos más altos
+    if (proyectos && proyectos.length > 0) {
+        proyectosEstudiantes = estudiantes.map((estudiante, estIdx) => {
+            return proyectos.map((proyecto, proyectoIdx) => {
+                // Generar puntos realistas (80-100% del máximo)
+                const porcentaje = 0.8 + (Math.random() * 0.2); // 80-100%
+                const puntos = Math.round(proyecto.puntosMaximos * porcentaje);
+                return { puntos: puntos };
+            });
+        });
+    }
+    
+    // Generar datos de portafolios con puntos más altos
+    if (portafolios && portafolios.length > 0) {
+        portafoliosEstudiantes = estudiantes.map((estudiante, estIdx) => {
+            return portafolios.map((portafolio, portafolioIdx) => {
+                // Generar puntos realistas (80-100% del máximo)
+                const porcentaje = 0.8 + (Math.random() * 0.2); // 80-100%
+                const puntos = Math.round(portafolio.puntosMaximos * porcentaje);
+                return { puntos: puntos };
+            });
+        });
+    }
+    
+    // Guardar todos los datos
+    console.log('💾 Guardando datos...');
+    guardarTrabajoCotidiano();
+    guardarTareas();
+    guardarEvaluacion();
+    guardarProyecto();
+    guardarPortafolio();
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Datos limpiados y regenerados correctamente', 'exito');
+    console.log('🧹 === FIN LIMPIEZA Y REGENERACIÓN ===');
+}
+
+// ===== FUNCIÓN PARA RESTAURAR DATOS ORIGINALES =====
+function restaurarDatosOriginales() {
+    console.log('🔄 === RESTAURANDO DATOS ORIGINALES ===');
+    
+    // Intentar restaurar desde localStorage
+    console.log('🔍 Intentando restaurar datos desde localStorage...');
+    
+    // Recargar todos los datos guardados
+    cargarEvaluacion();
+    cargarTareas();
+    cargarTrabajoCotidiano();
+    cargarProyecto();
+    cargarPortafolio();
+    
+    console.log('📊 Datos restaurados:');
+    console.log('- evaluacionesEstudiantes:', evaluacionesEstudiantes);
+    console.log('- tareasEstudiantes:', tareasEstudiantes);
+    console.log('- trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
+    console.log('- proyectosEstudiantes:', proyectosEstudiantes);
+    console.log('- portafoliosEstudiantes:', portafoliosEstudiantes);
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Datos originales restaurados desde localStorage', 'exito');
+    console.log('🔄 === FIN RESTAURACIÓN ===');
+}
+
+// ===== FUNCIÓN PARA INGRESAR DATOS MANUALMENTE =====
+function ingresarDatosManualmente() {
+    console.log('✏️ === INGRESO MANUAL DE DATOS ===');
+    
+    // Mostrar instrucciones
+    const instrucciones = `
+📝 **INSTRUCCIONES PARA INGRESAR DATOS MANUALMENTE:**
+
+1. **TRABAJO COTIDIANO**: Ve a la sección "Trabajo Cotidiano" e ingresa las notas para cada día
+2. **TAREAS**: Ve a la sección "Tareas" e ingresa los puntos obtenidos
+3. **PRUEBAS**: Ve a la sección "Evaluación" e ingresa los puntos obtenidos
+4. **PROYECTO**: Ve a la sección "Proyecto" e ingresa los puntos obtenidos
+5. **PORTAFOLIO**: Ve a la sección "Portafolio" e ingresa los puntos obtenidos
+
+💡 **CONSEJO**: Después de ingresar los datos, usa "🔄 Sincronizar Datos" para actualizar la tabla SEA Período.
+    `;
+    
+    alert(instrucciones);
+    
+    // Navegar a la primera sección (Trabajo Cotidiano)
+    scrollToSection('trabajo-cotidiano');
+    
+    console.log('✏️ === FIN INSTRUCCIONES ===');
+}
+
+// ===== FUNCIÓN PARA VERIFICAR DATOS EXISTENTES =====
+function verificarDatosExistentes() {
+    console.log('🔍 === VERIFICANDO DATOS EXISTENTES ===');
+    
+    let datosExistentes = false;
+    let detalles = [];
+    
+    // Verificar trabajo cotidiano
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        const tieneNotas = trabajoCotidianoEstudiantes.some(estudiante => 
+            estudiante.some(dia => dia && dia.nota && dia.nota > 0)
+        );
+        if (tieneNotas) {
+            datosExistentes = true;
+            detalles.push('✓ Trabajo Cotidiano: Tiene notas');
+        } else {
+            detalles.push('❌ Trabajo Cotidiano: Sin notas');
+        }
+    } else {
+        detalles.push('❌ Trabajo Cotidiano: No configurado');
+    }
+    
+    // Verificar tareas
+    if (tareasEstudiantes && tareasEstudiantes.length > 0) {
+        const tienePuntos = tareasEstudiantes.some(estudiante => 
+            estudiante.some(tarea => tarea && tarea.puntos && tarea.puntos > 0)
+        );
+        if (tienePuntos) {
+            datosExistentes = true;
+            detalles.push('✓ Tareas: Tiene puntos');
+        } else {
+            detalles.push('❌ Tareas: Sin puntos');
+        }
+    } else {
+        detalles.push('❌ Tareas: No configurado');
+    }
+    
+    // Verificar pruebas
+    if (evaluacionesEstudiantes && evaluacionesEstudiantes.length > 0) {
+        const tienePuntos = evaluacionesEstudiantes.some(estudiante => 
+            estudiante.some(prueba => prueba && prueba.puntos && prueba.puntos > 0)
+        );
+        if (tienePuntos) {
+            datosExistentes = true;
+            detalles.push('✓ Pruebas: Tiene puntos');
+        } else {
+            detalles.push('❌ Pruebas: Sin puntos');
+        }
+    } else {
+        detalles.push('❌ Pruebas: No configurado');
+    }
+    
+    // Mostrar resultado
+    const mensaje = datosExistentes 
+        ? '✅ Se encontraron datos existentes en el sistema'
+        : '❌ No se encontraron datos existentes';
+    
+    console.log(mensaje);
+    detalles.forEach(detalle => console.log(detalle));
+    
+    mostrarAlerta(`${mensaje}\n\n${detalles.join('\n')}`, datosExistentes ? 'exito' : 'info');
+    
+    console.log('🔍 === FIN VERIFICACIÓN ===');
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
+function diagnosticarEstudianteEspecifico() {
+    console.log('🔍 === DIAGNÓSTICO DETALLADO DE ESTUDIANTE ===');
+    
+    if (!estudiantes || estudiantes.length === 0) {
+        console.log('❌ No hay estudiantes registrados');
+        return;
+    }
+    
+    // Mostrar el primer estudiante como ejemplo
+    const estudiante = estudiantes[0];
+    console.log('📋 Analizando estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // 1. Verificar datos de trabajo cotidiano
+    console.log('\n📚 === TRABAJO COTIDIANO ===');
+    if (diasTrabajo && diasTrabajo.length > 0) {
+        console.log('✅ Días de trabajo disponibles:', diasTrabajo.length);
+        console.log('📅 Días:', diasTrabajo);
+        
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes[estIndex]) {
+            console.log('✅ Datos del estudiante encontrados');
+            console.log('📊 Notas del estudiante:', trabajoCotidianoEstudiantes[estIndex]);
+            
+            let totalNotas = 0;
+            let contadorNotas = 0;
+            
+            trabajoCotidianoEstudiantes[estIndex].forEach((notaDia, diaIdx) => {
+                if (notaDia && notaDia.nota !== null && notaDia.nota !== undefined) {
+                    const nota = parseFloat(notaDia.nota) || 0;
+                    totalNotas += nota;
+                    contadorNotas++;
+                    console.log(`  Día ${diaIdx}: ${nota} puntos`);
+                } else {
+                    console.log(`  Día ${diaIdx}: Sin datos`);
+                }
+            });
+            
+            if (contadorNotas > 0) {
+                const promedio = totalNotas / contadorNotas;
+                console.log(`📈 Total notas: ${totalNotas}, Contador: ${contadorNotas}, Promedio: ${promedio}`);
+            } else {
+                console.log('❌ No hay notas válidas');
+            }
+        } else {
+            console.log('❌ No se encontraron datos del estudiante en trabajo cotidiano');
+        }
+    } else {
+        console.log('❌ No hay días de trabajo configurados');
+    }
+    
+    // 2. Verificar datos de tareas
+    console.log('\n📝 === TAREAS ===');
+    if (tareas && tareas.length > 0) {
+        console.log('✅ Tareas configuradas:', tareas.length);
+        console.log('📋 Configuración tareas:', tareas);
+        
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (tareasEstudiantes && tareasEstudiantes[estIndex]) {
+            console.log('✅ Datos del estudiante encontrados');
+            console.log('📊 Puntos del estudiante:', tareasEstudiantes[estIndex]);
+            
+            let totalPuntos = 0;
+            let totalMaximo = 0;
+            
+            tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
+                if (tareaEst && tareaEst.puntos !== undefined) {
+                    const puntos = parseFloat(tareaEst.puntos) || 0;
+                    const maximo = parseFloat(tareas[tareaIdx].puntosMaximos) || 0;
+                    totalPuntos += puntos;
+                    totalMaximo += maximo;
+                    console.log(`  Tarea ${tareaIdx}: ${puntos}/${maximo} puntos`);
+                } else {
+                    console.log(`  Tarea ${tareaIdx}: Sin datos`);
+                }
+            });
+            
+            if (totalMaximo > 0) {
+                const porcentaje = (totalPuntos / totalMaximo) * 100;
+                const nota = (totalPuntos / totalMaximo) * 10;
+                console.log(`📈 Total puntos: ${totalPuntos}, Total máximo: ${totalMaximo}`);
+                console.log(`📊 Porcentaje: ${porcentaje.toFixed(2)}%, Nota: ${nota.toFixed(2)}`);
+            } else {
+                console.log('❌ No hay puntos máximos configurados');
+            }
+        } else {
+            console.log('❌ No se encontraron datos del estudiante en tareas');
+        }
+    } else {
+        console.log('❌ No hay tareas configuradas');
+    }
+    
+    // 3. Verificar datos de pruebas
+    console.log('\n🧪 === PRUEBAS ===');
+    if (pruebas && pruebas.length > 0) {
+        console.log('✅ Pruebas configuradas:', pruebas.length);
+        console.log('📋 Configuración pruebas:', pruebas);
+        
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (evaluacionesEstudiantes && evaluacionesEstudiantes[estIndex]) {
+            console.log('✅ Datos del estudiante encontrados');
+            console.log('📊 Puntos del estudiante:', evaluacionesEstudiantes[estIndex]);
+            
+            let totalPuntos = 0;
+            let totalMaximo = 0;
+            
+            evaluacionesEstudiantes[estIndex].forEach((pruebaEst, pruebaIdx) => {
+                if (pruebaEst && pruebaEst.puntos !== undefined) {
+                    const puntos = parseFloat(pruebaEst.puntos) || 0;
+                    const maximo = parseFloat(pruebas[pruebaIdx].puntosMaximos) || 0;
+                    totalPuntos += puntos;
+                    totalMaximo += maximo;
+                    console.log(`  Prueba ${pruebaIdx}: ${puntos}/${maximo} puntos`);
+                } else {
+                    console.log(`  Prueba ${pruebaIdx}: Sin datos`);
+                }
+            });
+            
+            if (totalMaximo > 0) {
+                const porcentaje = (totalPuntos / totalMaximo) * 100;
+                const nota = (totalPuntos / totalMaximo) * 10;
+                console.log(`📈 Total puntos: ${totalPuntos}, Total máximo: ${totalMaximo}`);
+                console.log(`📊 Porcentaje: ${porcentaje.toFixed(2)}%, Nota: ${nota.toFixed(2)}`);
+            } else {
+                console.log('❌ No hay puntos máximos configurados');
+            }
+        } else {
+            console.log('❌ No se encontraron datos del estudiante en pruebas');
+        }
+    } else {
+        console.log('❌ No hay pruebas configuradas');
+    }
+    
+    // 4. Calcular nota final
+    console.log('\n🎯 === NOTA FINAL ===');
+    const notaFinal = calcularNotaFinal(estudiante);
+    console.log(`📊 Nota final calculada: ${notaFinal.toFixed(2)}`);
+    
+    console.log('🔍 === FIN DIAGNÓSTICO ===');
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR TRABAJO COTIDIANO ESPECÍFICAMENTE =====
+function diagnosticarTrabajoCotidiano() {
+    console.log('🔍 === DIAGNÓSTICO ESPECÍFICO TRABAJO COTIDIANO ===');
+    
+    if (!estudiantes || estudiantes.length === 0) {
+        console.log('❌ No hay estudiantes registrados');
+        return;
+    }
+    
+    const estudiante = estudiantes[0];
+    console.log('📋 Analizando estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // Verificar datos de trabajo cotidiano
+    console.log('\n📚 === DATOS DE TRABAJO COTIDIANO ===');
+    if (diasTrabajo && diasTrabajo.length > 0) {
+        console.log('✅ Días de trabajo disponibles:', diasTrabajo.length);
+        console.log('📅 Días:', diasTrabajo);
+        
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes[estIndex]) {
+            console.log('✅ Datos del estudiante encontrados');
+            console.log('📊 Array completo del estudiante:', trabajoCotidianoEstudiantes[estIndex]);
+            
+            let totalNotas = 0;
+            let contadorNotas = 0;
+            
+            trabajoCotidianoEstudiantes[estIndex].forEach((notaDia, diaIdx) => {
+                console.log(`\n🔍 Día ${diaIdx}:`);
+                console.log(`  Objeto completo:`, notaDia);
+                console.log(`  Tipo de nota:`, typeof notaDia?.nota);
+                console.log(`  Valor de nota:`, notaDia?.nota);
+                
+                if (notaDia && notaDia.nota !== null && notaDia.nota !== undefined) {
+                    const nota = parseFloat(notaDia.nota) || 0;
+                    totalNotas += nota;
+                    contadorNotas++;
+                    console.log(`  ✅ Nota válida: ${nota} (sumada al total)`);
+                } else {
+                    console.log(`  ❌ Nota inválida o vacía`);
+                }
+            });
+            
+            console.log(`\n📊 RESUMEN DE CÁLCULO:`);
+            console.log(`  Total notas: ${totalNotas}`);
+            console.log(`  Contador notas válidas: ${contadorNotas}`);
+            
+            if (contadorNotas > 0) {
+                const promedio = totalNotas / contadorNotas;
+                console.log(`  Promedio calculado: ${promedio}`);
+                console.log(`  Promedio con 1 decimal: ${promedio.toFixed(1)}`);
+                
+                // Verificar si hay división por 10 en algún lugar
+                const promedioDividido10 = promedio / 10;
+                console.log(`  Promedio dividido por 10: ${promedioDividido10}`);
+                console.log(`  Promedio dividido por 10 con 1 decimal: ${promedioDividido10.toFixed(1)}`);
+                
+                console.log(`\n🎯 RESULTADO FINAL:`);
+                console.log(`  Valor que debería mostrar: ${promedio.toFixed(1)}`);
+                console.log(`  Si muestra ${promedioDividido10.toFixed(1)}, entonces SÍ está dividiendo por 10`);
+            } else {
+                console.log('❌ No hay notas válidas para calcular');
+            }
+        } else {
+            console.log('❌ No se encontraron datos del estudiante en trabajo cotidiano');
+        }
+    } else {
+        console.log('❌ No hay días de trabajo configurados');
+    }
+    
+    console.log('🔍 === FIN DIAGNÓSTICO TRABAJO COTIDIANO ===');
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR PRUEBAS ESPECÍFICAMENTE =====
+function diagnosticarPruebas() {
+    console.log('🔍 === DIAGNÓSTICO ESPECÍFICO PRUEBAS ===');
+    
+    if (!estudiantes || estudiantes.length === 0) {
+        console.log('❌ No hay estudiantes registrados');
+        return;
+    }
+    
+    const estudiante = estudiantes[0];
+    console.log('📋 Analizando estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // Verificar datos de pruebas
+    console.log('\n🧪 === DATOS DE PRUEBAS ===');
+    if (pruebas && pruebas.length > 0) {
+        console.log('✅ Pruebas configuradas:', pruebas.length);
+        console.log('📋 Configuración pruebas:', pruebas);
+        
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (evaluacionesEstudiantes && evaluacionesEstudiantes[estIndex]) {
+            console.log('✅ Datos del estudiante encontrados');
+            console.log('📊 Array completo del estudiante:', evaluacionesEstudiantes[estIndex]);
+            
+            let totalPuntos = 0;
+            let totalMaximo = 0;
+            
+            evaluacionesEstudiantes[estIndex].forEach((pruebaEst, pruebaIdx) => {
+                console.log(`\n🔍 Prueba ${pruebaIdx}:`);
+                console.log(`  Objeto completo:`, pruebaEst);
+                console.log(`  Tipo de puntos:`, typeof pruebaEst?.puntos);
+                console.log(`  Valor de puntos:`, pruebaEst?.puntos);
+                console.log(`  Puntos máximos de la prueba:`, pruebas[pruebaIdx]?.puntosMaximos);
+                
+                if (pruebaEst && pruebaEst.puntos !== undefined) {
+                    const puntos = parseFloat(pruebaEst.puntos) || 0;
+                    const maximo = parseFloat(pruebas[pruebaIdx].puntosMaximos) || 0;
+                    totalPuntos += puntos;
+                    totalMaximo += maximo;
+                    console.log(`  ✅ Puntos válidos: ${puntos}/${maximo} (sumados al total)`);
+                } else {
+                    console.log(`  ❌ Puntos inválidos o vacíos`);
+                }
+            });
+            
+            console.log(`\n📊 RESUMEN DE CÁLCULO:`);
+            console.log(`  Total puntos obtenidos: ${totalPuntos}`);
+            console.log(`  Total puntos máximos: ${totalMaximo}`);
+            
+            if (totalMaximo > 0) {
+                const porcentaje = (totalPuntos / totalMaximo) * 100;
+                const nota = (totalPuntos / totalMaximo) * 10;
+                console.log(`  Porcentaje: ${porcentaje.toFixed(2)}%`);
+                console.log(`  Nota en escala de 10: ${nota.toFixed(2)}`);
+                
+                console.log(`\n🎯 RESULTADO FINAL:`);
+                console.log(`  Valor que debería mostrar: ${nota.toFixed(1)}`);
+            } else {
+                console.log('❌ No hay puntos máximos configurados');
+            }
+        } else {
+            console.log('❌ No se encontraron datos del estudiante en pruebas');
+        }
+    } else {
+        console.log('❌ No hay pruebas configuradas');
+    }
+    
+    console.log('🔍 === FIN DIAGNÓSTICO PRUEBAS ===');
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
+
+// ===== FUNCIÓN PARA SINCRONIZAR PORCENTAJES FINALES =====
+function sincronizarPorcentajesFinales() {
+    console.log('🔄 === SINCRONIZANDO PORCENTAJES FINALES ===');
+    
+    // Sincronizar trabajo cotidiano - multiplicar por 10 para convertir a porcentaje
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        console.log('📚 Sincronizando trabajo cotidiano...');
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            estudiante.forEach((dia, diaIdx) => {
+                if (dia && dia.nota !== null && dia.nota !== undefined) {
+                    // Convertir de escala 0-10 a escala 0-100 (multiplicar por 10)
+                    const valorOriginal = parseFloat(dia.nota) || 0;
+                    const valorPorcentaje = valorOriginal * 10;
+                    dia.nota = valorPorcentaje;
+                    console.log(`  Estudiante ${estIdx}, Día ${diaIdx}: ${valorOriginal} → ${valorPorcentaje}`);
+                }
+            });
+        });
+    }
+    
+    // Sincronizar tareas - ya están en porcentaje correcto
+    console.log('📝 Tareas ya están en porcentaje correcto');
+    
+    // Sincronizar pruebas - ya están en porcentaje correcto
+    console.log('🧪 Pruebas ya están en porcentaje correcto');
+    
+    // Sincronizar proyectos - ya están en porcentaje correcto
+    console.log('📋 Proyectos ya están en porcentaje correcto');
+    
+    // Sincronizar portafolios - ya están en porcentaje correcto
+    console.log('📁 Portafolios ya están en porcentaje correcto');
+    
+    // Guardar los datos sincronizados
+    console.log('💾 Guardando datos sincronizados...');
+    guardarTrabajoCotidiano();
+    
+    // Actualizar la tabla
+    renderSeaPeriodo();
+    
+    mostrarAlerta('Porcentajes finales sincronizados correctamente', 'exito');
+    console.log('🔄 === FIN SINCRONIZACIÓN PORCENTAJES ===');
+}
+
+// ===== FUNCIONES PARA OBTENER PORCENTAJES DIRECTOS =====
+function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !trabajoCotidianoEstudiantes || !trabajoCotidianoEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular promedio de las notas (ya están en escala 0-100)
+        let totalNotas = 0;
+        let contadorNotas = 0;
+        
+        trabajoCotidianoEstudiantes[estIndex].forEach((dia) => {
+            if (dia && (typeof dia.nota === 'number' || (typeof dia.nota === 'string' && dia.nota.trim() !== ''))) {
+                const nota = Number(dia.nota);
+                if (!isNaN(nota)) {
+                    totalNotas += nota;
+                    contadorNotas++;
+                }
+            }
+        });
+        
+        // Retornar el PROMEDIO, no la suma
+        return contadorNotas > 0 ? totalNotas / contadorNotas : 0.0;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeTrabajoCotidianoDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajeTareasDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !tareasEstudiantes || !tareasEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de TAREAS: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
+            if (tareaEst && tareaEst.puntos !== undefined && tareas && tareas[tareaIdx]) {
+                const puntos = Number(tareaEst.puntos) || 0;
+                const puntosMaximos = Number(tareas[tareaIdx].puntosMaximos) || 0;
+                const peso = Number(tareas[tareaIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeTareasDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajePruebasDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !evaluacionesEstudiantes || !evaluacionesEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PRUEBAS: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        evaluacionesEstudiantes[estIndex].forEach((evaluacion, pruebaIdx) => {
+            if (evaluacion && evaluacion.puntos !== undefined && pruebas && pruebas[pruebaIdx]) {
+                const puntos = Number(evaluacion.puntos) || 0;
+                const puntosMaximos = Number(pruebas[pruebaIdx].puntosMaximos) || 0;
+                const peso = Number(pruebas[pruebaIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajePruebasDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajeProyectoDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !proyectosEstudiantes || !proyectosEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PROYECTO: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        proyectosEstudiantes[estIndex].forEach((proyecto, proyectoIdx) => {
+            if (proyecto && proyecto.puntos !== undefined && proyectos && proyectos[proyectoIdx]) {
+                const puntos = Number(proyecto.puntos) || 0;
+                const puntosMaximos = Number(proyectos[proyectoIdx].puntosMaximos) || 0;
+                const peso = Number(proyectos[proyectoIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajeProyectoDirecto:', error);
+        return 0.0;
+    }
+}
+
+function obtenerPorcentajePortafolioDirecto(estudiante) {
+    try {
+        // Buscar el estudiante por índice
+        const estIndex = estudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        );
+        
+        if (estIndex === -1 || !portafoliosEstudiantes || !portafoliosEstudiantes[estIndex]) {
+            return 0.0;
+        }
+        
+        // Calcular como en la sección de PORTAFOLIO: suma de porcentajes individuales
+        let totalPorcentaje = 0;
+        
+        portafoliosEstudiantes[estIndex].forEach((portafolio, portafolioIdx) => {
+            if (portafolio && portafolio.puntos !== undefined && portafolios && portafolios[portafolioIdx]) {
+                const puntos = Number(portafolio.puntos) || 0;
+                const puntosMaximos = Number(portafolios[portafolioIdx].puntosMaximos) || 0;
+                const peso = Number(portafolios[portafolioIdx].peso) || 0;
+                
+                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
+                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
+                    totalPorcentaje += porcentajeIndividual;
+                }
+            }
+        });
+        
+        return totalPorcentaje;
+    } catch (error) {
+        console.error('Error en obtenerPorcentajePortafolioDirecto:', error);
+        return 0.0;
+    }
+}
+
+// ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
 
 
