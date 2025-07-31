@@ -516,8 +516,10 @@ th.nombre {
     color: #fff !important;
     font-weight: bold;
     border-right: 2px solid #bdbdbd !important;
-    z-index: 4 !important;
+    z-index: 10 !important;
     box-shadow: 0 2px 4px rgba(30,64,175,0.3) !important;
+    position: sticky !important;
+    left: 0 !important;
 }
 
 /* Borde rojo solo en celda sticky nombre al focus */
@@ -709,6 +711,18 @@ td.numero {
 /* Dark mode para celda número */
 body.dark-mode td.numero {
     /* Mantener estilos específicos del modo oscuro si es necesario */
+}
+
+/* ===== ENCABEZADO NUMERO ===== */
+th.numero {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    font-weight: bold;
+    border-right: 2px solid #bdbdbd !important;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3) !important;
+    width: 55px;
+    min-width: 55px;
+    max-width: 55px;
 }
 
 /* ===== INPUTS Y SELECTS ===== */

@@ -377,8 +377,8 @@ function generarEncabezadoTabla() {
     let html = '<thead><tr>';
     
     // Encabezados fijos con color azul oscuro y degradado
-    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">#</th>';
-    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Nombre</th>';
+    html += '<th class="numero" style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">#</th>';
+    html += '<th class="nombre" style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Nombre</th>';
     html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Primer apellido</th>';
     html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Segundo apellido</th>';
     html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Cédula</th>';
