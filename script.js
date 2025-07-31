@@ -816,6 +816,7 @@ function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
     
     guardarDatos();
     renderAsistencia();
+    actualizarResumenSeaPeriodo();
 }
 
 function actualizarAsistenciaCantidad(estIdx, diaIdx, valor) {
@@ -825,6 +826,7 @@ function actualizarAsistenciaCantidad(estIdx, diaIdx, valor) {
     estudiantes[estIdx].asistenciaDias[diaIdx].cantidad = Number(valor);
     guardarDatos();
     renderAsistencia();
+    actualizarResumenSeaPeriodo();
 }
 
 // Nuevas funciones para múltiples ausencias
@@ -960,8 +962,16 @@ function agregarEstudiante() {
     });
     
     guardarDatos();
+    
+    // Renderizar todas las secciones para sincronizar el nuevo estudiante
     renderAsistencia();
-    // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    renderEvaluacion();
+    renderTareas();
+    renderTrabajoCotidiano();
+    renderProyecto();
+    renderPortafolio();
+    
+    actualizarResumenSeaPeriodo();
 }
 
 function agregarDia() {
@@ -1016,9 +1026,16 @@ function eliminarEstudiante(idx) {
     if (confirm('¿Seguro que deseas eliminar este estudiante? Esta acción no se puede deshacer.')) {
         estudiantes.splice(idx, 1);
         guardarDatos();
-        renderAsistencia();
-        // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
+        // Renderizar todas las secciones para sincronizar después de eliminar
+        renderAsistencia();
+        renderEvaluacion();
+        renderTareas();
+        renderTrabajoCotidiano();
+        renderProyecto();
+        renderPortafolio();
+        
+        actualizarResumenSeaPeriodo();
         mostrarAlerta('Estudiante eliminado', 'info');
     }
 }
@@ -1042,6 +1059,12 @@ function ordenarEstudiantesManual() {
         return;
     }
     
+    // Guardar el orden anterior para reordenar los datos
+    const ordenAnterior = estudiantes.map((est, index) => ({
+        estudiante: est,
+        index: index
+    }));
+    
     estudiantes.sort((a, b) => {
         const aVacio = !(a.cedula || a.nombre || a.apellido1 || a.apellido2);
         const bVacio = !(b.cedula || b.nombre || b.apellido1 || b.apellido2);
@@ -1058,9 +1081,21 @@ function ordenarEstudiantesManual() {
         return 0;
     });
     
+    // Reordenar los datos de todas las secciones según el nuevo orden
+    sincronizarOrdenEstudiantes(ordenAnterior);
+    
     guardarDatos();
+    
+    // Renderizar todas las secciones para actualizar el orden de estudiantes
     renderAsistencia();
-    // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    renderEvaluacion();
+    renderTareas();
+    renderTrabajoCotidiano();
+    renderProyecto();
+    renderPortafolio();
+    
+    actualizarResumenSeaPeriodo();
+    mostrarAlerta('Estudiantes ordenados y sincronizados en todas las secciones', 'exito');
 }
 
 // ===== FUNCIONES DE PERSISTENCIA =====
@@ -1557,6 +1592,7 @@ function actualizarPuntos(estIdx, pruebaIdx, valor) {
     evaluacion.puntos = puntos;
     guardarEvaluacion();
     renderEvaluacion();
+    actualizarResumenSeaPeriodo();
 }
 
 // Función para obtener nombre de prueba según posición
@@ -1699,6 +1735,9 @@ function cargarEvaluacion() {
             
             // Actualizar nombres de pruebas al cargar
             actualizarNombresPruebas();
+            
+            // Sincronizar estudiantes después de cargar
+            sincronizarEstudiantesEvaluacion();
         } catch (error) {
             console.error('Error al cargar evaluación:', error);
         }
@@ -1857,6 +1896,7 @@ function actualizarPuntosTarea(estIdx, tareaIdx, valor) {
     obtenerTarea(estIdx, tareaIdx).puntos = puntos;
     guardarTareas();
     renderTareas();
+    actualizarResumenSeaPeriodo();
 }
 
 function obtenerNombreTarea(posicion) {
@@ -2004,6 +2044,9 @@ function cargarTareas() {
             tareasEstudiantes = parsed.tareasEstudiantes || [];
             
             actualizarNombresTareas();
+            
+            // Sincronizar estudiantes después de cargar
+            sincronizarEstudiantesTareas();
         } catch (error) {
             console.error('Error al cargar tareas:', error);
         }
@@ -2297,6 +2340,9 @@ function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
     setTimeout(() => {
         actualizarCalculosTrabajoCotidiano();
     }, 50);
+    
+    // Actualizar resumen SEA automáticamente
+    actualizarResumenSeaPeriodo();
 }
 
 function preservarDatosInputs() {
@@ -2746,6 +2792,7 @@ function actualizarPuntosProyecto(estIdx, proyectoIdx, valor) {
     proyectosEstudiantes[estIdx][proyectoIdx].puntos = parseFloat(valor) || 0;
     guardarProyecto();
     renderProyecto();
+    actualizarResumenSeaPeriodo();
 }
 
 // Función para obtener nombre de proyecto
@@ -2883,6 +2930,9 @@ function cargarProyecto() {
             
             // Actualizar nombres de proyectos
             actualizarNombresProyectos();
+            
+            // Sincronizar estudiantes después de cargar
+            sincronizarEstudiantesProyecto();
         }
     } catch (error) {
         console.error('Error al cargar proyecto:', error);
@@ -3032,6 +3082,7 @@ function actualizarPuntosPortafolio(estIdx, portafolioIdx, valor) {
     portafoliosEstudiantes[estIdx][portafolioIdx].puntos = parseFloat(valor) || 0;
     guardarPortafolio();
     renderPortafolio();
+    actualizarResumenSeaPeriodo();
 }
 
 // Función para obtener nombre de portafolio
@@ -3169,6 +3220,9 @@ function cargarPortafolio() {
             
             // Actualizar nombres de portafolios
             actualizarNombresPortafolios();
+            
+            // Sincronizar estudiantes después de cargar
+            sincronizarEstudiantesPortafolio();
         }
     } catch (error) {
         console.error('Error al cargar portafolio:', error);
@@ -3431,6 +3485,76 @@ function mostrarResumenEvaluaciones() {
 esperarDOMListo();
 
 // ===== FUNCIONES DE SINCRONIZACIÓN MEJORADAS =====
+function sincronizarOrdenEstudiantes(ordenAnterior) {
+    console.log('🔄 Sincronizando orden de estudiantes en todas las secciones...');
+    
+    // Crear un mapa del nuevo orden
+    const nuevoOrden = estudiantes.map((est, nuevoIndex) => {
+        const ordenAnteriorIndex = ordenAnterior.findIndex(item => 
+            item.estudiante.cedula === est.cedula &&
+            item.estudiante.nombre === est.nombre &&
+            item.estudiante.apellido1 === est.apellido1 &&
+            item.estudiante.apellido2 === est.apellido2
+        );
+        return {
+            nuevoIndex: nuevoIndex,
+            anteriorIndex: ordenAnteriorIndex >= 0 ? ordenAnterior[ordenAnteriorIndex].index : nuevoIndex
+        };
+    });
+    
+    // Reordenar datos de evaluaciones
+    if (evaluacionesEstudiantes && evaluacionesEstudiantes.length > 0) {
+        const evaluacionesReordenadas = [];
+        nuevoOrden.forEach(({ nuevoIndex, anteriorIndex }) => {
+            evaluacionesReordenadas[nuevoIndex] = evaluacionesEstudiantes[anteriorIndex] || [];
+        });
+        evaluacionesEstudiantes = evaluacionesReordenadas;
+        guardarEvaluacion();
+    }
+    
+    // Reordenar datos de tareas
+    if (tareasEstudiantes && tareasEstudiantes.length > 0) {
+        const tareasReordenadas = [];
+        nuevoOrden.forEach(({ nuevoIndex, anteriorIndex }) => {
+            tareasReordenadas[nuevoIndex] = tareasEstudiantes[anteriorIndex] || [];
+        });
+        tareasEstudiantes = tareasReordenadas;
+        guardarTareas();
+    }
+    
+    // Reordenar datos de trabajo cotidiano
+    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
+        const trabajoReordenado = [];
+        nuevoOrden.forEach(({ nuevoIndex, anteriorIndex }) => {
+            trabajoReordenado[nuevoIndex] = trabajoCotidianoEstudiantes[anteriorIndex] || [];
+        });
+        trabajoCotidianoEstudiantes = trabajoReordenado;
+        guardarTrabajoCotidiano();
+    }
+    
+    // Reordenar datos de proyectos
+    if (proyectosEstudiantes && proyectosEstudiantes.length > 0) {
+        const proyectosReordenados = [];
+        nuevoOrden.forEach(({ nuevoIndex, anteriorIndex }) => {
+            proyectosReordenados[nuevoIndex] = proyectosEstudiantes[anteriorIndex] || [];
+        });
+        proyectosEstudiantes = proyectosReordenados;
+        guardarProyecto();
+    }
+    
+    // Reordenar datos de portafolios
+    if (portafoliosEstudiantes && portafoliosEstudiantes.length > 0) {
+        const portafoliosReordenados = [];
+        nuevoOrden.forEach(({ nuevoIndex, anteriorIndex }) => {
+            portafoliosReordenados[nuevoIndex] = portafoliosEstudiantes[anteriorIndex] || [];
+        });
+        portafoliosEstudiantes = portafoliosReordenados;
+        guardarPortafolio();
+    }
+    
+    console.log('✅ Orden de estudiantes sincronizado en todas las secciones');
+}
+
 function sincronizarTodasLasSecciones() {
     // Sincronizar evaluaciones
     sincronizarEstudiantesEvaluacion();
@@ -3841,18 +3965,44 @@ function renderSeaPeriodo() {
         return;
     }
 
+    // Determinar qué secciones están activas
+    const seccionesActivas = {
+        trabajoCotidiano: hayDatosActivosTrabajoCotidiano(),
+        tareas: hayDatosActivosTareas(),
+        pruebas: hayDatosActivosPruebas(),
+        asistencia: hayDatosActivosAsistencia(),
+        proyecto: hayDatosActivosProyecto(),
+        portafolio: hayDatosActivosPortafolio()
+    };
+
+    console.log('Secciones activas:', seccionesActivas);
+
     // Crear tabla simple y directa
     let html = '<div style="background: #dbeafe; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;"><h4 style="color: #1e40af; margin: 0;">📊 RESUMEN SEA I PERIÓDO</h4></div>';
     
     html += '<table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">';
     html += '<thead><tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">';
     html += '<th style="padding: 12px; text-align: center; font-weight: bold;">👤 ESTUDIANTE</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📚 TRABAJO COTIDIANO</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📝 TAREAS</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">🧪 PRUEBAS</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📅 ASISTENCIA</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📋 PROYECTO</th>';
-    html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📁 PORTAFOLIO</th>';
+    
+    // Solo mostrar columnas de secciones activas
+    if (seccionesActivas.trabajoCotidiano) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📚 TRABAJO COTIDIANO</th>';
+    }
+    if (seccionesActivas.tareas) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📝 TAREAS</th>';
+    }
+    if (seccionesActivas.pruebas) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">🧪 PRUEBAS</th>';
+    }
+    if (seccionesActivas.asistencia) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📅 ASISTENCIA</th>';
+    }
+    if (seccionesActivas.proyecto) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📋 PROYECTO</th>';
+    }
+    if (seccionesActivas.portafolio) {
+        html += '<th style="padding: 12px; text-align: center; font-weight: bold;">📁 PORTAFOLIO</th>';
+    }
     html += '<th style="padding: 12px; text-align: center; font-weight: bold;">🏆 NOTA FINAL</th>';
     html += '</tr></thead><tbody>';
 
@@ -3884,29 +4034,37 @@ function renderSeaPeriodo() {
         // Nombre del estudiante
         html += `<td style="padding: 10px; text-align: left; font-weight: bold; background: #f8fafc;">${nombreCompleto || `Estudiante ${index + 1}`}</td>`;
         
-        // Trabajo Cotidiano
-        const trabajoCotidianoFormateado = Number(trabajoCotidiano).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${trabajoCotidianoFormateado}%</td>`;
+        // Solo mostrar columnas de secciones activas
+        if (seccionesActivas.trabajoCotidiano) {
+            const trabajoCotidianoFormateado = Number(trabajoCotidiano).toFixed(1).replace('.', ',');
+            html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${trabajoCotidianoFormateado}%</td>`;
+        }
         
-        // Tareas
-        const tareasFormateado = Number(tareas).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${tareasFormateado}%</td>`;
+        if (seccionesActivas.tareas) {
+            const tareasFormateado = Number(tareas).toFixed(1).replace('.', ',');
+            html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${tareasFormateado}%</td>`;
+        }
         
-        // Pruebas
-        const pruebasFormateado = Number(pruebas).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${pruebasFormateado}%</td>`;
+        if (seccionesActivas.pruebas) {
+            const pruebasFormateado = Number(pruebas).toFixed(1).replace('.', ',');
+            html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${pruebasFormateado}%</td>`;
+        }
         
-        // Asistencia
-        const asistenciaFormateado = Number(asistencia).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${asistenciaFormateado}%</td>`;
+        if (seccionesActivas.asistencia) {
+            // Asistencia sin decimales - usar Math.round()
+            const asistenciaFormateado = Math.round(asistencia).toString();
+            html += `<td style="padding: 10px; text-align: center; background-color: #fef3c7; color: #92400e;">${asistenciaFormateado}%</td>`;
+        }
         
-        // Proyecto
-        const proyectoFormateado = Number(proyecto).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${proyectoFormateado}%</td>`;
+        if (seccionesActivas.proyecto) {
+            const proyectoFormateado = Number(proyecto).toFixed(1).replace('.', ',');
+            html += `<td style="padding: 10px; text-align: center; background-color: #dbeafe; color: #1e40af;">${proyectoFormateado}%</td>`;
+        }
         
-        // Portafolio
-        const portafolioFormateado = Number(portafolio).toFixed(1).replace('.', ',');
-        html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${portafolioFormateado}%</td>`;
+        if (seccionesActivas.portafolio) {
+            const portafolioFormateado = Number(portafolio).toFixed(1).replace('.', ',');
+            html += `<td style="padding: 10px; text-align: center; background-color: #d1fae5; color: #065f46;">${portafolioFormateado}%</td>`;
+        }
         
         // Nota Final
         const notaFinalFormateado = Number(notaFinal).toFixed(1).replace('.', ',');
