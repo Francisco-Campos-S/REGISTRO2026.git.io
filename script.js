@@ -2420,55 +2420,32 @@ function agregarDiaTrabajo() {
     diasTrabajo.push({
         fecha: fechaActual
     });
-    
-    // Sincronizar estudiantes para el nuevo día
-    sincronizarEstudiantesTrabajoCotidiano();
-    
+    // Agregar un objeto vacío para cada estudiante en el nuevo día
+    trabajoCotidianoEstudiantes.forEach(est => {
+        est.push({ nota: null });
+    });
+    // Si hay menos estudiantes que trabajoCotidianoEstudiantes, agregar arrays vacíos
+    while (trabajoCotidianoEstudiantes.length < estudiantes.length) {
+        const nuevo = Array(diasTrabajo.length).fill().map(() => ({ nota: null }));
+        trabajoCotidianoEstudiantes.push(nuevo);
+    }
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
-    
-    // Actualizar resumen SEA I PERIÓDO
-    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
-    
     mostrarAlerta(`Día ${diasTrabajo.length} agregado`, 'exito');
 }
 
 function eliminarDiaTrabajo(diaIdx) {
-    // Mostrar confirmación antes de eliminar
     const confirmacion = confirm(`¿Está seguro de que desea eliminar el día ${diaIdx + 1}?`);
-    
-    if (!confirmacion) {
-        return; // Si el usuario cancela, no hacer nada
-    }
-    
-    // Preservar datos de inputs antes de re-renderizar
+    if (!confirmacion) return;
     preservarDatosInputs();
-    
-    // Eliminar el día de la lista
     diasTrabajo.splice(diaIdx, 1);
-    
-    // Sincronizar estudiantes después de eliminar el día
-    sincronizarEstudiantesTrabajoCotidiano();
-    
+    // Eliminar la columna correspondiente en todos los estudiantes
+    trabajoCotidianoEstudiantes.forEach(est => {
+        if (est.length > diaIdx) est.splice(diaIdx, 1);
+    });
     guardarTrabajoCotidiano();
-    
-    // Verificar si se eliminó el último día
-    if (diasTrabajo.length === 0) {
-        mostrarAlerta(`Día ${diaIdx + 1} eliminado. No quedan indicadores configurados. Los estudiantes se han ocultado.`, 'info');
-    } else {
-        mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
-    }
-    
-    // Delay the re-rendering to ensure alert is visible
-    setTimeout(() => {
-        renderTrabajoCotidiano();
-        
-        // Actualizar SEA I Período si está visible
-        const seaSection = document.getElementById('sea-periodo-app');
-        if (seaSection && seaSection.style.display !== 'none') {
-            renderSeaPeriodo();
-        }
-    }, 100);
+    renderTrabajoCotidiano();
+    mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
 }
 
 function configurarEscalaMaxima() {
@@ -2608,49 +2585,15 @@ function cargarTrabajoCotidiano() {
 }
 
 function sincronizarEstudiantesTrabajoCotidiano() {
-    // Crear un nuevo array que mantenga el orden correcto
-    const nuevoTrabajoCotidianoEstudiantes = [];
-    
-    // Agregar datos de trabajo cotidiano para todos los estudiantes en el orden correcto
-    estudiantes.forEach((estudiante, estIdx) => {
-        // Si ya existe una entrada para este estudiante, mantenerla
-        if (trabajoCotidianoEstudiantes[estIdx]) {
-            nuevoTrabajoCotidianoEstudiantes[estIdx] = trabajoCotidianoEstudiantes[estIdx];
-        } else {
-            // Crear nueva entrada para el estudiante
-            nuevoTrabajoCotidianoEstudiantes[estIdx] = [];
+    // Asegura que cada estudiante tenga un array alineado con diasTrabajo
+    trabajoCotidianoEstudiantes = estudiantes.map((_, estIdx) => {
+        const prev = trabajoCotidianoEstudiantes[estIdx] || [];
+        const nuevo = [];
+        for (let i = 0; i < diasTrabajo.length; i++) {
+            nuevo[i] = prev[i] && typeof prev[i] === 'object' ? { nota: prev[i].nota ?? null } : { nota: null };
         }
-        
-        // Asegurar que hay suficientes días para cada estudiante
-        while (nuevoTrabajoCotidianoEstudiantes[estIdx].length < diasTrabajo.length) {
-            nuevoTrabajoCotidianoEstudiantes[estIdx].push({ nota: null });
-        }
-        
-        // Truncar si hay más días de los necesarios
-        if (nuevoTrabajoCotidianoEstudiantes[estIdx].length > diasTrabajo.length) {
-            nuevoTrabajoCotidianoEstudiantes[estIdx] = nuevoTrabajoCotidianoEstudiantes[estIdx].slice(0, diasTrabajo.length);
-        }
-        
-        // Validar y corregir datos existentes
-        nuevoTrabajoCotidianoEstudiantes[estIdx].forEach((dia, diaIdx) => {
-            if (dia && typeof dia === 'object') {
-                if (dia.nota !== null && dia.nota !== undefined) {
-                    const parsedNota = parseFloat(dia.nota);
-                    if (isNaN(parsedNota)) {
-                        dia.nota = null;
-                    } else {
-                        dia.nota = parsedNota;
-                    }
-                }
-            } else {
-                nuevoTrabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
-            }
-        });
+        return nuevo;
     });
-    
-    // Reemplazar el array original
-    trabajoCotidianoEstudiantes = nuevoTrabajoCotidianoEstudiantes;
-    
     guardarTrabajoCotidiano();
 }
 
@@ -4996,242 +4939,6 @@ function diagnosticarPruebas() {
     }
     
     console.log('🔍 === FIN DIAGNÓSTICO PRUEBAS ===');
-}
-
-// ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
-
-// ===== FUNCIÓN PARA SINCRONIZAR PORCENTAJES FINALES =====
-function sincronizarPorcentajesFinales() {
-    console.log('🔄 === SINCRONIZANDO PORCENTAJES FINALES ===');
-    
-    // Sincronizar trabajo cotidiano - multiplicar por 10 para convertir a porcentaje
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        console.log('📚 Sincronizando trabajo cotidiano...');
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            estudiante.forEach((dia, diaIdx) => {
-                if (dia && dia.nota !== null && dia.nota !== undefined) {
-                    // Convertir de escala 0-10 a escala 0-100 (multiplicar por 10)
-                    const valorOriginal = parseFloat(dia.nota) || 0;
-                    const valorPorcentaje = valorOriginal * 10;
-                    dia.nota = valorPorcentaje;
-                    console.log(`  Estudiante ${estIdx}, Día ${diaIdx}: ${valorOriginal} → ${valorPorcentaje}`);
-                }
-            });
-        });
-    }
-    
-    // Sincronizar tareas - ya están en porcentaje correcto
-    console.log('📝 Tareas ya están en porcentaje correcto');
-    
-    // Sincronizar pruebas - ya están en porcentaje correcto
-    console.log('🧪 Pruebas ya están en porcentaje correcto');
-    
-    // Sincronizar proyectos - ya están en porcentaje correcto
-    console.log('📋 Proyectos ya están en porcentaje correcto');
-    
-    // Sincronizar portafolios - ya están en porcentaje correcto
-    console.log('📁 Portafolios ya están en porcentaje correcto');
-    
-    // Guardar los datos sincronizados
-    console.log('💾 Guardando datos sincronizados...');
-    guardarTrabajoCotidiano();
-    
-    // Actualizar la tabla
-    renderSeaPeriodo();
-    
-    mostrarAlerta('Porcentajes finales sincronizados correctamente', 'exito');
-    console.log('🔄 === FIN SINCRONIZACIÓN PORCENTAJES ===');
-}
-
-// ===== FUNCIONES PARA OBTENER PORCENTAJES DIRECTOS =====
-function obtenerPorcentajeTrabajoCotidianoDirecto(estudiante) {
-    try {
-        // Buscar el estudiante por índice
-        const estIndex = estudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        );
-        
-        if (estIndex === -1 || !trabajoCotidianoEstudiantes || !trabajoCotidianoEstudiantes[estIndex]) {
-            return 0.0;
-        }
-        
-        // Usar la misma fórmula que actualizarCalculosTrabajoCotidiano()
-        let totalNotas = 0;
-        
-        diasTrabajo.forEach((dia, diaIdx) => {
-            if (trabajoCotidianoEstudiantes[estIndex] && 
-                trabajoCotidianoEstudiantes[estIndex][diaIdx]) {
-                const nota = trabajoCotidianoEstudiantes[estIndex][diaIdx].nota;
-                if (nota !== null && nota !== undefined && !isNaN(Number(nota))) {
-                    totalNotas += Number(nota);
-                }
-            }
-        });
-        
-        // Cálculo consistente con la sección de Trabajo Cotidiano
-        let porcentajeFinal = 0;
-        if (diasTrabajo.length > 0) {
-            const totalNotasNum = Number(totalNotas) || 0;
-            const diasTrabajoNum = Number(diasTrabajo.length) || 1;
-            const escalaMaximaNum = Number(escalaMaxima) || 10;
-            const valorTotalTrabajoNum = Number(valorTotalTrabajo) || 30;
-            
-            if (!isNaN(totalNotasNum) && !isNaN(diasTrabajoNum) && !isNaN(escalaMaximaNum) && !isNaN(valorTotalTrabajoNum) && escalaMaximaNum > 0) {
-                porcentajeFinal = (totalNotasNum / (diasTrabajoNum * escalaMaximaNum)) * valorTotalTrabajoNum;
-            }
-        }
-        
-        return porcentajeFinal;
-    } catch (error) {
-        console.error('Error en obtenerPorcentajeTrabajoCotidianoDirecto:', error);
-        return 0.0;
-    }
-}
-
-function obtenerPorcentajeTareasDirecto(estudiante) {
-    try {
-        // Buscar el estudiante por índice
-        const estIndex = estudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        );
-        
-        if (estIndex === -1 || !tareasEstudiantes || !tareasEstudiantes[estIndex]) {
-            return 0.0;
-        }
-        
-        // Calcular como en la sección de TAREAS: suma de porcentajes individuales
-        let totalPorcentaje = 0;
-        
-        tareasEstudiantes[estIndex].forEach((tareaEst, tareaIdx) => {
-            if (tareaEst && tareaEst.puntos !== undefined && tareas && tareas[tareaIdx]) {
-                const puntos = Number(tareaEst.puntos) || 0;
-                const puntosMaximos = Number(tareas[tareaIdx].puntosMaximos) || 0;
-                const peso = Number(tareas[tareaIdx].peso) || 0;
-                
-                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
-                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
-                    totalPorcentaje += porcentajeIndividual;
-                }
-            }
-        });
-        
-        return totalPorcentaje;
-    } catch (error) {
-        console.error('Error en obtenerPorcentajeTareasDirecto:', error);
-        return 0.0;
-    }
-}
-
-function obtenerPorcentajePruebasDirecto(estudiante) {
-    try {
-        // Buscar el estudiante por índice
-        const estIndex = estudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        );
-        
-        if (estIndex === -1 || !evaluacionesEstudiantes || !evaluacionesEstudiantes[estIndex]) {
-            return 0.0;
-        }
-        
-        // Calcular como en la sección de PRUEBAS: suma de porcentajes individuales
-        let totalPorcentaje = 0;
-        
-        evaluacionesEstudiantes[estIndex].forEach((evaluacion, pruebaIdx) => {
-            if (evaluacion && evaluacion.puntos !== undefined && pruebas && pruebas[pruebaIdx]) {
-                const puntos = Number(evaluacion.puntos) || 0;
-                const puntosMaximos = Number(pruebas[pruebaIdx].puntosMaximos) || 0;
-                const peso = Number(pruebas[pruebaIdx].peso) || 0;
-                
-                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
-                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
-                    totalPorcentaje += porcentajeIndividual;
-                }
-            }
-        });
-        
-        return totalPorcentaje;
-    } catch (error) {
-        console.error('Error en obtenerPorcentajePruebasDirecto:', error);
-        return 0.0;
-    }
-}
-
-function obtenerPorcentajeProyectoDirecto(estudiante) {
-    try {
-        // Buscar el estudiante por índice
-        const estIndex = estudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        );
-        
-        if (estIndex === -1 || !proyectosEstudiantes || !proyectosEstudiantes[estIndex]) {
-            return 0.0;
-        }
-        
-        // Calcular como en la sección de PROYECTO: suma de porcentajes individuales
-        let totalPorcentaje = 0;
-        
-        proyectosEstudiantes[estIndex].forEach((proyecto, proyectoIdx) => {
-            if (proyecto && proyecto.puntos !== undefined && proyectos && proyectos[proyectoIdx]) {
-                const puntos = Number(proyecto.puntos) || 0;
-                const puntosMaximos = Number(proyectos[proyectoIdx].puntosMaximos) || 0;
-                const peso = Number(proyectos[proyectoIdx].peso) || 0;
-                
-                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
-                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
-                    totalPorcentaje += porcentajeIndividual;
-                }
-            }
-        });
-        
-        return totalPorcentaje;
-    } catch (error) {
-        console.error('Error en obtenerPorcentajeProyectoDirecto:', error);
-        return 0.0;
-    }
-}
-
-function obtenerPorcentajePortafolioDirecto(estudiante) {
-    try {
-        // Buscar el estudiante por índice
-        const estIndex = estudiantes.findIndex(e => 
-            e.apellido1 === estudiante.apellido1 && 
-            e.apellido2 === estudiante.apellido2 && 
-            e.nombre === estudiante.nombre
-        );
-        
-        if (estIndex === -1 || !portafoliosEstudiantes || !portafoliosEstudiantes[estIndex]) {
-            return 0.0;
-        }
-        
-        // Calcular como en la sección de PORTAFOLIO: suma de porcentajes individuales
-        let totalPorcentaje = 0;
-        
-        portafoliosEstudiantes[estIndex].forEach((portafolio, portafolioIdx) => {
-            if (portafolio && portafolio.puntos !== undefined && portafolios && portafolios[portafolioIdx]) {
-                const puntos = Number(portafolio.puntos) || 0;
-                const puntosMaximos = Number(portafolios[portafolioIdx].puntosMaximos) || 0;
-                const peso = Number(portafolios[portafolioIdx].peso) || 0;
-                
-                if (puntosMaximos > 0 && !isNaN(puntos) && !isNaN(puntosMaximos) && !isNaN(peso)) {
-                    const porcentajeIndividual = (puntos / puntosMaximos) * peso;
-                    totalPorcentaje += porcentajeIndividual;
-                }
-            }
-        });
-        
-        return totalPorcentaje;
-    } catch (error) {
-        console.error('Error en obtenerPorcentajePortafolioDirecto:', error);
-        return 0.0;
-    }
 }
 
 // ===== FUNCIÓN PARA DIAGNOSTICAR DATOS ESPECÍFICOS =====
