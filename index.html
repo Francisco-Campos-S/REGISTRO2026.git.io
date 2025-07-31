@@ -93,6 +93,9 @@
             <button onclick="scrollToSection('asistencia')" class="menu-btn asistencia-btn">
                 <span>📊</span> Asistencia
             </button>
+            <button onclick="scrollToSection('indicadores')" class="menu-btn indicadores-btn">
+                <span>📊</span> Indicadores
+            </button>
             <button onclick="scrollToSection('trabajo-cotidiano')" class="menu-btn trabajo-btn">
                 <span>📋</span> Trabajo Cotidiano
             </button>
@@ -149,6 +152,50 @@
         <div class="table-wrapper">
             <div class="table-responsive">
                 <div id="app"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Indicadores -->
+    <div class="indicadores-container" id="indicadores">
+        <h3>📊 Gestión de Indicadores</h3>
+        <div class="indicadores-instructions">
+            <p><strong>💡 Instrucciones:</strong> PUEDE INGRESAR LOS INDICADORES POR GRUPO PARA LLEVAR EL CONTROL. ESTOS INDICADORES SE UTILIZAN EN TAREAS Y TRABAJO COTIDIANO.</p>
+        </div>
+        
+        <div class="indicadores-actions">
+            <button onclick="scrollToMenu()" class="btn-volver-menu">
+                <span>🏠</span> Volver al Menú
+            </button>
+            <button onclick="descargarPlantillaIndicadores()" class="btn-descargar-plantilla-indicadores">
+                <span>📄</span> Descargar Plantilla
+            </button>
+            <button onclick="importarIndicadores()" class="btn-importar-indicadores">
+                <span>📥</span> Importar Indicadores
+            </button>
+            <button onclick="agregarIndicador()" class="btn-agregar-indicador">
+                <span>➕</span> Agregar Indicador
+            </button>
+            <input type="number" id="inputEliminarIndicador" min="1" max="50" placeholder="N° indicador" title="Número de indicador a eliminar" style="width: 120px; margin-right: 5px;">
+            <button onclick="eliminarIndicador()" class="btn-eliminar-indicador">
+                <span>🗑️</span> Eliminar Indicador
+            </button>
+            <button onclick="exportarIndicadores()" class="btn-exportar-indicadores">
+                <span>📤</span> Exportar Indicadores
+            </button>
+            <input type="file" id="inputIndicadores" accept=".xlsx" style="display:none" onchange="cargarIndicadores(event)">
+        </div>
+
+        <div class="indicadores-content">
+            <div class="indicadores-header">
+                <h4>📋 INDICADORES</h4>
+                <p class="indicadores-subtitle">ANOTE LOS INDICADORES</p>
+            </div>
+            
+            <div class="indicadores-table-container">
+                <div class="indicadores-table-responsive">
+                    <div id="indicadores-app"></div>
+                </div>
             </div>
         </div>
     </div>

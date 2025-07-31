@@ -7644,6 +7644,364 @@ body.dark-mode .portafolio-table .total-excedido {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
 }
 
+/* ===== SECCIÓN DE INDICADORES ===== */
+.indicadores-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: var(--transition);
+}
+
+.indicadores-container:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+}
+
+.indicadores-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-secundario), var(--color-exito));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.indicadores-container h3 {
+    color: var(--color-text);
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.indicadores-container h3::before {
+    content: '📊';
+    margin-right: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.indicadores-instructions {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--color-alerta);
+    position: relative;
+    overflow: hidden;
+}
+
+.indicadores-instructions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.indicadores-instructions p {
+    color: var(--color-text);
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+.indicadores-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: center;
+    justify-content: center;
+}
+
+.indicadores-actions input[type="number"] {
+    padding: 8px 12px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    background: var(--color-table-bg);
+    color: var(--color-text);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.indicadores-actions input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    background: var(--color-table-bg);
+}
+
+.indicadores-actions input[type="number"]::-webkit-outer-spin-button,
+.indicadores-actions input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.indicadores-actions input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.btn-descargar-plantilla-indicadores, .btn-agregar-indicador, .btn-eliminar-indicador, .btn-exportar-indicadores, .btn-importar-indicadores {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-descargar-plantilla-indicadores::before, .btn-agregar-indicador::before, .btn-eliminar-indicador::before, .btn-exportar-indicadores::before, .btn-importar-indicadores::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-descargar-plantilla-indicadores:hover::before, .btn-agregar-indicador:hover::before, .btn-eliminar-indicador:hover::before, .btn-exportar-indicadores:hover::before, .btn-importar-indicadores:hover::before {
+    left: 100%;
+}
+
+.btn-descargar-plantilla-indicadores:hover, .btn-agregar-indicador:hover, .btn-eliminar-indicador:hover, .btn-exportar-indicadores:hover, .btn-importar-indicadores:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.indicadores-content {
+    background: var(--color-table-bg);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+}
+
+.indicadores-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+}
+
+.indicadores-header h4 {
+    color: #ff6b35;
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.indicadores-subtitle {
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.indicadores-table-container {
+    background: var(--color-table-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+}
+
+.indicadores-table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.indicadores-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-table-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.indicadores-table th {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1em;
+    border: 2px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3);
+}
+
+.indicadores-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    background: var(--color-table-bg);
+    transition: var(--transition);
+}
+
+.indicadores-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.indicadores-table tbody tr:nth-child(even) {
+    background-color: #d0d0d0;
+}
+
+.indicadores-table tbody tr:hover {
+    background-color: var(--color-table-hover);
+    transform: scale(1.01);
+}
+
+.indicadores-table input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    background: var(--color-table-bg);
+    color: var(--color-text);
+    transition: var(--transition);
+}
+
+.indicadores-table input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    background: var(--color-table-bg);
+}
+
+.indicadores-table .numero-indicador {
+    font-weight: 700;
+    color: var(--color-primario);
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3);
+}
+
+/* Modo oscuro para indicadores */
+body.dark-mode .indicadores-container {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+body.dark-mode .indicadores-container h3 {
+    color: var(--color-text);
+}
+
+body.dark-mode .indicadores-instructions {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+    border-left-color: var(--color-alerta);
+}
+
+body.dark-mode .indicadores-instructions p {
+    color: var(--color-text);
+}
+
+body.dark-mode .indicadores-content {
+    background: var(--color-table-bg);
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-header {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-header h4 {
+    color: #ff6b35;
+}
+
+body.dark-mode .indicadores-header p {
+    color: var(--color-text);
+}
+
+body.dark-mode .indicadores-table-container {
+    background: var(--color-table-bg);
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-table {
+    background: var(--color-table-bg);
+}
+
+body.dark-mode .indicadores-table th {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-table td {
+    background: var(--color-table-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+body.dark-mode .indicadores-table tbody tr:nth-child(odd) {
+    background-color: var(--color-table-bg);
+}
+
+body.dark-mode .indicadores-table tbody tr:nth-child(even) {
+    background-color: var(--color-table-row);
+}
+
+body.dark-mode .indicadores-table tbody tr:hover {
+    background-color: var(--color-table-hover);
+}
+
+body.dark-mode .indicadores-table input[type="text"] {
+    background: var(--color-table-bg);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-table input[type="text"]:focus {
+    border-color: var(--color-primario);
+    background: var(--color-table-bg);
+}
+
+body.dark-mode .indicadores-table .numero-indicador {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+}
+
+body.dark-mode .indicadores-actions input[type="number"] {
+    background: var(--color-table-bg);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+}
+
+body.dark-mode .indicadores-actions input[type="number"]:focus {
+    border-color: var(--color-primario);
+    background: var(--color-table-bg);
+}
+
 /* ===== MENÚ DE NAVEGACIÓN ===== */
 .menu-navegacion {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -7760,6 +8118,11 @@ body.dark-mode .portafolio-table .total-excedido {
 
 .portafolio-btn:hover {
     background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    color: white;
+}
+
+.indicadores-btn:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
     color: white;
 }
 

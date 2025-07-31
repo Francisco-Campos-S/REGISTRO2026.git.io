@@ -36,6 +36,27 @@ let dias = [
 // Valor de alerta temprana
 window.valorExtra = localStorage.getItem(STORAGE_KEY_ALERTA) ? parseInt(localStorage.getItem(STORAGE_KEY_ALERTA)) : 2;
 
+// ===== VARIABLES PARA INDICADORES =====
+const STORAGE_KEY_INDICADORES = 'indicadores_v1';
+let indicadores = [
+    { id: 1, nombre: 'Indicador 1' },
+    { id: 2, nombre: 'Indicador 2' },
+    { id: 3, nombre: 'Indicador 3' },
+    { id: 4, nombre: 'Indicador 4' },
+    { id: 5, nombre: 'Indicador 5' },
+    { id: 6, nombre: 'Indicador 6' },
+    { id: 7, nombre: 'Indicador 7' },
+    { id: 8, nombre: 'Indicador 8' },
+    { id: 9, nombre: 'Indicador 9' },
+    { id: 10, nombre: 'Indicador 10' },
+    { id: 11, nombre: 'Indicador 11' },
+    { id: 12, nombre: 'Indicador 12' },
+    { id: 13, nombre: 'Indicador 13' },
+    { id: 14, nombre: 'Indicador 14' },
+    { id: 15, nombre: 'Indicador 15' },
+    { id: 16, nombre: 'Indicador 16' }
+];
+
 // Debounce para actualizaciones
 let debounceTimer;
 function debounce(func, delay) {
@@ -75,6 +96,7 @@ function inicializarAplicacion() {
     configurarModoOscuro();
     configurarEventos();
     renderAsistencia();
+    renderIndicadores();
     
     // Esperar a que el DOM esté completamente cargado antes de sincronizar alertas
     setTimeout(() => {
@@ -163,6 +185,9 @@ function cargarDatosGuardados() {
     // Sincronizar input de alerta temprana después de cargar datos
     sincronizarInputAlerta();
     renderAsistencia();
+    
+    // Cargar indicadores
+    cargarIndicadoresGuardados();
     
     // Renderizar trabajo cotidiano después de sincronizar
     setTimeout(() => {
@@ -3359,5 +3384,240 @@ function sincronizarTodasLasSecciones() {
         renderTrabajoCotidiano();
         renderProyecto();
         renderPortafolio();
+        renderIndicadores();
     }, 100);
+}
+
+// ===== FUNCIONES PARA INDICADORES =====
+function cargarIndicadoresGuardados() {
+    const indicadoresGuardados = localStorage.getItem(STORAGE_KEY_INDICADORES);
+    if (indicadoresGuardados) {
+        try {
+            indicadores = JSON.parse(indicadoresGuardados);
+        } catch (e) {
+            console.error('Error al cargar indicadores:', e);
+            // Mantener indicadores por defecto si hay error
+        }
+    }
+}
+
+function guardarIndicadores() {
+    try {
+        localStorage.setItem(STORAGE_KEY_INDICADORES, JSON.stringify(indicadores));
+    } catch (e) {
+        console.error('Error al guardar indicadores:', e);
+        mostrarAlerta('Error al guardar los indicadores', 'error');
+    }
+}
+
+function renderIndicadores() {
+    const container = document.getElementById('indicadores-app');
+    if (!container) return;
+
+    let html = '<table class="indicadores-table">';
+    html += '<thead><tr>';
+    html += '<th style="width: 80px;">Número</th>';
+    html += '<th>Indicador</th>';
+    html += '</tr></thead>';
+    html += '<tbody>';
+
+    indicadores.forEach((indicador, index) => {
+        html += '<tr>';
+        html += `<td class="numero-indicador">${indicador.id}</td>`;
+        html += `<td><input type="text" value="${indicador.nombre}" onchange="actualizarIndicador(${index}, this.value)" placeholder="Ingrese el indicador"></td>`;
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function actualizarIndicador(index, valor) {
+    if (index >= 0 && index < indicadores.length) {
+        indicadores[index].nombre = valor;
+        guardarIndicadores();
+        mostrarAlerta('Indicador actualizado correctamente', 'exito');
+    }
+}
+
+function agregarIndicador() {
+    const nuevoId = indicadores.length > 0 ? Math.max(...indicadores.map(i => i.id)) + 1 : 1;
+    indicadores.push({
+        id: nuevoId,
+        nombre: `Indicador ${nuevoId}`
+    });
+    
+    // Ordenar indicadores por número
+    ordenarIndicadores();
+    
+    guardarIndicadores();
+    renderIndicadores();
+    mostrarAlerta('Indicador agregado y lista ordenada correctamente', 'exito');
+}
+
+function eliminarIndicador() {
+    const inputEliminar = document.getElementById('inputEliminarIndicador');
+    const numeroEliminar = parseInt(inputEliminar.value);
+    
+    // Validar que se haya ingresado un número
+    if (!numeroEliminar || isNaN(numeroEliminar)) {
+        mostrarAlerta('Por favor ingrese un número válido de indicador', 'error');
+        return;
+    }
+    
+    // Buscar el indicador por número
+    const indexEliminar = indicadores.findIndex(ind => ind.id === numeroEliminar);
+    
+    if (indexEliminar === -1) {
+        mostrarAlerta(`No se encontró un indicador con el número ${numeroEliminar}`, 'error');
+        return;
+    }
+    
+    if (indicadores.length <= 1) {
+        mostrarAlerta('Debe mantener al menos un indicador', 'error');
+        return;
+    }
+    
+    // Obtener información del indicador a eliminar
+    const indicadorAEliminar = indicadores[indexEliminar];
+    
+    // Mostrar confirmación
+    const confirmacion = confirm(`¿Está seguro que desea eliminar el indicador ${indicadorAEliminar.id}?\n\n"${indicadorAEliminar.nombre}"\n\n⚠️ ADVERTENCIA: Esta acción no se puede deshacer y no hay forma de recuperar el indicador eliminado.`);
+    
+    if (!confirmacion) {
+        return; // Usuario canceló la eliminación
+    }
+    
+    // Eliminar el indicador específico
+    const indicadorEliminado = indicadores.splice(indexEliminar, 1)[0];
+    
+    // Ordenar indicadores por número después de eliminar
+    ordenarIndicadores();
+    
+    guardarIndicadores();
+    renderIndicadores();
+    
+    // Limpiar el input
+    inputEliminar.value = '';
+    
+    mostrarAlerta(`Indicador ${indicadorEliminado.id} eliminado y lista reordenada correctamente`, 'exito');
+}
+
+function exportarIndicadores() {
+    try {
+        const workbook = XLSX.utils.book_new();
+        
+        // Crear datos para exportar
+        const datos = indicadores.map(indicador => ({
+            'Número': indicador.id,
+            'Indicador': indicador.nombre
+        }));
+        
+        const worksheet = XLSX.utils.json_to_sheet(datos);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Indicadores');
+        
+        // Generar archivo
+        const nombreArchivo = `Indicadores_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, nombreArchivo);
+        
+        mostrarAlerta('Indicadores exportados correctamente', 'exito');
+    } catch (error) {
+        console.error('Error al exportar indicadores:', error);
+        mostrarAlerta('Error al exportar los indicadores', 'error');
+    }
+}
+
+function importarIndicadores() {
+    document.getElementById('inputIndicadores').click();
+}
+
+function cargarIndicadores(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+            // Procesar datos importados
+            const nuevosIndicadores = jsonData.map((row, index) => ({
+                id: row['Número'] || index + 1,
+                nombre: row['Indicador'] || `Indicador ${index + 1}`
+            }));
+
+            if (nuevosIndicadores.length > 0) {
+                indicadores = nuevosIndicadores;
+                
+                // Ordenar indicadores por número
+                ordenarIndicadores();
+                
+                guardarIndicadores();
+                renderIndicadores();
+                mostrarAlerta('Indicadores importados y ordenados correctamente', 'exito');
+            } else {
+                mostrarAlerta('No se encontraron datos válidos en el archivo', 'error');
+            }
+        } catch (error) {
+            console.error('Error al importar indicadores:', error);
+            mostrarAlerta('Error al importar los indicadores', 'error');
+        }
+    };
+    reader.readAsArrayBuffer(file);
+    
+    // Limpiar input
+    event.target.value = '';
+}
+
+// Función para obtener el nombre de un indicador por ID
+function obtenerNombreIndicador(id) {
+    const indicador = indicadores.find(i => i.id === id);
+    return indicador ? indicador.nombre : `Indicador ${id}`;
+}
+
+// Función para obtener todos los indicadores
+function obtenerIndicadores() {
+    return indicadores;
+}
+
+// Función para ordenar indicadores por número
+function ordenarIndicadores() {
+    // Ordenar por ID/número
+    indicadores.sort((a, b) => a.id - b.id);
+    
+    // Renumerar secuencialmente si hay gaps
+    indicadores.forEach((indicador, index) => {
+        indicador.id = index + 1;
+    });
+}
+
+// Función para descargar plantilla de indicadores
+function descargarPlantillaIndicadores() {
+    try {
+        const workbook = XLSX.utils.book_new();
+        
+        // Crear plantilla con 16 indicadores por defecto
+        const plantillaIndicadores = [];
+        for (let i = 1; i <= 16; i++) {
+            plantillaIndicadores.push({
+                'Número': i,
+                'Indicador': `Indicador ${i}`
+            });
+        }
+        
+        const worksheet = XLSX.utils.json_to_sheet(plantillaIndicadores);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Plantilla Indicadores');
+        
+        // Generar archivo
+        const nombreArchivo = `Plantilla_Indicadores_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, nombreArchivo);
+        
+        mostrarAlerta('Plantilla de indicadores descargada correctamente', 'exito');
+    } catch (error) {
+        console.error('Error al descargar plantilla de indicadores:', error);
+        mostrarAlerta('Error al descargar la plantilla de indicadores', 'error');
+    }
 }
