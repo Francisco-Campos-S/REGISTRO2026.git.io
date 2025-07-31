@@ -2296,7 +2296,7 @@ function obtenerNotaTrabajo(estIdx, diaIdx) {
         trabajoCotidianoEstudiantes[estIdx] = [];
     }
     if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
-        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: 0 };
     }
     return trabajoCotidianoEstudiantes[estIdx][diaIdx];
 }
@@ -2311,7 +2311,7 @@ function actualizarFechaTrabajo(diaIdx, fecha) {
 
 function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
     // Mejorar el parsing para manejar valores vacíos y ceros correctamente
-    let nota = null;
+    let nota = 0;
     if (valor !== '' && valor !== null && valor !== undefined) {
         const parsedValue = parseFloat(valor);
         if (!isNaN(parsedValue)) {
@@ -2324,7 +2324,7 @@ function actualizarNotaTrabajo(estIdx, diaIdx, valor) {
         trabajoCotidianoEstudiantes[estIdx] = [];
     }
     if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
-        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+        trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: 0 };
     }
     
     // Guardar la nota
@@ -2365,7 +2365,7 @@ function preservarDatosInputs() {
             const diaIdx = parseInt(parts[2]);
             
             // Mejorar el parsing para manejar valores vacíos y ceros correctamente
-            let valor = null;
+            let valor = 0;
             if (input.value !== '' && input.value !== null && input.value !== undefined) {
                 const parsedValue = parseFloat(input.value);
                 if (!isNaN(parsedValue)) {
@@ -2378,7 +2378,7 @@ function preservarDatosInputs() {
                 trabajoCotidianoEstudiantes[estIdx] = [];
             }
             if (!trabajoCotidianoEstudiantes[estIdx][diaIdx]) {
-                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: 0 };
             }
             
             // Guardar el valor del input
@@ -2468,11 +2468,11 @@ function agregarDiaTrabajo() {
     });
     // Agregar un objeto vacío para cada estudiante en el nuevo día
     trabajoCotidianoEstudiantes.forEach(est => {
-        est.push({ nota: null });
+        est.push({ nota: 0 });
     });
     // Si hay menos estudiantes que trabajoCotidianoEstudiantes, agregar arrays vacíos
     while (trabajoCotidianoEstudiantes.length < estudiantes.length) {
-        const nuevo = Array(diasTrabajo.length).fill().map(() => ({ nota: null }));
+        const nuevo = Array(diasTrabajo.length).fill().map(() => ({ nota: 0 }));
         trabajoCotidianoEstudiantes.push(nuevo);
     }
     guardarTrabajoCotidiano();
@@ -2614,10 +2614,12 @@ function cargarTrabajoCotidiano() {
                     if (Array.isArray(estudiante)) {
                         estudiante.forEach((dia, diaIdx) => {
                             if (dia && typeof dia === 'object') {
-                                // Asegurar que la nota sea un número o null
+                                // Asegurar que la nota sea un número o 0
                                 if (dia.nota !== null && dia.nota !== undefined) {
                                     const parsedNota = parseFloat(dia.nota);
-                                    dia.nota = isNaN(parsedNota) ? null : parsedNota;
+                                    dia.nota = isNaN(parsedNota) ? 0 : parsedNota;
+                                } else {
+                                    dia.nota = 0;
                                 }
                             }
                         });
@@ -2640,7 +2642,7 @@ function sincronizarEstudiantesTrabajoCotidiano() {
         const prev = trabajoCotidianoEstudiantes[estIdx] || [];
         const nuevo = [];
         for (let i = 0; i < diasTrabajo.length; i++) {
-            nuevo[i] = prev[i] && typeof prev[i] === 'object' ? { nota: prev[i].nota ?? null } : { nota: null };
+            nuevo[i] = prev[i] && typeof prev[i] === 'object' ? { nota: prev[i].nota ?? 0 } : { nota: 0 };
         }
         return nuevo;
     });
@@ -2660,18 +2662,20 @@ function verificarIntegridadDatosTrabajoCotidiano() {
         
         diasTrabajo.forEach((dia, diaIdx) => {
             if (!trabajoCotidianoEstudiantes[estIdx][diaIdx] || typeof trabajoCotidianoEstudiantes[estIdx][diaIdx] !== 'object') {
-                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: null };
+                trabajoCotidianoEstudiantes[estIdx][diaIdx] = { nota: 0 };
             }
             
-            // Validar que la nota sea un número válido o null
+            // Validar que la nota sea un número válido o 0
             const diaData = trabajoCotidianoEstudiantes[estIdx][diaIdx];
             if (diaData.nota !== null && diaData.nota !== undefined) {
                 const parsedNota = parseFloat(diaData.nota);
                 if (isNaN(parsedNota)) {
-                    diaData.nota = null;
+                    diaData.nota = 0;
                 } else {
                     diaData.nota = parsedNota;
                 }
+            } else {
+                diaData.nota = 0;
             }
         });
     });
@@ -4183,7 +4187,7 @@ function calcularNotaTrabajoCotidiano(estudiante) {
     let contadorNotas = 0;
     
     trabajoCotidianoEstudiantes[estIndex].forEach((notaDia, diaIdx) => {
-        if (notaDia && notaDia.nota !== null && notaDia.nota !== undefined) {
+        if (notaDia && notaDia.nota !== undefined && !isNaN(parseFloat(notaDia.nota))) {
             totalNotas += parseFloat(notaDia.nota) || 0;
             contadorNotas++;
         }
