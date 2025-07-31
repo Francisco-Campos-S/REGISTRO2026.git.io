@@ -186,9 +186,7 @@
             <button onclick="exportarIndicadores()" class="btn-exportar-indicadores">
                 <span>📤</span> Exportar Indicadores
             </button>
-            <button onclick="limpiarCompletamenteTodo()" class="btn-limpieza-radical" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
-                <span>💥</span> Limpieza Radical
-            </button>
+
             <input type="file" id="inputIndicadores" accept=".xlsx" style="display:none" onchange="cargarIndicadores(event)">
         </div>
 
@@ -225,6 +223,7 @@
             <button onclick="exportarTrabajoCotidiano()" class="btn-exportar-trabajo">
                 <span>📤</span> Exportar Trabajo Cotidiano
             </button>
+
             <div class="escala-config">
                 <label for="escalaMaximaInput">Escala máxima:</label>
                 <input type="number" id="escalaMaximaInput" min="1" max="10" value="3" step="1" title="Escala máxima de evaluación (ej: 3 para escala 0-3)">
@@ -358,15 +357,8 @@
             <button onclick="renderSeaPeriodo()" class="btn-actualizar-sea" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
                 <span>🔄</span> Actualizar Resumen
             </button>
-            <button onclick="testearSea()" class="btn-test-sea" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
-                <span>🧪</span> Test SEA
-            </button>
             <button onclick="exportarSeaPeriodo()" class="btn-exportar-resumen">
                 <span>📤</span> Exportar Resumen
-            </button>
-            <!-- Botón de prueba simple -->
-            <button onclick="alert('SEA funciona!')" style="background: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
-                <span>✅</span> Prueba SEA
             </button>
         </div>
 

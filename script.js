@@ -3581,35 +3581,45 @@ function agregarIndicador() {
     guardarIndicadores();
     renderIndicadores();
     
-    // Sincronizar datos de trabajo cotidiano para el nuevo indicador
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach(estudiante => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // Asegurar que existe el objeto indicadores
-                        if (!estudiante[diaIdx].indicadores) {
-                            estudiante[diaIdx].indicadores = {};
-                        }
-                        
-                        // Agregar el nuevo indicador con valor 0
-                        estudiante[diaIdx].indicadores[nuevoId] = 0;
-                        
-                        // Asegurar que todos los indicadores existentes estén presentes
-                        indicadores.forEach(indicador => {
-                            if (!estudiante[diaIdx].indicadores.hasOwnProperty(indicador.id)) {
-                                estudiante[diaIdx].indicadores[indicador.id] = 0;
-                            }
-                        });
-                    }
-                });
-            }
+    // LIMPIEZA RADICAL AL AGREGAR INDICADOR
+    console.log('=== LIMPIEZA RADICAL AL AGREGAR INDICADOR ===');
+    
+    // LIMPIEZA RADICAL DEL LOCALSTORAGE
+    localStorage.removeItem('trabajoCotidianoEstudiantes');
+    localStorage.removeItem('diasTrabajo');
+    
+    // Reinicializar arrays
+    trabajoCotidianoEstudiantes = [];
+    diasTrabajo = [];
+    
+    // Regenerar estructura básica desde cero
+    if (estudiantes.length > 0) {
+        trabajoCotidianoEstudiantes = estudiantes.map(() => []);
+        diasTrabajo = [];
+        
+        // Agregar un día por defecto
+        diasTrabajo.push({
+            fecha: new Date().toISOString().split('T')[0],
+            lecciones: 1
         });
+        
+        // Inicializar datos para cada estudiante con indicadores VACÍOS
+        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
+            estudiante[0] = {
+                fecha: diasTrabajo[0].fecha,
+                nota: 0,
+                asistencia: false,
+                indicadores: {} // VACÍO - sin datos previos
+            };
+            
+            console.log(`REGENERADO AL AGREGAR: Estudiante ${estIdx} con indicadores VACÍOS`);
+        });
+        
         guardarTrabajoCotidiano();
         renderTrabajoCotidiano();
     }
     
-    mostrarAlerta('Indicador agregado y lista ordenada correctamente', 'exito');
+    mostrarAlerta(`Indicador ${nuevoId} agregado. Todos los datos de indicadores han sido limpiados.`, 'exito');
 }
 
 function eliminarIndicador() {
@@ -3639,7 +3649,7 @@ function eliminarIndicador() {
     const indicadorAEliminar = indicadores[indexEliminar];
     
     // Mostrar confirmación
-    const confirmacion = confirm(`¿Está seguro que desea eliminar el indicador ${indicadorAEliminar.id}?\n\n"${indicadorAEliminar.nombre}"\n\n⚠️ ADVERTENCIA: Esta acción no se puede deshacer y no hay forma de recuperar el indicador eliminado.`);
+    const confirmacion = confirm(`¿Está seguro que desea eliminar el indicador ${indicadorAEliminar.id}?\n\n"${indicadorAEliminar.nombre}"\n\n⚠️ ADVERTENCIA: Esta acción no se puede deshacer.`);
     
     if (!confirmacion) {
         return; // Usuario canceló la eliminación
@@ -3648,31 +3658,19 @@ function eliminarIndicador() {
     // Eliminar el indicador específico
     const indicadorEliminado = indicadores.splice(indexEliminar, 1)[0];
     
-    // LIMPIEZA COMPLETA Y RADICAL
-    console.log('=== LIMPIEZA RADICAL DE DATOS ===');
-    
-    // Guardar el ID del indicador eliminado
-    const idEliminado = indicadorEliminado.id;
-    console.log('Indicador eliminado ID:', idEliminado);
-    
-    // Limpiar completamente todos los datos de trabajo cotidiano
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // LIMPIEZA RADICAL - Resetear completamente
-                        estudiante[diaIdx] = {
-                            fecha: estudiante[diaIdx].fecha || '',
-                            nota: 0,
-                            asistencia: false,
-                            indicadores: {}
-                        };
-                        console.log(`LIMPIEZA RADICAL: Estudiante ${estIdx}, Día ${diaIdx}`);
-                    }
-                });
-            }
-        });
+    // Usar la función existente para eliminar el día de trabajo cotidiano
+    // Esto asegura que se elimine correctamente sin problemas de índices
+    if (diasTrabajo && Array.isArray(diasTrabajo) && diasTrabajo.length > indexEliminar) {
+        // Preservar datos de inputs antes de re-renderizar
+        preservarDatosInputs();
+        
+        // Eliminar el día de la lista
+        diasTrabajo.splice(indexEliminar, 1);
+        
+        // Sincronizar estudiantes después de eliminar el día
+        sincronizarEstudiantesTrabajoCotidiano();
+        
+        guardarTrabajoCotidiano();
     }
     
     // Ordenar indicadores por número después de eliminar
@@ -3681,30 +3679,13 @@ function eliminarIndicador() {
     guardarIndicadores();
     renderIndicadores();
     
-    // Regenerar SOLO con los indicadores actuales
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach(estudiante => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // Agregar SOLO los indicadores que existen actualmente
-                        indicadores.forEach(indicador => {
-                            estudiante[diaIdx].indicadores[indicador.id] = 0;
-                        });
-                    }
-                });
-            }
-        });
-        guardarTrabajoCotidiano();
-        renderTrabajoCotidiano();
-        console.log('✅ REGENERACIÓN COMPLETA FINALIZADA');
-        console.log('Indicadores actuales:', indicadores.map(i => i.id));
-    }
+    // CRÍTICO: Renderizar trabajo cotidiano para actualizar la interfaz
+    renderTrabajoCotidiano();
     
     // Limpiar el input
     inputEliminar.value = '';
     
-    mostrarAlerta(`Indicador ${indicadorEliminado.id} eliminado y lista reordenada correctamente`, 'exito');
+    mostrarAlerta(`Indicador ${indicadorEliminado.id} eliminado y datos relacionados limpiados correctamente`, 'exito');
 }
 
 function exportarIndicadores() {
@@ -3789,13 +3770,12 @@ function obtenerIndicadores() {
 
 // Función para ordenar indicadores por número
 function ordenarIndicadores() {
-    // Ordenar por ID/número
+    // Ordenar por ID/número - NO reasignar IDs para mantener la integridad de los datos
     indicadores.sort((a, b) => a.id - b.id);
     
-    // Renumerar secuencialmente si hay gaps
-    indicadores.forEach((indicador, index) => {
-        indicador.id = index + 1;
-    });
+    // NO renumerar secuencialmente para evitar desalineación de datos
+    // Los IDs deben mantenerse estables para preservar los datos de trabajo cotidiano
+    console.log('Indicadores ordenados por ID:', indicadores.map(i => i.id));
 }
 
 // Función para descargar plantilla de indicadores
@@ -4013,10 +3993,10 @@ function renderSeaPeriodo() {
     if (tablaGenerada) {
         console.log('✅ Tabla encontrada en el DOM');
         console.log('📊 Filas en la tabla:', tablaGenerada.querySelectorAll('tbody tr').length);
-        mostrarAlerta('✅ Tabla del SEA generada correctamente!', 'exito');
+        // NO mostrar alerta automáticamente - solo cuando se presione el botón
     } else {
         console.log('❌ No se encontró la tabla en el DOM');
-        mostrarAlerta('❌ Error: No se pudo generar la tabla del SEA', 'error');
+        // NO mostrar alerta automáticamente - solo cuando se presione el botón
     }
 }
 
@@ -4055,71 +4035,7 @@ function obtenerEstadoNota(nota) {
     return nota >= 70 ? 'APROBADO' : 'REPROBADO';
 }
 
-// Función de prueba para diagnosticar el SEA
-function testearSea() {
-    console.log('=== TESTEANDO SEA I PERIÓDO ===');
-    
-    // Verificar contenedor
-    const container = document.getElementById('sea-periodo-content');
-    console.log('Contenedor encontrado:', !!container);
-    
-    // Verificar estudiantes
-    console.log('Número de estudiantes:', estudiantes.length);
-    console.log('Estudiantes:', estudiantes);
-    
-    // Verificar datos de trabajo cotidiano
-    console.log('Días de trabajo:', diasTrabajo);
-    console.log('Datos de trabajo cotidiano:', trabajoCotidianoEstudiantes);
-    
-    // Verificar datos de tareas
-    console.log('Tareas:', tareas);
-    console.log('Datos de tareas:', tareasEstudiantes);
-    
-    // Verificar datos de pruebas
-    console.log('Pruebas:', pruebas);
-    console.log('Datos de evaluaciones:', evaluacionesEstudiantes);
-    
-    // Verificar datos de proyecto
-    console.log('Proyectos:', proyectos);
-    console.log('Datos de proyectos:', proyectosEstudiantes);
-    
-    // Verificar datos de portafolio
-    console.log('Portafolios:', portafolios);
-    console.log('Datos de portafolios:', portafoliosEstudiantes);
-    
-    // Probar cálculos
-    if (estudiantes.length > 0) {
-        const primerEstudiante = estudiantes[0];
-        console.log('Primer estudiante:', primerEstudiante);
-        
-        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(primerEstudiante);
-        const tareas = obtenerPorcentajeTareasDirecto(primerEstudiante);
-        const pruebas = obtenerPorcentajePruebasDirecto(primerEstudiante);
-        const asistencia = calcularNotaAsistencia(primerEstudiante);
-        const proyecto = obtenerPorcentajeProyectoDirecto(primerEstudiante);
-        const portafolio = obtenerPorcentajePortafolioDirecto(primerEstudiante);
-        const notaFinal = calcularNotaFinal(primerEstudiante);
-        
-        console.log('Cálculos del primer estudiante:');
-        console.log('- Trabajo Cotidiano:', trabajoCotidiano);
-        console.log('- Tareas:', tareas);
-        console.log('- Pruebas:', pruebas);
-        console.log('- Asistencia:', asistencia);
-        console.log('- Proyecto:', proyecto);
-        console.log('- Portafolio:', portafolio);
-        console.log('- Nota Final:', notaFinal);
-    }
-    
-    // Intentar renderizar
-    try {
-        renderSeaPeriodo();
-        console.log('✅ Renderizado completado');
-    } catch (error) {
-        console.error('❌ Error al renderizar:', error);
-    }
-    
-    console.log('=== FIN TEST SEA ===');
-}
+
 
 // Funciones de cálculo para cada rubro
 function calcularNotaTrabajoCotidiano(estudiante) {
@@ -4445,7 +4361,16 @@ function calcularNotaFinal(estudiante) {
 
 function actualizarResumenSeaPeriodo() {
     renderSeaPeriodo();
-    mostrarAlerta('Resumen actualizado correctamente', 'exito');
+    
+    // Verificar si la tabla se generó correctamente
+    const container = document.getElementById('sea-periodo-content');
+    const tablaGenerada = container ? container.querySelector('table') : null;
+    
+    if (tablaGenerada) {
+        mostrarAlerta('📊 Resumen del SEA actualizado correctamente', 'exito');
+    } else {
+        mostrarAlerta('❌ Error: No se pudo generar el resumen del SEA', 'error');
+    }
 }
 
 function exportarSeaPeriodo() {
@@ -4505,247 +4430,13 @@ function exportarSeaPeriodo() {
     }
 }
 
-// ===== FUNCIÓN PARA AGREGAR DATOS DE PRUEBA =====
-function agregarDatosPrueba() {
-    console.log('🔧 Sincronizando datos existentes para SEA PERIÓDO...');
-    
-    // Sincronizar datos existentes con la estructura correcta
-    sincronizarDatosExistentes();
-    console.log('🔄 Datos existentes sincronizados con estructura correcta');
-    
-    // La sincronización ya se realizó en sincronizarDatosExistentes()
-    console.log('✅ Datos sincronizados correctamente');
-    
-    // Mostrar información de debug
-    console.log('🔍 DEBUG - Datos actuales:');
-    console.log('- Estudiantes:', estudiantes.length);
-    console.log('- Pruebas:', pruebas.length);
-    console.log('- Tareas:', tareas.length);
-    console.log('- Proyectos:', proyectos.length);
-    console.log('- Portafolios:', portafolios.length);
-    
-    // Guardar todos los datos
-    guardarEvaluacion();
-    guardarTareas();
-    guardarTrabajoCotidiano();
-    guardarProyecto();
-    guardarPortafolio();
-    
-    // Actualizar el resumen
-    renderSeaPeriodo();
-    
-    mostrarAlerta('Datos existentes sincronizados correctamente', 'exito');
-    console.log('✅ Datos existentes sincronizados correctamente');
-}
 
-// ===== FUNCIÓN PARA SINCRONIZAR DATOS EXISTENTES =====
-function sincronizarDatosExistentes() {
-    console.log('🔄 Iniciando sincronización de datos existentes...');
-    
-    if (estudiantes.length === 0) {
-        console.log('⚠️ No hay estudiantes para sincronizar');
-        return;
-    }
-    
-    // Recargar datos desde localStorage para obtener los datos reales
-    cargarEvaluacion();
-    cargarTareas();
-    cargarProyecto();
-    cargarPortafolio();
-    
-    console.log('📊 Datos recargados desde localStorage:');
-    console.log('- evaluacionesEstudiantes:', evaluacionesEstudiantes);
-    console.log('- tareasEstudiantes:', tareasEstudiantes);
-    console.log('- proyectosEstudiantes:', proyectosEstudiantes);
-    console.log('- portafoliosEstudiantes:', portafoliosEstudiantes);
-    
-    // Asegurar que los arrays de estudiantes tengan la longitud correcta y estén sincronizados con las evaluaciones
-    sincronizarEstudiantesEvaluacion();
-    sincronizarEstudiantesTareas();
-    sincronizarEstudiantesProyecto();
-    sincronizarEstudiantesPortafolio();
 
-    console.log('✅ Estructura de datos corregida y sincronizada');
-    console.log('🔄 Sincronización completada');
-}
 
-// ===== FUNCIÓN DE PRUEBA PARA VERIFICAR DATOS =====
-function testearDatos() {
-    console.log('🧪 === INICIANDO PRUEBA DE DATOS ===');
-    
-    // Verificar estudiantes
-    console.log('📋 ESTUDIANTES:');
-    estudiantes.forEach((est, idx) => {
-        console.log(`  ${idx}: ${est.nombre} ${est.apellido1} ${est.apellido2}`);
-    });
-    
-    // Verificar configuración de evaluaciones
-    console.log('📊 CONFIGURACIÓN DE EVALUACIONES:');
-    console.log('  Pruebas:', pruebas);
-    console.log('  Tareas:', tareas);
-    console.log('  Proyectos:', proyectos);
-    console.log('  Portafolios:', portafolios);
-    
-    // Verificar datos de trabajo cotidiano DETALLADO
-    console.log('🔍 DATOS DE TRABAJO COTIDIANO - DETALLADO:');
-    console.log('  Días de trabajo:', diasTrabajo);
-    console.log('  trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
-    
-    trabajoCotidianoEstudiantes.forEach((estudianteTrabajo, estIdx) => {
-        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
-        console.log(`    Array completo:`, estudianteTrabajo);
-        estudianteTrabajo.forEach((notaDia, diaIdx) => {
-            console.log(`    Día ${diaIdx}: ${notaDia.nota} puntos (objeto completo: ${JSON.stringify(notaDia)})`);
-        });
-    });
-    
-    // Verificar datos de tareas DETALLADO
-    console.log('🔍 DATOS DE TAREAS - DETALLADO:');
-    console.log('  Configuración tareas:', tareas);
-    console.log('  tareasEstudiantes:', tareasEstudiantes);
-    
-    tareasEstudiantes.forEach((estudianteTareas, estIdx) => {
-        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
-        console.log(`    Array completo:`, estudianteTareas);
-        estudianteTareas.forEach((tarea, tareaIdx) => {
-            console.log(`    Tarea ${tareaIdx}: ${tarea.puntos} puntos (objeto completo: ${JSON.stringify(tarea)})`);
-        });
-    });
-    
-    // Verificar datos de estudiantes - PRUEBAS
-    console.log('🔍 DATOS DE ESTUDIANTES - PRUEBAS:');
-    evaluacionesEstudiantes.forEach((estudiantePruebas, estIdx) => {
-        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
-        estudiantePruebas.forEach((prueba, pruebaIdx) => {
-            console.log(`    Prueba ${pruebaIdx}: ${prueba.puntos} puntos`);
-        });
-    });
-    
-    // Verificar datos de estudiantes - PROYECTOS
-    console.log('🔍 DATOS DE ESTUDIANTES - PROYECTOS:');
-    proyectosEstudiantes.forEach((estudianteProyectos, estIdx) => {
-        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
-        estudianteProyectos.forEach((proyecto, proyectoIdx) => {
-            console.log(`    Proyecto ${proyectoIdx}: ${proyecto.puntos} puntos`);
-        });
-    });
-    
-    // Verificar datos de estudiantes - PORTAFOLIOS
-    console.log('🔍 DATOS DE ESTUDIANTES - PORTAFOLIOS:');
-    portafoliosEstudiantes.forEach((estudiantePortafolios, estIdx) => {
-        console.log(`  Estudiante ${estIdx} (${estudiantes[estIdx]?.nombre}):`);
-        estudiantePortafolios.forEach((portafolio, portafolioIdx) => {
-            console.log(`    Portafolio ${portafolioIdx}: ${portafolio.puntos} puntos`);
-        });
-    });
-    
-    // Probar cálculos individuales con DEBUG
-    console.log('🧮 PRUEBA DE CÁLCULOS CON DEBUG:');
-    estudiantes.forEach((estudiante, idx) => {
-        console.log(`\n📊 Cálculos para ${estudiante.nombre}:`);
-        
-        // Calcular nota de trabajo cotidiano con debug
-        console.log(`  --- TRABAJO COTIDIANO ---`);
-        const notaTrabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
-        console.log(`  RESULTADO: ${notaTrabajoCotidiano}`);
-        
-        // Calcular nota de tareas con debug
-        console.log(`  --- TAREAS ---`);
-        const notaTareas = calcularNotaTareas(estudiante);
-        console.log(`  RESULTADO: ${notaTareas}`);
-        
-        // Calcular nota de pruebas
-        const notaPruebas = calcularNotaPruebas(estudiante);
-        console.log(`  PRUEBAS: ${notaPruebas}`);
-        
-        // Calcular nota de asistencia
-        const notaAsistencia = calcularNotaAsistencia(estudiante);
-        console.log(`  ASISTENCIA: ${notaAsistencia}`);
-        
-        // Calcular nota de proyecto
-        const notaProyecto = calcularNotaProyecto(estudiante);
-        console.log(`  PROYECTO: ${notaProyecto}`);
-        
-        // Calcular nota de portafolio
-        const notaPortafolio = calcularNotaPortafolio(estudiante);
-        console.log(`  PORTAFOLIO: ${notaPortafolio}`);
-        
-        // Calcular nota final
-        const notaFinal = calcularNotaFinal(estudiante);
-        console.log(`  NOTA FINAL: ${notaFinal}`);
-    });
-    
-    console.log('🧪 === FIN PRUEBA DE DATOS ===');
-}
 
-// ===== FUNCIÓN PARA GENERAR DATOS REALES =====
-function generarDatosReales() {
-    console.log('📝 === GENERANDO DATOS REALES ===');
-    
-    // Generar datos de trabajo cotidiano
-    console.log('📝 Generando datos de trabajo cotidiano...');
-    
-    // Asegurar que hay días de trabajo
-    if (!diasTrabajo || diasTrabajo.length === 0) {
-        console.log('⚠️ No hay días de trabajo, creando días...');
-        diasTrabajo = [
-            { fecha: '2024-01-15', lecciones: 4 },
-            { fecha: '2024-01-16', lecciones: 4 },
-            { fecha: '2024-01-17', lecciones: 4 },
-            { fecha: '2024-01-18', lecciones: 4 }
-        ];
-    }
-    
-    // Generar notas de trabajo cotidiano para cada estudiante
-    trabajoCotidianoEstudiantes = estudiantes.map((estudiante, estIdx) => {
-        return diasTrabajo.map((dia, diaIdx) => {
-            // Generar notas realistas entre 6 y 10
-            const nota = Math.floor(Math.random() * 5) + 6; // 6-10
-            return {
-                nota: nota,
-                asistencia: Math.random() > 0.1 ? 1 : 0 // 90% asistencia
-            };
-        });
-    });
-    
-    console.log('✅ Datos de trabajo cotidiano generados:', trabajoCotidianoEstudiantes);
-    
-    // Generar datos de tareas
-    console.log('📝 Generando datos de tareas...');
-    
-    // Asegurar que hay tareas configuradas
-    if (!tareas || tareas.length === 0) {
-        console.log('⚠️ No hay tareas configuradas, creando tareas...');
-        tareas = [
-            { nombre: 'Tarea 1', puntosMaximos: 30, peso: 1 },
-            { nombre: 'Tarea 2', puntosMaximos: 25, peso: 1 }
-        ];
-    }
-    
-    // Generar puntos de tareas para cada estudiante
-    tareasEstudiantes = estudiantes.map((estudiante, estIdx) => {
-        return tareas.map((tarea, tareaIdx) => {
-            // Generar puntos realistas (70-100% del máximo)
-            const porcentaje = 0.7 + (Math.random() * 0.3); // 70-100%
-            const puntos = Math.round(tarea.puntosMaximos * porcentaje);
-            return { puntos: puntos };
-        });
-    });
-    
-    console.log('✅ Datos de tareas generados:', tareasEstudiantes);
-    
-    // Guardar los datos generados
-    guardarTrabajoCotidiano();
-    guardarTareas();
-    
-    console.log('💾 Datos guardados en localStorage');
-    
-    // Actualizar la tabla
-    renderSeaPeriodo();
-    
-    mostrarAlerta('Datos reales generados correctamente', 'exito');
-    console.log('📝 === FIN GENERACIÓN DE DATOS REALES ===');
-}
+
+
+
 
 // ===== FUNCIÓN PARA LIMPIAR Y REGENERAR DATOS =====
 function limpiarYRegenerarDatos() {
@@ -5849,133 +5540,7 @@ function diagnosticarIndicadores() {
     }
 }
 
-// Función para limpiar completamente todos los datos de indicadores
-function limpiarCompletamenteIndicadores() {
-    console.log('=== LIMPIANDO COMPLETAMENTE INDICADORES ===');
-    
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // Limpiar completamente
-                        estudiante[diaIdx].indicadores = {};
-                        console.log(`Limpiado estudiante ${estIdx}, día ${diaIdx}`);
-                    }
-                });
-            }
-        });
-        guardarTrabajoCotidiano();
-        renderTrabajoCotidiano();
-        console.log('✅ Datos limpiados completamente');
-    }
-}
 
-// Función para forzar la limpieza y regeneración de indicadores
-function forzarLimpiezaIndicadores() {
-    console.log('=== FORZANDO LIMPIEZA DE INDICADORES ===');
-    
-    // Limpiar completamente
-    limpiarCompletamenteIndicadores();
-    
-    // Regenerar con solo los indicadores actuales
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // Asegurar que existe el objeto indicadores
-                        if (!estudiante[diaIdx].indicadores) {
-                            estudiante[diaIdx].indicadores = {};
-                        }
-                        
-                        // Agregar solo los indicadores que existen actualmente
-                        indicadores.forEach(indicador => {
-                            estudiante[diaIdx].indicadores[indicador.id] = 0;
-                        });
-                    }
-                });
-            }
-        });
-        guardarTrabajoCotidiano();
-        renderTrabajoCotidiano();
-        console.log('✅ Indicadores regenerados correctamente');
-        mostrarAlerta('Indicadores limpiados y regenerados correctamente', 'exito');
-    }
-}
-
-// Función para limpiar completamente todos los datos de trabajo cotidiano
-function limpiarCompletamenteTrabajoCotidiano() {
-    console.log('=== LIMPIANDO COMPLETAMENTE TRABAJO COTIDIANO ===');
-    
-    if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            if (estudiante) {
-                diasTrabajo.forEach((dia, diaIdx) => {
-                    if (estudiante[diaIdx]) {
-                        // Limpiar completamente todos los datos
-                        estudiante[diaIdx] = {
-                            fecha: estudiante[diaIdx].fecha || '',
-                            nota: 0,
-                            asistencia: false,
-                            indicadores: {}
-                        };
-                        console.log(`Limpiado completamente estudiante ${estIdx}, día ${diaIdx}`);
-                    }
-                });
-            }
-        });
-        guardarTrabajoCotidiano();
-        renderTrabajoCotidiano();
-        console.log('✅ Datos de trabajo cotidiano limpiados completamente');
-        mostrarAlerta('Datos de trabajo cotidiano limpiados completamente', 'exito');
-    }
-}
-
-// Función para limpiar completamente el localStorage y regenerar
-function limpiarCompletamenteTodo() {
-    console.log('=== LIMPIEZA RADICAL COMPLETA ===');
-    
-    // Limpiar localStorage de trabajo cotidiano
-    localStorage.removeItem('trabajoCotidianoEstudiantes');
-    localStorage.removeItem('diasTrabajo');
-    
-    // Reinicializar arrays
-    trabajoCotidianoEstudiantes = [];
-    diasTrabajo = [];
-    
-    // Regenerar estructura básica
-    if (estudiantes.length > 0) {
-        trabajoCotidianoEstudiantes = estudiantes.map(() => []);
-        diasTrabajo = [];
-        
-        // Agregar un día por defecto
-        diasTrabajo.push({
-            fecha: new Date().toISOString().split('T')[0],
-            lecciones: 1
-        });
-        
-        // Inicializar datos para cada estudiante
-        trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {
-            estudiante[0] = {
-                fecha: diasTrabajo[0].fecha,
-                nota: 0,
-                asistencia: false,
-                indicadores: {}
-            };
-            
-            // Agregar indicadores actuales con valor 0
-            indicadores.forEach(indicador => {
-                estudiante[0].indicadores[indicador.id] = 0;
-            });
-        });
-    }
-    
-    guardarTrabajoCotidiano();
-    renderTrabajoCotidiano();
-    console.log('✅ LIMPIEZA RADICAL COMPLETA FINALIZADA');
-    mostrarAlerta('Limpieza radical completa finalizada', 'exito');
-}
 
 // Inicializar la aplicación cuando el DOM esté listo
 esperarDOMListo();
