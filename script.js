@@ -1635,7 +1635,7 @@ function agregarPrueba() {
     renderEvaluacion();
     
     // Actualizar resumen SEA I PERIÓDO
-    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    actualizarResumenSeaPeriodo();
     
     mostrarAlerta(`Prueba "${pruebas[pruebas.length - 1].nombre}" agregada`, 'exito');
 }
@@ -1934,7 +1934,7 @@ function agregarTarea() {
     renderTareas();
     
     // Actualizar resumen SEA I PERIÓDO
-    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    actualizarResumenSeaPeriodo();
     
     mostrarAlerta(`Tarea "${tareas[tareas.length - 1].nombre}" agregada`, 'exito');
 }
@@ -2834,7 +2834,7 @@ function agregarProyecto() {
     renderProyecto();
     
     // Actualizar resumen SEA I PERIÓDO
-    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    actualizarResumenSeaPeriodo();
     
     mostrarAlerta(`Proyecto "${proyectos[proyectos.length - 1].nombre}" agregado`, 'exito');
 }
@@ -3124,7 +3124,7 @@ function agregarPortafolio() {
     renderPortafolio();
     
     // Actualizar resumen SEA I PERIÓDO
-    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    actualizarResumenSeaPeriodo();
     
     mostrarAlerta(`Portafolio "${portafolios[portafolios.length - 1].nombre}" agregado`, 'exito');
 }
