@@ -1359,17 +1359,17 @@ tr:nth-child(odd) td.numero {
 }
 
 .table-responsive::-webkit-scrollbar-thumb {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s var(--animation-smooth);
+    box-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
+    transition: all 0.3s ease;
 }
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: var(--gradient-secundario);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     transform: scaleY(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(30, 64, 175, 0.4);
 }
 
 /* ===== VERSION MESSAGE ===== */
