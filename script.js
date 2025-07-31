@@ -1660,8 +1660,8 @@ function eliminarPrueba(pruebaIdx) {
         guardarEvaluacion();
         renderEvaluacion();
         
-        // Actualizar resumen SEA I PERIÓDO
-        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        // Actualizar resumen SEA I PERIÓDO automáticamente
+        actualizarResumenSeaPeriodo();
         
         // Verificar si se eliminó la última prueba
         if (pruebas.length === 0) {
@@ -1956,8 +1956,8 @@ function eliminarTarea(tareaIdx) {
         guardarTareas();
         renderTareas();
         
-        // Actualizar resumen SEA I PERIÓDO
-        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        // Actualizar resumen SEA I PERIÓDO automáticamente
+        actualizarResumenSeaPeriodo();
         
         // Verificar si se eliminó la última tarea
         if (tareas.length === 0) {
@@ -2491,6 +2491,10 @@ function eliminarDiaTrabajo(diaIdx) {
     });
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
+    
+    // Actualizar resumen SEA I PERIÓDO automáticamente
+    actualizarResumenSeaPeriodo();
+    
     mostrarAlerta(`Día ${diaIdx + 1} eliminado`, 'exito');
 }
 
@@ -2855,8 +2859,8 @@ function eliminarProyecto(proyectoIdx) {
         guardarProyecto();
         renderProyecto();
         
-        // Actualizar resumen SEA I PERIÓDO
-        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        // Actualizar resumen SEA I PERIÓDO automáticamente
+        actualizarResumenSeaPeriodo();
         
         // Verificar si se eliminó el último proyecto
         if (proyectos.length === 0) {
@@ -3145,8 +3149,8 @@ function eliminarPortafolio(portafolioIdx) {
         guardarPortafolio();
         renderPortafolio();
         
-        // Actualizar resumen SEA I PERIÓDO
-        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+        // Actualizar resumen SEA I PERIÓDO automáticamente
+        actualizarResumenSeaPeriodo();
         
         // Verificar si se eliminó el último portafolio
         if (portafolios.length === 0) {
