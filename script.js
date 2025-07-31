@@ -1221,6 +1221,14 @@ function cargarPlantilla(event) {
                 return;
             }
             
+            // Guardar estudiantes existentes y sus datos antes de importar
+            const estudiantesExistentes = [...estudiantes];
+            const evaluacionesExistentes = [...evaluacionesEstudiantes];
+            const tareasExistentes = [...tareasEstudiantes];
+            const trabajoCotidianoExistentes = [...trabajoCotidianoEstudiantes];
+            const proyectosExistentes = [...proyectosEstudiantes];
+            const portafoliosExistentes = [...portafoliosEstudiantes];
+            
             const encabezado = rows[0];
             const numDias = dias.length;
             
@@ -1242,6 +1250,140 @@ function cargarPlantilla(event) {
             });
             
             limpiarEstudiantesVacios();
+            
+            // Ordenar estudiantes automáticamente por primer apellido (solo al importar)
+            if (estudiantes.length > 0) {
+                estudiantes.sort((a, b) => {
+                    const aVacio = !(a.cedula || a.nombre || a.apellido1 || a.apellido2);
+                    const bVacio = !(b.cedula || b.nombre || b.apellido1 || b.apellido2);
+                    
+                    if (aVacio && !bVacio) return 1;
+                    if (!aVacio && bVacio) return -1;
+                    if (aVacio && bVacio) return 0;
+                    
+                    const ap1 = (a.apellido1 || '').toLowerCase();
+                    const ap2 = (b.apellido1 || '').toLowerCase();
+                    
+                    if (ap1 < ap2) return -1;
+                    if (ap1 > ap2) return 1;
+                    return 0;
+                });
+                
+                // Reconstruir arrays de evaluación preservando datos de estudiantes existentes
+                // Evaluaciones
+                evaluacionesEstudiantes = [];
+                estudiantes.forEach((estudiante, index) => {
+                    // Buscar si el estudiante ya existía
+                    const estudianteExistente = estudiantesExistentes.find(est => 
+                        est.cedula === estudiante.cedula && 
+                        est.nombre === estudiante.nombre && 
+                        est.apellido1 === estudiante.apellido1 && 
+                        est.apellido2 === estudiante.apellido2
+                    );
+                    
+                    if (estudianteExistente) {
+                        // Preservar datos existentes
+                        const indexExistente = estudiantesExistentes.indexOf(estudianteExistente);
+                        evaluacionesEstudiantes.push([...evaluacionesExistentes[indexExistente]]);
+                    } else {
+                        // Nuevo estudiante - inicializar con ceros
+                        const evaluacionEstudiante = [];
+                        pruebas.forEach(() => {
+                            evaluacionEstudiante.push({ puntos: 0, puntosMaximos: 0 });
+                        });
+                        evaluacionesEstudiantes.push(evaluacionEstudiante);
+                    }
+                });
+                
+                // Tareas
+                tareasEstudiantes = [];
+                estudiantes.forEach((estudiante, index) => {
+                    const estudianteExistente = estudiantesExistentes.find(est => 
+                        est.cedula === estudiante.cedula && 
+                        est.nombre === estudiante.nombre && 
+                        est.apellido1 === estudiante.apellido1 && 
+                        est.apellido2 === estudiante.apellido2
+                    );
+                    
+                    if (estudianteExistente) {
+                        const indexExistente = estudiantesExistentes.indexOf(estudianteExistente);
+                        tareasEstudiantes.push([...tareasExistentes[indexExistente]]);
+                    } else {
+                        const tareasEstudiante = [];
+                        tareas.forEach(() => {
+                            tareasEstudiante.push({ puntos: 0, puntosMaximos: 0 });
+                        });
+                        tareasEstudiantes.push(tareasEstudiante);
+                    }
+                });
+                
+                // Trabajo Cotidiano
+                trabajoCotidianoEstudiantes = [];
+                estudiantes.forEach((estudiante, index) => {
+                    const estudianteExistente = estudiantesExistentes.find(est => 
+                        est.cedula === estudiante.cedula && 
+                        est.nombre === estudiante.nombre && 
+                        est.apellido1 === estudiante.apellido1 && 
+                        est.apellido2 === estudiante.apellido2
+                    );
+                    
+                    if (estudianteExistente) {
+                        const indexExistente = estudiantesExistentes.indexOf(estudianteExistente);
+                        trabajoCotidianoEstudiantes.push([...trabajoCotidianoExistentes[indexExistente]]);
+                    } else {
+                        const trabajoEstudiante = [];
+                        diasTrabajo.forEach(() => {
+                            trabajoEstudiante.push({ nota: 0 });
+                        });
+                        trabajoCotidianoEstudiantes.push(trabajoEstudiante);
+                    }
+                });
+                
+                // Proyectos
+                proyectosEstudiantes = [];
+                estudiantes.forEach((estudiante, index) => {
+                    const estudianteExistente = estudiantesExistentes.find(est => 
+                        est.cedula === estudiante.cedula && 
+                        est.nombre === estudiante.nombre && 
+                        est.apellido1 === estudiante.apellido1 && 
+                        est.apellido2 === estudiante.apellido2
+                    );
+                    
+                    if (estudianteExistente) {
+                        const indexExistente = estudiantesExistentes.indexOf(estudianteExistente);
+                        proyectosEstudiantes.push([...proyectosExistentes[indexExistente]]);
+                    } else {
+                        const proyectoEstudiante = [];
+                        proyectos.forEach(() => {
+                            proyectoEstudiante.push({ puntos: 0, puntosMaximos: 0 });
+                        });
+                        proyectosEstudiantes.push(proyectoEstudiante);
+                    }
+                });
+                
+                // Portafolios
+                portafoliosEstudiantes = [];
+                estudiantes.forEach((estudiante, index) => {
+                    const estudianteExistente = estudiantesExistentes.find(est => 
+                        est.cedula === estudiante.cedula && 
+                        est.nombre === estudiante.nombre && 
+                        est.apellido1 === estudiante.apellido1 && 
+                        est.apellido2 === estudiante.apellido2
+                    );
+                    
+                    if (estudianteExistente) {
+                        const indexExistente = estudiantesExistentes.indexOf(estudianteExistente);
+                        portafoliosEstudiantes.push([...portafoliosExistentes[indexExistente]]);
+                    } else {
+                        const portafolioEstudiante = [];
+                        portafolios.forEach(() => {
+                            portafolioEstudiante.push({ puntos: 0, puntosMaximos: 0 });
+                        });
+                        portafoliosEstudiantes.push(portafolioEstudiante);
+                    }
+                });
+            }
+            
             guardarDatos();
             renderAsistencia();
             
@@ -1260,7 +1402,7 @@ function cargarPlantilla(event) {
                 renderPortafolio();
             }, 100);
             
-            mostrarAlerta('Datos importados y agregados correctamente', 'exito');
+            mostrarAlerta('Datos importados, ordenados alfabéticamente y agregados correctamente', 'exito');
             
             } catch (error) {
         console.error('Error al importar:', error);
