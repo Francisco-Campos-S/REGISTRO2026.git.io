@@ -1,4 +1,7 @@
 // ===== CONFIGURACIÓN GLOBAL =====
+console.log('📜 SCRIPT.JS CARGADO - VERSIÓN CORREGIDA');
+console.log('🔧 TODAS LAS LLAMADAS A renderSeaPeriodo() COMENTADAS TEMPORALMENTE');
+console.log('🚫 BUCLE INFINITO DETENIDO - LISTO PARA DIAGNÓSTICO');
 // SOLUCIÓN SIMPLIFICADA PARA ALERTAS TEMPRANAS:
 // Se ha restaurado el estado original del sistema, manteniendo solo la funcionalidad básica
 // de alertas tempranas sin modificar los estilos originales de las columnas de datos.
@@ -57,6 +60,35 @@ let indicadores = [
     { id: 16, nombre: 'Indicador 16' }
 ];
 
+// ===== VARIABLES GLOBALES PARA EVALUACIONES =====
+// Variables para Pruebas
+let pruebas = [
+    { nombre: 'I PRUEBA', puntosMaximos: 30, peso: 20 },
+    { nombre: 'II PRUEBA', puntosMaximos: 30, peso: 15 }
+];
+let evaluacionesEstudiantes = [];
+
+// Variables para Tareas
+let tareas = [
+    { nombre: 'I TAREA', puntosMaximos: 20, peso: 5 },
+    { nombre: 'II TAREA', puntosMaximos: 20, peso: 5 }
+];
+let tareasEstudiantes = [];
+
+// Variables para Trabajo Cotidiano
+let diasTrabajo = [];
+let trabajoCotidianoEstudiantes = [];
+let escalaMaxima = 3;
+let valorTotalTrabajo = 35;
+
+// Variables para Proyecto
+let proyectos = [];
+let proyectosEstudiantes = [];
+
+// Variables para Portafolio
+let portafolios = [];
+let portafoliosEstudiantes = [];
+
 // Debounce para actualizaciones
 let debounceTimer;
 function debounce(func, delay) {
@@ -85,18 +117,38 @@ const plantillaEjemplo = [
 
 // ===== FUNCIONES DE INICIALIZACIÓN =====
 function inicializarAplicacion() {
+    console.log('🚀 EJECUTANDO inicializarAplicacion() - VERSIÓN CORREGIDA');
     // Evitar inicializaciones múltiples
     if (window.aplicacionInicializada) {
+        console.log('⚠️ Aplicación ya inicializada, saliendo...');
         return;
     }
     
     window.aplicacionInicializada = true;
     
+    // Cargar todos los datos primero
     cargarDatosGuardados();
+    
+    // Configurar modo oscuro y eventos
     configurarModoOscuro();
     configurarEventos();
+    
+    // Renderizar todas las secciones
     renderAsistencia();
+    renderEvaluacion();
+    renderTareas();
+    renderTrabajoCotidiano();
+    renderProyecto();
+    renderPortafolio();
     renderIndicadores();
+    // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
+    // Configurar navegación
+    configurarNavegacionTeclado();
+    agregarIndicadoresNavegacion();
+    
+    // Configurar escala máxima para trabajo cotidiano
+    configurarEscalaMaxima();
     
     // Esperar a que el DOM esté completamente cargado antes de sincronizar alertas
     setTimeout(() => {
@@ -122,10 +174,13 @@ function inicializarAplicacion() {
         attributes: true,
         attributeFilter: ['class']
     });
+    
+    console.log('✅ inicializarAplicacion() completada');
 }
 
 // Función para verificar que el DOM esté listo
 function esperarDOMListo() {
+    console.log('🌐 EJECUTANDO esperarDOMListo()');
     const esLiveServer = detectarLiveServer();
     
     if (document.readyState === 'loading') {
@@ -136,15 +191,21 @@ function esperarDOMListo() {
     
     // Fallback adicional para Live Server
     const tiempoFallback = esLiveServer ? 3000 : 2000;
+    console.log('⏰ Configurando fallback de', tiempoFallback, 'ms');
     setTimeout(() => {
         if (!window.aplicacionInicializada) {
+            console.log('🔄 Ejecutando fallback - inicializarAplicacion()');
             window.aplicacionInicializada = true;
             inicializarAplicacion();
+        } else {
+            console.log('✅ Aplicación ya inicializada, no se ejecuta fallback');
         }
     }, tiempoFallback);
 }
 
 function cargarDatosGuardados() {
+    console.log('🔍 EJECUTANDO cargarDatosGuardados()');
+    try {
     const datosGuardados = localStorage.getItem(STORAGE_KEY);
     if (datosGuardados) {
         try {
@@ -189,6 +250,29 @@ function cargarDatosGuardados() {
     // Cargar indicadores
     cargarIndicadoresGuardados();
     
+    // Cargar datos de todas las secciones
+    console.log('=== CARGANDO DATOS DE SECCIONES ===');
+    console.log('🔍 Llamando a cargarEvaluacion()...');
+    cargarEvaluacion();
+    console.log('✅ Después de cargarEvaluacion - pruebas:', pruebas);
+    console.log('✅ Después de cargarEvaluacion - evaluacionesEstudiantes:', evaluacionesEstudiantes);
+    
+    console.log('🔍 Llamando a cargarTareas()...');
+    cargarTareas();
+    console.log('✅ Después de cargarTareas - tareas:', tareas);
+    console.log('✅ Después de cargarTareas - tareasEstudiantes:', tareasEstudiantes);
+    
+    console.log('🔍 Llamando a cargarProyecto()...');
+    cargarProyecto();
+    console.log('✅ Después de cargarProyecto - proyectos:', proyectos);
+    console.log('✅ Después de cargarProyecto - proyectosEstudiantes:', proyectosEstudiantes);
+    
+    console.log('🔍 Llamando a cargarPortafolio()...');
+    cargarPortafolio();
+    console.log('✅ Después de cargarPortafolio - portafolios:', portafolios);
+    console.log('✅ Después de cargarPortafolio - portafoliosEstudiantes:', portafoliosEstudiantes);
+    console.log('=== FIN CARGADO DE DATOS ===');
+    
     // Renderizar trabajo cotidiano después de sincronizar
     setTimeout(() => {
         renderTrabajoCotidiano();
@@ -198,6 +282,9 @@ function cargarDatosGuardados() {
             renderTrabajoCotidiano();
         }, 200);
     }, 100);
+    } catch (error) {
+        console.error('❌ ERROR en cargarDatosGuardados():', error);
+    }
 }
 
 function sincronizarAsistenciaDias() {
@@ -710,7 +797,7 @@ function actualizarEstudiante(idx, campo, valor) {
     
     guardarDatos();
     renderAsistencia();
-    sincronizarTodasLasSecciones();
+    // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
 }
 
 function actualizarAsistenciaTipo(estIdx, diaIdx, valor) {
@@ -874,7 +961,7 @@ function agregarEstudiante() {
     
     guardarDatos();
     renderAsistencia();
-    sincronizarTodasLasSecciones();
+    // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
 }
 
 function agregarDia() {
@@ -930,7 +1017,7 @@ function eliminarEstudiante(idx) {
         estudiantes.splice(idx, 1);
         guardarDatos();
         renderAsistencia();
-        sincronizarTodasLasSecciones();
+        // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
         mostrarAlerta('Estudiante eliminado', 'info');
     }
@@ -973,7 +1060,7 @@ function ordenarEstudiantesManual() {
     
     guardarDatos();
     renderAsistencia();
-    sincronizarTodasLasSecciones();
+    // sincronizarTodasLasSecciones(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
 }
 
 // ===== FUNCIONES DE PERSISTENCIA =====
@@ -1317,25 +1404,6 @@ function implementarStickyManual() {
 }
 
 // ===== EVALUACIÓN DE PRUEBAS =====
-let pruebas = [
-    { nombre: 'I PRUEBA', puntosMaximos: 30, peso: 20 },
-    { nombre: 'II PRUEBA', puntosMaximos: 30, peso: 15 }
-];
-
-let evaluacionesEstudiantes = [];
-
-// Variables globales para tareas
-let tareas = [
-    { nombre: 'I TAREA', puntosMaximos: 20, peso: 5 },
-    { nombre: 'II TAREA', puntosMaximos: 20, peso: 5 }
-];
-let tareasEstudiantes = [];
-
-// Variables globales para trabajo cotidiano
-let diasTrabajo = [];
-let trabajoCotidianoEstudiantes = [];
-let escalaMaxima = 3;
-let valorTotalTrabajo = 35;
 
 // Función para renderizar la tabla de evaluación
 function renderEvaluacion() {
@@ -1529,6 +1597,10 @@ function agregarPrueba() {
     
     guardarEvaluacion();
     renderEvaluacion();
+    
+    // Actualizar resumen SEA I PERIÓDO
+    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
     mostrarAlerta(`Prueba "${pruebas[pruebas.length - 1].nombre}" agregada`, 'exito');
 }
 
@@ -1551,6 +1623,9 @@ function eliminarPrueba(pruebaIdx) {
         
         guardarEvaluacion();
         renderEvaluacion();
+        
+        // Actualizar resumen SEA I PERIÓDO
+        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
         // Verificar si se eliminó la última prueba
         if (pruebas.length === 0) {
@@ -1817,6 +1892,10 @@ function agregarTarea() {
     
     guardarTareas();
     renderTareas();
+    
+    // Actualizar resumen SEA I PERIÓDO
+    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
     mostrarAlerta(`Tarea "${tareas[tareas.length - 1].nombre}" agregada`, 'exito');
 }
 
@@ -1836,6 +1915,9 @@ function eliminarTarea(tareaIdx) {
         
         guardarTareas();
         renderTareas();
+        
+        // Actualizar resumen SEA I PERIÓDO
+        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
         // Verificar si se eliminó la última tarea
         if (tareas.length === 0) {
@@ -1954,31 +2036,7 @@ function sincronizarEstudiantesTareas() {
     guardarTareas();
 }
 
-// Modificar la función inicializarAplicacion para incluir evaluación
-const originalInicializarAplicacion = inicializarAplicacion;
-inicializarAplicacion = function() {
-    originalInicializarAplicacion();
-    cargarEvaluacion();
-    sincronizarEstudiantesEvaluacion();
-    renderEvaluacion();
-    cargarTareas();
-    sincronizarEstudiantesTareas();
-    renderTareas();
-    cargarTrabajoCotidiano();
-    sincronizarEstudiantesTrabajoCotidiano();
-    renderTrabajoCotidiano();
-    configurarEscalaMaxima();
-    cargarProyecto();
-    sincronizarEstudiantesProyecto();
-    renderProyecto();
-    cargarPortafolio();
-    sincronizarEstudiantesPortafolio();
-    renderPortafolio();
-    
-    // Configurar navegación
-    configurarNavegacionTeclado();
-    agregarIndicadoresNavegacion();
-};
+// Eliminada la redefinición problemática de inicializarAplicacion
 
 // ===== FUNCIONES DE TRABAJO COTIDIANO =====
 function renderTrabajoCotidiano() {
@@ -2328,6 +2386,10 @@ function agregarDiaTrabajo() {
     
     guardarTrabajoCotidiano();
     renderTrabajoCotidiano();
+    
+    // Actualizar resumen SEA I PERIÓDO
+    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
     mostrarAlerta(`Día ${diasTrabajo.length} agregado`, 'exito');
 }
 
@@ -2360,6 +2422,8 @@ function eliminarDiaTrabajo(diaIdx) {
     // Delay the re-rendering to ensure alert is visible
     setTimeout(() => {
         renderTrabajoCotidiano();
+        // Actualizar resumen SEA I PERIÓDO
+        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
     }, 100);
 }
 
@@ -2582,8 +2646,6 @@ function verificarIntegridadDatosTrabajoCotidiano() {
 esperarDOMListo();
 
 // ===== SECCIÓN PROYECTO =====
-let proyectos = [];
-let proyectosEstudiantes = [];
 
 // Función para renderizar proyecto
 function renderProyecto() {
@@ -2732,6 +2794,10 @@ function agregarProyecto() {
     
     guardarProyecto();
     renderProyecto();
+    
+    // Actualizar resumen SEA I PERIÓDO
+    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
     mostrarAlerta(`Proyecto "${proyectos[proyectos.length - 1].nombre}" agregado`, 'exito');
 }
 
@@ -2754,6 +2820,9 @@ function eliminarProyecto(proyectoIdx) {
         
         guardarProyecto();
         renderProyecto();
+        
+        // Actualizar resumen SEA I PERIÓDO
+        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
         // Verificar si se eliminó el último proyecto
         if (proyectos.length === 0) {
@@ -2863,8 +2932,6 @@ function sincronizarEstudiantesProyecto() {
 }
 
 // ===== SECCIÓN PORTAFOLIO =====
-let portafolios = [];
-let portafoliosEstudiantes = [];
 
 // Función para renderizar portafolio
 function renderPortafolio() {
@@ -3013,6 +3080,10 @@ function agregarPortafolio() {
     
     guardarPortafolio();
     renderPortafolio();
+    
+    // Actualizar resumen SEA I PERIÓDO
+    // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    
     mostrarAlerta(`Portafolio "${portafolios[portafolios.length - 1].nombre}" agregado`, 'exito');
 }
 
@@ -3035,6 +3106,9 @@ function eliminarPortafolio(portafolioIdx) {
         
         guardarPortafolio();
         renderPortafolio();
+        
+        // Actualizar resumen SEA I PERIÓDO
+        // actualizarResumenSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
         
         // Verificar si se eliminó el último portafolio
         if (portafolios.length === 0) {
@@ -3385,6 +3459,7 @@ function sincronizarTodasLasSecciones() {
         renderProyecto();
         renderPortafolio();
         renderIndicadores();
+        // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
     }, 100);
 }
 
@@ -3621,3 +3696,606 @@ function descargarPlantillaIndicadores() {
         mostrarAlerta('Error al descargar la plantilla de indicadores', 'error');
     }
 }
+
+// ===== FUNCIONES PARA SEA I PERIÓDO =====
+
+// Funciones para verificar si hay datos activos en cada sección
+function hayDatosActivosTrabajoCotidiano() {
+    // Verificar si la sección está activa y tiene datos
+    const resultado = diasTrabajo && Array.isArray(diasTrabajo) && diasTrabajo.length > 0 &&
+           trabajoCotidianoEstudiantes && Array.isArray(trabajoCotidianoEstudiantes) && trabajoCotidianoEstudiantes.length > 0;
+    console.log('DEBUG hayDatosActivosTrabajoCotidiano:', {
+        diasTrabajo: diasTrabajo,
+        esArray: Array.isArray(diasTrabajo),
+        length: diasTrabajo ? diasTrabajo.length : 'N/A',
+        trabajoCotidianoEstudiantes: trabajoCotidianoEstudiantes,
+        esArray2: Array.isArray(trabajoCotidianoEstudiantes),
+        length2: trabajoCotidianoEstudiantes ? trabajoCotidianoEstudiantes.length : 'N/A',
+        resultado: resultado
+    });
+    return resultado;
+}
+
+function hayDatosActivosTareas() {
+    // Verificar si la sección está activa y tiene datos
+    const resultado = tareas && Array.isArray(tareas) && tareas.length > 0 &&
+           tareasEstudiantes && Array.isArray(tareasEstudiantes) && tareasEstudiantes.length > 0;
+    console.log('DEBUG hayDatosActivosTareas:', {
+        tareas: tareas,
+        esArray: Array.isArray(tareas),
+        length: tareas ? tareas.length : 'N/A',
+        tareasEstudiantes: tareasEstudiantes,
+        esArray2: Array.isArray(tareasEstudiantes),
+        length2: tareasEstudiantes ? tareasEstudiantes.length : 'N/A',
+        resultado: resultado
+    });
+    return resultado;
+}
+
+function hayDatosActivosPruebas() {
+    // Verificar si la sección está activa y tiene datos
+    const resultado = pruebas && Array.isArray(pruebas) && pruebas.length > 0 &&
+           evaluacionesEstudiantes && Array.isArray(evaluacionesEstudiantes) && evaluacionesEstudiantes.length > 0;
+    console.log('DEBUG hayDatosActivosPruebas:', {
+        pruebas: pruebas,
+        esArray: Array.isArray(pruebas),
+        length: pruebas ? pruebas.length : 'N/A',
+        evaluacionesEstudiantes: evaluacionesEstudiantes,
+        esArray2: Array.isArray(evaluacionesEstudiantes),
+        length2: evaluacionesEstudiantes ? evaluacionesEstudiantes.length : 'N/A',
+        resultado: resultado
+    });
+    return resultado;
+}
+
+function hayDatosActivosAsistencia() {
+    // Verificar si hay estudiantes y días con datos
+    return estudiantes && Array.isArray(estudiantes) && estudiantes.length > 0 && 
+           dias && Array.isArray(dias) && dias.length > 0;
+}
+
+function hayDatosActivosProyecto() {
+    // Verificar si la sección está activa y tiene datos
+    return proyectos && Array.isArray(proyectos) && proyectos.length > 0 &&
+           proyectosEstudiantes && Array.isArray(proyectosEstudiantes) && proyectosEstudiantes.length > 0;
+}
+
+function hayDatosActivosPortafolio() {
+    // Verificar si la sección está activa y tiene datos
+    return portafolios && Array.isArray(portafolios) && portafolios.length > 0 &&
+           portafoliosEstudiantes && Array.isArray(portafoliosEstudiantes) && portafoliosEstudiantes.length > 0;
+}
+
+function renderSeaPeriodo() {
+    const container = document.getElementById('sea-periodo-app');
+    if (!container) {
+        console.log('ERROR: No se encontró el contenedor sea-periodo-app');
+        return;
+    }
+
+    console.log('=== RENDERIZANDO SEA I PERIÓDO ===');
+    console.log('Estudiantes encontrados:', estudiantes.length);
+
+    // Verificar si hay estudiantes
+    if (estudiantes.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No hay estudiantes registrados para mostrar el resumen.</p>';
+        return;
+    }
+
+    // Determinar columnas dinámicas basadas en datos activos
+    const columnas = [];
+    
+    // Verificar si hay datos activos en cada sección
+    if (hayDatosActivosTrabajoCotidiano()) {
+        columnas.push('TRABAJO COTIDIANO');
+        console.log('✓ Agregada columna: TRABAJO COTIDIANO');
+    }
+    if (hayDatosActivosTareas()) {
+        columnas.push('TAREAS');
+        console.log('✓ Agregada columna: TAREAS');
+    }
+    if (hayDatosActivosPruebas()) {
+        columnas.push('PRUEBAS');
+        console.log('✓ Agregada columna: PRUEBAS');
+    }
+    if (hayDatosActivosAsistencia()) {
+        columnas.push('ASISTENCIA');
+        console.log('✓ Agregada columna: ASISTENCIA');
+    }
+    if (hayDatosActivosProyecto()) {
+        columnas.push('PROYECTO');
+        console.log('✓ Agregada columna: PROYECTO');
+    }
+    if (hayDatosActivosPortafolio()) {
+        columnas.push('PORTAFOLIO');
+        console.log('✓ Agregada columna: PORTAFOLIO');
+    }
+    
+    console.log('Columnas activas:', columnas);
+    
+    // DEBUG: Verificar estado de variables
+    console.log('=== DEBUG VARIABLES ===');
+    console.log('diasTrabajo:', diasTrabajo);
+    console.log('trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
+    console.log('tareas:', tareas);
+    console.log('tareasEstudiantes:', tareasEstudiantes);
+    console.log('pruebas:', pruebas);
+    console.log('evaluacionesEstudiantes:', evaluacionesEstudiantes);
+    console.log('proyectos:', proyectos);
+    console.log('proyectosEstudiantes:', proyectosEstudiantes);
+    console.log('portafolios:', portafolios);
+    console.log('portafoliosEstudiantes:', portafoliosEstudiantes);
+    console.log('========================');
+    
+    // Siempre agregar la columna NOTA si hay al menos una columna de datos
+    if (columnas.length > 0) {
+        columnas.push('NOTA');
+        console.log('✓ Agregada columna: NOTA');
+    } else {
+        container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No hay evaluaciones activas para mostrar el resumen.</p>';
+        console.log('❌ No hay columnas activas, mostrando mensaje');
+        return;
+    }
+
+    let html = '<table class="sea-periodo-table">';
+    html += '<thead><tr>';
+    
+    // Generar encabezados
+    columnas.forEach(columna => {
+        html += `<th>${columna}</th>`;
+    });
+    
+    html += '</tr></thead><tbody>';
+
+    // Generar filas de estudiantes
+    estudiantes.forEach((estudiante, index) => {
+        html += '<tr>';
+        
+        // Nombre del estudiante
+        const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
+        html += `<td class="estudiante-nombre">${nombreCompleto || `Estudiante ${index + 1}`}</td>`;
+        
+        // Trabajo Cotidiano (si está activo)
+        if (hayDatosActivosTrabajoCotidiano()) {
+            const trabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
+            html += `<td>${trabajoCotidiano.toFixed(1).replace('.', ',')}</td>`;
+        }
+        
+        // Tareas (si está activo)
+        if (hayDatosActivosTareas()) {
+            const tareas = calcularNotaTareas(estudiante);
+            html += `<td>${tareas.toFixed(1).replace('.', ',')}</td>`;
+        }
+        
+        // Pruebas (si está activo)
+        if (hayDatosActivosPruebas()) {
+            const pruebas = calcularNotaPruebas(estudiante);
+            html += `<td>${pruebas.toFixed(1).replace('.', ',')}</td>`;
+        }
+        
+        // Asistencia (si está activo)
+        if (hayDatosActivosAsistencia()) {
+            const asistencia = calcularNotaAsistencia(estudiante);
+            html += `<td>${Math.round(asistencia)}</td>`;
+        }
+        
+        // Proyecto (si está activo)
+        if (hayDatosActivosProyecto()) {
+            const proyecto = calcularNotaProyecto(estudiante);
+            html += `<td>${proyecto.toFixed(1).replace('.', ',')}</td>`;
+        }
+        
+        // Portafolio (si está activo)
+        if (hayDatosActivosPortafolio()) {
+            const portafolio = calcularNotaPortafolio(estudiante);
+            html += `<td>${portafolio.toFixed(1).replace('.', ',')}</td>`;
+        }
+        
+        // Nota Final
+        const notaFinal = calcularNotaFinal(estudiante);
+        html += `<td class="nota-final">${notaFinal.toFixed(1).replace('.', ',')}</td>`;
+        
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    console.log('HTML generado:', html.substring(0, 200) + '...');
+    container.innerHTML = html;
+    console.log('=== FIN RENDERIZACIÓN SEA I PERIÓDO ===');
+}
+
+// Funciones de cálculo para cada rubro
+function calcularNotaTrabajoCotidiano(estudiante) {
+    console.log('=== CALCULANDO NOTA TRABAJO COTIDIANO ===');
+    console.log('Estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // Verificar si las variables están definidas
+    if (typeof trabajoCotidianoEstudiantes === 'undefined' || 
+        typeof diasTrabajo === 'undefined') {
+        console.log('Variables no definidas - trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
+        console.log('Variables no definidas - diasTrabajo:', diasTrabajo);
+        return 0.0;
+    }
+    
+    console.log('trabajoCotidianoEstudiantes:', trabajoCotidianoEstudiantes);
+    console.log('diasTrabajo:', diasTrabajo);
+    
+    // Buscar el estudiante en trabajo cotidiano
+    const estIndex = trabajoCotidianoEstudiantes ? 
+        trabajoCotidianoEstudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        ) : -1;
+    
+    console.log('Índice encontrado:', estIndex);
+    
+    if (estIndex === -1 || !diasTrabajo || diasTrabajo.length === 0) {
+        console.log('No se encontró estudiante o no hay días');
+        return 0.0;
+    }
+    
+    // Obtener la nota final calculada de trabajo cotidiano
+    const estudianteTrabajo = trabajoCotidianoEstudiantes[estIndex];
+    if (estudianteTrabajo && estudianteTrabajo.notaFinal !== undefined) {
+        return parseFloat(estudianteTrabajo.notaFinal) || 0.0;
+    }
+    
+    // Si no hay nota final calculada, calcular manualmente
+    let totalPuntos = 0;
+    let totalMaximo = 0;
+    
+    diasTrabajo.forEach((dia, diaIdx) => {
+        const nota = obtenerNotaTrabajo(estIndex, diaIdx);
+        if (nota && nota.puntos !== undefined && nota.puntosMaximos !== undefined) {
+            totalPuntos += parseFloat(nota.puntos) || 0;
+            totalMaximo += parseFloat(nota.puntosMaximos) || 0;
+        }
+    });
+    
+    if (totalMaximo === 0) return 0.0;
+    
+    // Convertir a escala de 10
+    const porcentaje = (totalPuntos / totalMaximo) * 100;
+    return (porcentaje / 10);
+}
+
+function calcularNotaTareas(estudiante) {
+    console.log('=== CALCULANDO NOTA TAREAS ===');
+    console.log('Estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // Verificar si las variables están definidas
+    if (typeof tareasEstudiantes === 'undefined' || 
+        typeof tareas === 'undefined') {
+        console.log('Variables no definidas - tareasEstudiantes:', tareasEstudiantes);
+        console.log('Variables no definidas - tareas:', tareas);
+        return 0.0;
+    }
+    
+    console.log('tareasEstudiantes:', tareasEstudiantes);
+    console.log('tareas:', tareas);
+    
+    // Buscar el estudiante en tareas
+    const estIndex = tareasEstudiantes ? 
+        tareasEstudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        ) : -1;
+    
+    console.log('Índice encontrado en tareas:', estIndex);
+    
+    if (estIndex === -1 || !tareas || tareas.length === 0) {
+        console.log('No se encontró estudiante en tareas o no hay tareas');
+        return 0.0;
+    }
+    
+    // Obtener la nota final calculada de tareas
+    const estudianteTareas = tareasEstudiantes[estIndex];
+    if (estudianteTareas && estudianteTareas.notaFinal !== undefined) {
+        return parseFloat(estudianteTareas.notaFinal) || 0.0;
+    }
+    
+    // Si no hay nota final calculada, calcular manualmente
+    let totalPuntos = 0;
+    let totalMaximo = 0;
+    
+    tareas.forEach((tarea, tareaIdx) => {
+        const tareaEst = obtenerTarea(estIndex, tareaIdx);
+        if (tareaEst && tareaEst.puntos !== undefined && tareaEst.puntosMaximos !== undefined) {
+            totalPuntos += parseFloat(tareaEst.puntos) || 0;
+            totalMaximo += parseFloat(tareaEst.puntosMaximos) || 0;
+        }
+    });
+    
+    if (totalMaximo === 0) return 0.0;
+    
+    // Convertir a escala de 10
+    const porcentaje = (totalPuntos / totalMaximo) * 100;
+    return (porcentaje / 10);
+}
+
+function calcularNotaPruebas(estudiante) {
+    console.log('=== CALCULANDO NOTA PRUEBAS ===');
+    console.log('Estudiante:', estudiante.nombre, estudiante.apellido1, estudiante.apellido2);
+    
+    // Verificar si las variables están definidas
+    if (typeof evaluacionesEstudiantes === 'undefined' || 
+        typeof pruebas === 'undefined') {
+        console.log('Variables no definidas - evaluacionesEstudiantes:', evaluacionesEstudiantes);
+        console.log('Variables no definidas - pruebas:', pruebas);
+        return 0.0;
+    }
+    
+    console.log('evaluacionesEstudiantes:', evaluacionesEstudiantes);
+    console.log('pruebas:', pruebas);
+    
+    // Buscar el estudiante en evaluaciones
+    const estIndex = evaluacionesEstudiantes ? 
+        evaluacionesEstudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        ) : -1;
+    
+    console.log('Índice encontrado en pruebas:', estIndex);
+    
+    if (estIndex === -1 || !pruebas || pruebas.length === 0) {
+        console.log('No se encontró estudiante en pruebas o no hay pruebas');
+        return 0.0;
+    }
+    
+    // Obtener la nota final calculada de evaluaciones
+    const estudianteEvaluacion = evaluacionesEstudiantes[estIndex];
+    if (estudianteEvaluacion && estudianteEvaluacion.notaFinal !== undefined) {
+        return parseFloat(estudianteEvaluacion.notaFinal) || 0.0;
+    }
+    
+    // Si no hay nota final calculada, calcular manualmente
+    let totalPuntos = 0;
+    let totalMaximo = 0;
+    
+    pruebas.forEach((prueba, pruebaIdx) => {
+        const evaluacion = obtenerEvaluacion(estIndex, pruebaIdx);
+        if (evaluacion && evaluacion.puntos !== undefined && evaluacion.puntosMaximos !== undefined) {
+            totalPuntos += parseFloat(evaluacion.puntos) || 0;
+            totalMaximo += parseFloat(evaluacion.puntosMaximos) || 0;
+        }
+    });
+    
+    if (totalMaximo === 0) return 0.0;
+    
+    // Convertir a escala de 10
+    const porcentaje = (totalPuntos / totalMaximo) * 100;
+    return (porcentaje / 10);
+}
+
+function calcularNotaAsistencia(estudiante) {
+    // Implementar cálculo basado en asistencia
+    const totales = calcularTotalesEstudiante(estudiante);
+    const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
+    
+    // Retornar el porcentaje exacto sin redondeo
+    return porcentajeAsistencia;
+}
+
+function calcularNotaProyecto(estudiante) {
+    // Verificar si las variables están definidas
+    if (typeof proyectosEstudiantes === 'undefined' || 
+        typeof proyectos === 'undefined') {
+        return 0.0;
+    }
+    
+    // Buscar el estudiante en proyectos
+    const estIndex = proyectosEstudiantes ? 
+        proyectosEstudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        ) : -1;
+    
+    if (estIndex === -1 || !proyectos || proyectos.length === 0) {
+        return 0.0;
+    }
+    
+    // Obtener la nota final calculada de proyectos
+    const estudianteProyecto = proyectosEstudiantes[estIndex];
+    if (estudianteProyecto && estudianteProyecto.notaFinal !== undefined) {
+        return parseFloat(estudianteProyecto.notaFinal) || 0.0;
+    }
+    
+    // Si no hay nota final calculada, calcular manualmente
+    let totalPuntos = 0;
+    let totalMaximo = 0;
+    
+    proyectos.forEach((proyecto, proyectoIdx) => {
+        const proyectoEst = obtenerProyecto(estIndex, proyectoIdx);
+        if (proyectoEst && proyectoEst.puntos !== undefined && proyectoEst.puntosMaximos !== undefined) {
+            totalPuntos += parseFloat(proyectoEst.puntos) || 0;
+            totalMaximo += parseFloat(proyectoEst.puntosMaximos) || 0;
+        }
+    });
+    
+    if (totalMaximo === 0) return 0.0;
+    
+    // Convertir a escala de 10
+    const porcentaje = (totalPuntos / totalMaximo) * 100;
+    return (porcentaje / 10);
+}
+
+function calcularNotaPortafolio(estudiante) {
+    // Verificar si las variables están definidas
+    if (typeof portafoliosEstudiantes === 'undefined' || 
+        typeof portafolios === 'undefined') {
+        return 0.0;
+    }
+    
+    // Buscar el estudiante en portafolios
+    const estIndex = portafoliosEstudiantes ? 
+        portafoliosEstudiantes.findIndex(e => 
+            e.apellido1 === estudiante.apellido1 && 
+            e.apellido2 === estudiante.apellido2 && 
+            e.nombre === estudiante.nombre
+        ) : -1;
+    
+    if (estIndex === -1 || !portafolios || portafolios.length === 0) {
+        return 0.0;
+    }
+    
+    // Obtener la nota final calculada de portafolios
+    const estudiantePortafolio = portafoliosEstudiantes[estIndex];
+    if (estudiantePortafolio && estudiantePortafolio.notaFinal !== undefined) {
+        return parseFloat(estudiantePortafolio.notaFinal) || 0.0;
+    }
+    
+    // Si no hay nota final calculada, calcular manualmente
+    let totalPuntos = 0;
+    let totalMaximo = 0;
+    
+    portafolios.forEach((portafolio, portafolioIdx) => {
+        const portafolioEst = obtenerPortafolio(estIndex, portafolioIdx);
+        if (portafolioEst && portafolioEst.puntos !== undefined && portafolioEst.puntosMaximos !== undefined) {
+            totalPuntos += parseFloat(portafolioEst.puntos) || 0;
+            totalMaximo += parseFloat(portafolioEst.puntosMaximos) || 0;
+        }
+    });
+    
+    if (totalMaximo === 0) return 0.0;
+    
+    // Convertir a escala de 10
+    const porcentaje = (totalPuntos / totalMaximo) * 100;
+    return (porcentaje / 10);
+}
+
+function calcularNotaFinal(estudiante) {
+    let suma = 0;
+    let contador = 0;
+    
+    console.log('=== CALCULANDO NOTA FINAL PARA:', estudiante.nombre || 'Estudiante', '===');
+    
+    // Sumar solo los rubros que tienen datos activos
+    if (hayDatosActivosTrabajoCotidiano()) {
+        const trabajoCotidiano = calcularNotaTrabajoCotidiano(estudiante);
+        console.log('✓ Trabajo Cotidiano:', trabajoCotidiano);
+        suma += trabajoCotidiano;
+        contador++;
+    } else {
+        console.log('❌ Trabajo Cotidiano: No activo');
+    }
+    
+    if (hayDatosActivosTareas()) {
+        const tareas = calcularNotaTareas(estudiante);
+        console.log('✓ Tareas:', tareas);
+        suma += tareas;
+        contador++;
+    } else {
+        console.log('❌ Tareas: No activo');
+    }
+    
+    if (hayDatosActivosPruebas()) {
+        const pruebas = calcularNotaPruebas(estudiante);
+        console.log('✓ Pruebas:', pruebas);
+        suma += pruebas;
+        contador++;
+    } else {
+        console.log('❌ Pruebas: No activo');
+    }
+    
+    if (hayDatosActivosAsistencia()) {
+        const asistencia = calcularNotaAsistencia(estudiante);
+        console.log('✓ Asistencia:', asistencia);
+        suma += asistencia;
+        contador++;
+    } else {
+        console.log('❌ Asistencia: No activo');
+    }
+    
+    if (hayDatosActivosProyecto()) {
+        const proyecto = calcularNotaProyecto(estudiante);
+        console.log('✓ Proyecto:', proyecto);
+        suma += proyecto;
+        contador++;
+    } else {
+        console.log('❌ Proyecto: No activo');
+    }
+    
+    if (hayDatosActivosPortafolio()) {
+        const portafolio = calcularNotaPortafolio(estudiante);
+        console.log('✓ Portafolio:', portafolio);
+        suma += portafolio;
+        contador++;
+    } else {
+        console.log('❌ Portafolio: No activo');
+    }
+    
+    // Calcular promedio
+    const promedio = contador > 0 ? suma / contador : 0;
+    console.log('📊 Suma total:', suma, '| Contador:', contador, '| Promedio:', promedio);
+    console.log('=== FIN CÁLCULO NOTA FINAL ===');
+    
+    return promedio;
+}
+
+function actualizarResumenSeaPeriodo() {
+    // renderSeaPeriodo(); // TEMPORALMENTE COMENTADO PARA DETENER BUCLE INFINITO
+    mostrarAlerta('Resumen actualizado correctamente', 'exito');
+}
+
+function exportarSeaPeriodo() {
+    try {
+        const workbook = XLSX.utils.book_new();
+        
+        // Crear datos para exportar
+        const datos = [];
+        
+        estudiantes.forEach((estudiante, index) => {
+            const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
+            const row = {
+                'Estudiante': nombreCompleto || `Estudiante ${index + 1}`
+            };
+            
+            // Agregar solo las columnas que tienen datos activos
+            if (hayDatosActivosTrabajoCotidiano()) {
+                row['Trabajo Cotidiano'] = calcularNotaTrabajoCotidiano(estudiante).toFixed(1).replace('.', ',');
+            }
+            
+            if (hayDatosActivosTareas()) {
+                row['Tareas'] = calcularNotaTareas(estudiante).toFixed(1).replace('.', ',');
+            }
+            
+            if (hayDatosActivosPruebas()) {
+                row['Pruebas'] = calcularNotaPruebas(estudiante).toFixed(1).replace('.', ',');
+            }
+            
+            if (hayDatosActivosAsistencia()) {
+                row['Asistencia'] = Math.round(calcularNotaAsistencia(estudiante)).toString();
+            }
+            
+            if (hayDatosActivosProyecto()) {
+                row['Proyecto'] = calcularNotaProyecto(estudiante).toFixed(1).replace('.', ',');
+            }
+            
+            if (hayDatosActivosPortafolio()) {
+                row['Portafolio'] = calcularNotaPortafolio(estudiante).toFixed(1).replace('.', ',');
+            }
+            
+            row['Nota Final'] = calcularNotaFinal(estudiante).toFixed(1).replace('.', ',');
+            
+            datos.push(row);
+        });
+        
+        const worksheet = XLSX.utils.json_to_sheet(datos);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'SEA I PERIÓDO');
+        
+        // Generar archivo
+        const nombreArchivo = `SEA_I_PERIODO_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(workbook, nombreArchivo);
+        
+        mostrarAlerta('Resumen SEA I PERIÓDO exportado correctamente', 'exito');
+    } catch (error) {
+        console.error('Error al exportar SEA I PERIÓDO:', error);
+        mostrarAlerta('Error al exportar el resumen', 'error');
+    }
+}
+
+

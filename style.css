@@ -8002,6 +8002,270 @@ body.dark-mode .indicadores-actions input[type="number"]:focus {
     background: var(--color-table-bg);
 }
 
+/* ===== SECCIÓN SEA I PERIÓDO ===== */
+.sea-periodo-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: var(--transition);
+}
+
+.sea-periodo-container:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-strong);
+}
+
+.sea-periodo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-secundario), var(--color-exito));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.sea-periodo-container h3 {
+    color: var(--color-text);
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sea-periodo-container h3::before {
+    content: '📊';
+    margin-right: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.sea-periodo-instructions {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--color-alerta);
+    position: relative;
+    overflow: hidden;
+}
+
+.sea-periodo-instructions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.sea-periodo-instructions p {
+    color: var(--color-text);
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+.sea-periodo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-exportar-sea-periodo, .btn-actualizar-sea-periodo {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95em;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-exportar-sea-periodo::before, .btn-actualizar-sea-periodo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-exportar-sea-periodo:hover::before, .btn-actualizar-sea-periodo:hover::before {
+    left: 100%;
+}
+
+.btn-exportar-sea-periodo:hover, .btn-actualizar-sea-periodo:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.sea-periodo-content {
+    background: var(--color-table-bg);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+}
+
+.sea-periodo-table-container {
+    background: var(--color-table-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--color-border);
+}
+
+.sea-periodo-table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.sea-periodo-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-table-bg);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.sea-periodo-table th {
+    background: #f0f0f0;
+    color: #000;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1em;
+    border: 2px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.sea-periodo-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    background: #f0f0f0;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.sea-periodo-table tbody tr:nth-child(odd) {
+    background-color: #f8f8f8;
+}
+
+.sea-periodo-table tbody tr:nth-child(even) {
+    background-color: #f0f0f0;
+}
+
+.sea-periodo-table tbody tr:hover {
+    background-color: var(--color-table-hover);
+    transform: scale(1.01);
+}
+
+.sea-periodo-table .estudiante-nombre {
+    font-weight: 700;
+    color: var(--color-primario);
+    text-align: left;
+    padding-left: 15px;
+}
+
+.sea-periodo-table .nota-final {
+    font-weight: 700;
+    color: #000;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+/* Modo oscuro para SEA I PERIÓDO */
+body.dark-mode .sea-periodo-container {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+body.dark-mode .sea-periodo-container h3 {
+    color: var(--color-text);
+}
+
+body.dark-mode .sea-periodo-instructions {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+    border-left-color: var(--color-alerta);
+}
+
+body.dark-mode .sea-periodo-instructions p {
+    color: var(--color-text);
+}
+
+body.dark-mode .sea-periodo-content {
+    background: var(--color-table-bg);
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .sea-periodo-table-container {
+    background: var(--color-table-bg);
+    border: 1px solid var(--color-border);
+}
+
+body.dark-mode .sea-periodo-table {
+    background: var(--color-table-bg);
+}
+
+body.dark-mode .sea-periodo-table th {
+    background: #374151;
+    color: white;
+    border: 2px solid var(--color-border);
+}
+
+body.dark-mode .sea-periodo-table td {
+    background: var(--color-table-bg);
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+}
+
+body.dark-mode .sea-periodo-table tbody tr:nth-child(odd) {
+    background-color: var(--color-table-bg);
+}
+
+body.dark-mode .sea-periodo-table tbody tr:nth-child(even) {
+    background-color: var(--color-table-row);
+}
+
+body.dark-mode .sea-periodo-table tbody tr:hover {
+    background-color: var(--color-table-hover);
+}
+
+body.dark-mode .sea-periodo-table .estudiante-nombre {
+    color: var(--color-primario);
+}
+
+body.dark-mode .sea-periodo-table .nota-final {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
 /* ===== MENÚ DE NAVEGACIÓN ===== */
 .menu-navegacion {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -8123,6 +8387,11 @@ body.dark-mode .indicadores-actions input[type="number"]:focus {
 
 .indicadores-btn:hover {
     background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white;
+}
+
+.sea-periodo-btn:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
     color: white;
 }
 

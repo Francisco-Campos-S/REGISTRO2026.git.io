@@ -96,6 +96,9 @@
             <button onclick="scrollToSection('indicadores')" class="menu-btn indicadores-btn">
                 <span>📊</span> Indicadores
             </button>
+            <button onclick="scrollToSection('sea-periodo')" class="menu-btn sea-periodo-btn">
+                <span>📊</span> SEA I PERIÓDO
+            </button>
             <button onclick="scrollToSection('trabajo-cotidiano')" class="menu-btn trabajo-btn">
                 <span>📋</span> Trabajo Cotidiano
             </button>
@@ -195,6 +198,34 @@
             <div class="indicadores-table-container">
                 <div class="indicadores-table-responsive">
                     <div id="indicadores-app"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección SEA I PERIÓDO -->
+    <div class="sea-periodo-container" id="sea-periodo">
+        <h3>📊 SEA I PERIÓDO</h3>
+        <div class="sea-periodo-instructions">
+            <p><strong>💡 Instrucciones:</strong> RESUMEN GENERAL DE TODAS LAS EVALUACIONES. LA NOTA FINAL SE CALCULA AUTOMÁTICAMENTE SUMANDO TODOS LOS RUBROS ACTIVOS.</p>
+        </div>
+        
+        <div class="sea-periodo-actions">
+            <button onclick="scrollToMenu()" class="btn-volver-menu">
+                <span>🏠</span> Volver al Menú
+            </button>
+            <button onclick="exportarSeaPeriodo()" class="btn-exportar-sea-periodo">
+                <span>📤</span> Exportar Resumen
+            </button>
+            <button onclick="actualizarResumenSeaPeriodo()" class="btn-actualizar-sea-periodo">
+                <span>🔄</span> Actualizar Resumen
+            </button>
+        </div>
+
+        <div class="sea-periodo-content">
+            <div class="sea-periodo-table-container">
+                <div class="sea-periodo-table-responsive">
+                    <div id="sea-periodo-app"></div>
                 </div>
             </div>
         </div>
