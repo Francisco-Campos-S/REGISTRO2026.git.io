@@ -4464,17 +4464,19 @@ function calcularNotaFinal(estudiante) {
     return notaFinal;
 }
 
-function actualizarResumenSeaPeriodo() {
+function actualizarResumenSeaPeriodo(mostrarNotificacion = false) {
     renderSeaPeriodo();
     
     // Verificar si la tabla se generó correctamente
     const container = document.getElementById('sea-periodo-content');
     const tablaGenerada = container ? container.querySelector('table') : null;
     
-    if (tablaGenerada) {
-        mostrarAlerta('📊 Resumen del SEA actualizado correctamente', 'exito');
-    } else {
-        mostrarAlerta('❌ Error: No se pudo generar el resumen del SEA', 'error');
+    if (mostrarNotificacion) {
+        if (tablaGenerada) {
+            mostrarAlerta('📊 Resumen del SEA actualizado correctamente', 'exito');
+        } else {
+            mostrarAlerta('❌ Error: No se pudo generar el resumen del SEA', 'error');
+        }
     }
 }
 
