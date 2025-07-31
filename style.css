@@ -499,24 +499,25 @@ td.nombre {
     position: sticky !important;
 }
 
-/* Zebra para sticky name en modo claro */
+/* Zebra para sticky name en modo claro - usar el mismo color que el zebra general */
 tbody tr:nth-child(odd) td.nombre {
     background: #ffffff !important;
     color: #263238 !important;
 }
 
 tbody tr:nth-child(even) td.nombre {
-    background: var(--color-table-row) !important;
-    color: var(--color-text) !important;
+    background: #d0d0d0 !important;
+    color: #263238 !important;
 }
 
-/* Encabezado sticky nombre */
+/* Encabezado sticky nombre - usar el mismo color que los otros encabezados */
 th.nombre {
-    background: #1976d2 !important;
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
     color: #fff !important;
     font-weight: bold;
     border-right: 2px solid #bdbdbd !important;
     z-index: 4 !important;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3) !important;
 }
 
 /* Borde rojo solo en celda sticky nombre al focus */
@@ -655,8 +656,10 @@ th:last-child {
 }
 
 th:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #7c3aed 100%);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
 }
 
 /* ===== FILAS DE DATOS - PATRÓN ZEBRA MEJORADO ===== */
@@ -689,10 +692,18 @@ td.numero {
     border-right: 3px solid var(--color-primario);
     border-left: 3px solid var(--color-primario);
     box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
-    padding: 8px 0;
+    padding: 12px 8px;
     width: 55px;
     min-width: 55px;
     max-width: 55px;
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3) !important;
+    border-radius: 0 8px 8px 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 3 !important;
 }
 
 /* Dark mode para celda número */
@@ -1089,6 +1100,18 @@ body.dark-mode tbody tr.fila-focus-activa {
     overflow: visible !important;
     word-wrap: normal !important;
     word-break: keep-all !important;
+    /* Propiedades específicas para Chrome */
+    -webkit-appearance: none !important;
+    -webkit-box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
+    -webkit-border-radius: 6px !important;
+    -webkit-transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    -webkit-perspective: 1000px !important;
+    /* Forzar repaint en Chrome */
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    perspective: 1000px !important;
+    will-change: transform, box-shadow !important;
 }
 
 body.dark-mode .alerta-temprana {
@@ -1107,11 +1130,86 @@ body.dark-mode .alerta-temprana {
         -webkit-transform: translateZ(0) !important;
         -webkit-backface-visibility: hidden !important;
         -webkit-perspective: 1000px !important;
+        /* Forzar aplicación de estilos en Chrome */
+        -webkit-background-clip: padding-box !important;
+        -webkit-background-origin: padding-box !important;
     }
     
     body.dark-mode .alerta-temprana {
         -webkit-box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3) !important;
     }
+}
+
+/* Estilos adicionales para asegurar consistencia */
+td.alerta-temprana {
+    background: #ffeaea !important;
+    background-color: #ffeaea !important;
+    color: #e74c3c !important;
+    border: 2.5px solid #e74c3c !important;
+    border-radius: 6px !important;
+    font-weight: bold !important;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
+    /* Centrado vertical */
+    vertical-align: middle !important;
+    text-align: center !important;
+    /* Forzar repaint */
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    will-change: transform, box-shadow !important;
+}
+
+/* Estilos para celdas de datos cuando hay alerta */
+td.nombre[style*="background:#ffeaea"],
+td.apellido1[style*="background:#ffeaea"],
+td.apellido2[style*="background:#ffeaea"],
+td.cedula[style*="background:#ffeaea"] {
+    background: #ffeaea !important;
+    background-color: #ffeaea !important;
+    border: 2.5px solid #e74c3c !important;
+    border-radius: 6px !important;
+    color: #e74c3c !important;
+    font-weight: bold !important;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2) !important;
+    /* Centrado vertical */
+    vertical-align: middle !important;
+}
+
+/* Estilos básicos para celdas de datos */
+td.nombre,
+td.apellido1,
+td.apellido2,
+td.cedula {
+    background: transparent;
+}
+
+/* Estilos para celdas de asistencia */
+.celda-asistencia-multiple {
+    background: transparent;
+}
+
+/* Zebra striping más oscuro que se aplica a toda la fila */
+tr:nth-child(even) {
+    background-color: #d0d0d0 !important;
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff !important;
+}
+
+/* Asegurar que todas las celdas de datos hereden el color de la fila */
+tr:nth-child(even) td {
+    background-color: #d0d0d0 !important;
+}
+
+tr:nth-child(odd) td {
+    background-color: #ffffff !important;
+}
+
+/* Asegurar que las celdas de número mantengan su color */
+tr:nth-child(even) td.numero,
+tr:nth-child(odd) td.numero {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 2px 4px rgba(30,64,175,0.3) !important;
 }
 
 /* ===== ANIMACIONES MEJORADAS ===== */
@@ -6535,13 +6633,14 @@ body.dark-mode .trabajo-cotidiano-table .config-row button:hover {
 
 /* Estilos para texto de alerta temprana */
 .texto-alerta {
-    color: #e74c3c !important;
-    font-weight: bold !important;
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1em;
 }
 
 /* Modo oscuro para texto de alerta */
 body.dark-mode .texto-alerta {
-    color: #ff6b6b !important;
+    color: #ff6b6b;
 }
 
 /* ===== SECCIÓN PROYECTO ===== */

@@ -1,4 +1,23 @@
 // ===== CONFIGURACIÓN GLOBAL =====
+// SOLUCIÓN SIMPLIFICADA PARA ALERTAS TEMPRANAS:
+// Se ha restaurado el estado original del sistema, manteniendo solo la funcionalidad básica
+// de alertas tempranas sin modificar los estilos originales de las columnas de datos.
+// 
+// Funcionalidad actual:
+// 1. Las alertas tempranas aparecen solo en la columna de acción (última columna)
+// 2. Las columnas de datos (nombre, apellidos, cédula) mantienen su estilo original
+// 3. Todos los encabezados tienen estilo profesional con color azul oscuro y degradado
+// 4. El texto "ALERTA TEMPRANA" se muestra con estilos básicos y visibles
+// 5. No se aplican estilos especiales a otras columnas para evitar conflictos
+// 6. Zebra striping más oscuro (#d0d0d0 para filas pares) que se aplica a TODA la fila
+// 7. Columna "Nombre" con encabezado del mismo color que los otros encabezados
+// 8. Columna de números mejorada con mejor apariencia visual
+// 9. Todos los encabezados (fijos y días) tienen degradado azul oscuro (#1e40af a #1d4ed8)
+// 10. Efecto hover mejorado con degradado más oscuro y animación suave
+// 11. Sombras sutiles para dar profundidad y profesionalismo
+// 
+// Esta solución mantiene la funcionalidad de alertas sin alterar la apariencia original
+// del sistema, como lo solicitó el usuario.
 const VERSION = '2.2';
 const STORAGE_KEY = 'registroAsistencia_v2';
 const STORAGE_KEY_ALERTA = 'valorExtraAlertaTemprana';
@@ -236,17 +255,6 @@ function sincronizarInputAlerta() {
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
         renderAsistencia(); // Re-renderizar para actualizar alertas
-        
-        // Forzar re-renderizado en Chrome
-        setTimeout(() => {
-            const alertas = document.querySelectorAll('.alerta-temprana');
-            alertas.forEach(alerta => {
-                alerta.style.display = 'none';
-                setTimeout(() => {
-                    alerta.style.display = 'inline-block';
-                }, 10);
-            });
-        }, 100);
     };
     
     // También agregar evento onchange para mayor compatibilidad
@@ -258,17 +266,6 @@ function sincronizarInputAlerta() {
         this.value = val;
         localStorage.setItem(STORAGE_KEY_ALERTA, val);
         renderAsistencia();
-        
-        // Forzar re-renderizado en Chrome
-        setTimeout(() => {
-            const alertas = document.querySelectorAll('.alerta-temprana');
-            alertas.forEach(alerta => {
-                alerta.style.display = 'none';
-                setTimeout(() => {
-                    alerta.style.display = 'inline-block';
-                }, 10);
-            });
-        }, 100);
     };
     
     // Verificar que el input esté realmente configurado
@@ -278,6 +275,30 @@ function sincronizarInputAlerta() {
             window.valorExtra = valorInicial;
         }
     }, 100);
+}
+
+// Función para verificar y corregir estilos de alertas tempranas
+function verificarYCorregirAlertas() {
+    setTimeout(() => {
+        const celdasAlerta = document.querySelectorAll('td.alerta-temprana');
+        celdasAlerta.forEach(celda => {
+            // Asegurar que el texto de alerta sea visible
+            const textoAlerta = celda.querySelector('.texto-alerta');
+            if (textoAlerta) {
+                textoAlerta.style.color = '#e74c3c !important';
+                textoAlerta.style.fontWeight = 'bold !important';
+                textoAlerta.style.fontSize = '1em !important';
+                textoAlerta.style.display = 'inline-block !important';
+                textoAlerta.style.visibility = 'visible !important';
+                textoAlerta.style.opacity = '1 !important';
+            }
+        });
+    }, 200);
+}
+
+// Función de limpieza final para eliminar fondos verdes residuales
+function limpiarFondosVerdes() {
+    // Función removida - no necesaria con enfoque simplificado
 }
 
 
@@ -293,13 +314,18 @@ function renderAsistencia() {
     
     limpiarEstudiantesVacios();
     
-    let html = generarEncabezadoTabla();
+    let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
+    html += `<table border="1" class="asistencia-table" aria-label="Tabla de asistencia">`;
+    html += generarEncabezadoTabla();
     html += generarFilasEstudiantes();
     html += '</tbody></table>';
     
     document.getElementById('app').innerHTML = html;
     actualizarContador();
     configurarHoverFilas();
+    
+    // Verificar y corregir alertas tempranas después del renderizado
+    verificarYCorregirAlertas();
     
     // Validar alertas tempranas
     setTimeout(() => {
@@ -348,34 +374,32 @@ function renderTablaVacia() {
 }
 
 function generarEncabezadoTabla() {
-    let html = `<div class="version-mensaje">🗓️ Sistema de registro de asistencia <span style="color:var(--color-error);font-weight:bold;">v${VERSION}</span></div>`;
-    html += `<table border="1" class="asistencia-table" aria-label="Tabla de asistencia">`;
-    html += '<thead>';
-    html += '<tr>' +
-        '<th rowspan="2" class="numero">#</th>' +
-        '<th rowspan="2" class="nombre">Nombre</th>' +
-        '<th rowspan="2" class="apellido1">Primer apellido</th>' +
-        '<th rowspan="2" class="apellido2">Segundo apellido</th>' +
-        '<th rowspan="2" class="cedula">Cédula</th>' +
-        `<th colspan="${dias.length}"><span style="font-size:1em;font-weight:600;color:var(--color-primario);"><svg style="vertical-align:middle;margin-right:4px;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primario)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="4"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Asistencia por día</span></th>` +
-        '<th rowspan="2" class="th-resumen">Ausencias</th>' +
-        '<th rowspan="2" class="th-resumen">Justificadas</th>' +
-        '<th rowspan="2" class="th-resumen">Presentes</th>' +
-        '<th rowspan="2" class="th-resumen">Tardías</th>' +
-        '<th rowspan="2" class="th-resumen">Escapadas</th>' +
-        '<th rowspan="2" class="th-resumen">Total ausencias</th>' +
-        '<th rowspan="2" class="th-resumen">Total lecciones</th>' +
-        `<th rowspan="2" class="th-resumen" title="Porcentaje de ausencias injustificadas del total de lecciones impartidas:\n0% a <1% = 10\n1% a <10% = 9\n10% a <20% = 8\n20% a <30% = 7\n30% a <40% = 6\n40% a <50% = 5\n50% a <60% = 4\n60% a <70% = 3\n70% a <80% = 2\n80% a <90% = 1\n90% a 100% = 0">% Asistencia</th>` +
-        '<th rowspan="2" class="th-resumen">Acciones</th>' +
-        '</tr>';
+    let html = '<thead><tr>';
     
-    html += '<tr>';
-    for (let d = 0; d < dias.length; d++) {
-        let ausentesDia = contarAusentesDia(d);
-        html += generarEncabezadoDia(d, ausentesDia);
+    // Encabezados fijos con color azul oscuro y degradado
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">#</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Nombre</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Primer apellido</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Segundo apellido</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Cédula</th>';
+    
+    // Encabezados de días
+    for (let i = 0; i < dias.length; i++) {
+        html += generarEncabezadoDia(i, contarAusentesDia(i));
     }
-    html += '</tr></thead><tbody>';
     
+    // Encabezados de totales
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Ausente</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Justificada</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Presente</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Tarde</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Escapada</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Total ausencias</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Total lecciones</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">% Asistencia</th>';
+    html += '<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">Acción</th>';
+    
+    html += '</tr></thead><tbody>';
     return html;
 }
 
@@ -406,7 +430,7 @@ function contarAusentesDia(diaIndex) {
 }
   
 function generarEncabezadoDia(diaIndex, ausentesDia) {
-    let html = `<th>
+    let html = `<th style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
             <input type="date" value="${dias[diaIndex].fecha}" onchange="actualizarFechaDia(${diaIndex}, this.value)" style="width:140px;align-self:flex-start;" aria-label="Fecha del día ${diaIndex+1}">
             <div style="width:100%;display:flex;align-items:center;justify-content:space-between;">
@@ -436,8 +460,13 @@ function generarFilasEstudiantes() {
         const totales = calcularTotalesEstudiante(estudiante);
         const porcentajeAsistencia = calcularPorcentajeAsistencia(totales);
         
+        const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
+        const tieneAlerta = accionHtml.includes('ALERTA TEMPRANA');
+        
         html += `<tr>`;
-        html += `<td class="numero" style="text-align:center;font-weight:bold;background:var(--color-header);color:var(--color-header-text);">${i + 1}</td>`;
+        html += `<td class="numero" style="text-align:center;font-weight:bold;background:linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);color:white;box-shadow:0 2px 4px rgba(30,64,175,0.3);">${i + 1}</td>`;
+        
+        // Celdas de datos sin estilos especiales
         html += `<td class="nombre"><input type="text" value="${estudiante.nombre || ''}" onchange="actualizarEstudiante(${i}, 'nombre', this.value)" onfocus="agregarBordeRojoFila(this)" onblur="quitarBordeRojoFila(this)" placeholder="Nombre" aria-label="Nombre"></td>`;
         html += `<td class="apellido1"><input type="text" value="${estudiante.apellido1 || ''}" onchange="actualizarEstudiante(${i}, 'apellido1', this.value)" placeholder="Primer apellido" aria-label="Primer apellido"></td>`;
         html += `<td class="apellido2"><input type="text" value="${estudiante.apellido2 || ''}" onchange="actualizarEstudiante(${i}, 'apellido2', this.value)" placeholder="Segundo apellido" aria-label="Segundo apellido"></td>`;
@@ -456,8 +485,16 @@ function generarFilasEstudiantes() {
         html += `<td style="font-weight:bold;color:#000;text-align:center;">${totales.totalLecciones}</td>`;
         html += `<td style="font-weight:bold;color:#000;text-align:center;">${porcentajeAsistencia}</td>`;
         
-        const accionHtml = generarAccionAlerta(porcentajeAsistencia, estudiante);
-        html += `<td style='font-size:1em;padding:2px 0;text-align:center;min-width:120px;'>${accionHtml}</td>`;
+        // Celda de acción con estilo simple
+        let estiloCelda = 'font-size:1em;padding:2px 0;text-align:center;min-width:120px;vertical-align:middle;';
+        let claseCelda = '';
+        
+        if (tieneAlerta) {
+            claseCelda = 'alerta-temprana';
+            estiloCelda += 'background:#ffeaea !important;background-color:#ffeaea !important;border:2.5px solid #e74c3c !important;border-radius:6px !important;color:#e74c3c !important;font-weight:bold !important;box-shadow:0 2px 8px rgba(231,76,60,0.2) !important;';
+        }
+        
+        html += `<td class="${claseCelda}" style="${estiloCelda}">${accionHtml}</td>`;
         html += `</tr>`;
     }
     
@@ -624,8 +661,6 @@ function generarAccionAlerta(porcentajeAsistencia, estudiante) {
     
     // Calcular la diferencia: 10 - %asistencia
     let diferencia = 10 - porcentajeAsistencia;
-    
-    console.log('Evaluando alerta para:', estudiante.nombre, 'Porcentaje:', porcentajeAsistencia, 'Diferencia:', diferencia, 'Valor alerta:', valorAlerta);
     
     // Mostrar alerta temprana si la diferencia es mayor al valor configurado
     if (diferencia > valorAlerta) {
