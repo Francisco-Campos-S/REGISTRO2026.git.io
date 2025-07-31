@@ -4264,7 +4264,7 @@ function renderSeaPeriodo() {
         // Nota Final
         const notaFinalFormateado = Number(notaFinal).toFixed(1).replace('.', ',');
         const estadoNota = notaFinal >= notaAprobacion ? 'APROBADO' : 'APLAZADO';
-        const colorNota = notaFinal >= notaAprobacion ? '#bbf7d0' : '#fecaca';
+        const colorNota = notaFinal >= notaAprobacion ? 'rgba(187, 247, 208, 0.7)' : 'rgba(254, 202, 202, 0.7)';
         const colorTexto = notaFinal >= notaAprobacion ? '#22c55e' : '#ef4444';
         
         // Debug: Log the values for this student
@@ -4331,9 +4331,9 @@ function obtenerEstiloNota(nota) {
 
 function obtenerEstiloNotaFinal(nota) {
     if (nota >= notaAprobacion) {
-        return 'background-color: #bbf7d0 !important; color: #22c55e !important; font-weight: bold !important;';
+        return 'background-color: rgba(187, 247, 208, 0.7) !important; color: #22c55e !important; font-weight: bold !important;';
     } else {
-        return 'background-color: #fecaca !important; color: #ef4444 !important; font-weight: bold !important;';
+        return 'background-color: rgba(254, 202, 202, 0.7) !important; color: #ef4444 !important; font-weight: bold !important;';
     }
 }
 
