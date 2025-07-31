@@ -81,6 +81,9 @@ let trabajoCotidianoEstudiantes = [];
 let escalaMaxima = 3;
 let valorTotalTrabajo = 35;
 
+// Variable para nota de aprobación
+let notaAprobacion = 70;
+
 // Variables para Proyecto
 let proyectos = [];
 let proyectosEstudiantes = [];
@@ -230,6 +233,12 @@ function cargarDatosGuardados() {
         }
     } else {
         estudiantes = JSON.parse(JSON.stringify(plantillaEjemplo));
+    }
+    
+    // Cargar nota de aprobación
+    const notaAprobacionGuardada = localStorage.getItem('notaAprobacion');
+    if (notaAprobacionGuardada) {
+        notaAprobacion = parseInt(notaAprobacionGuardada) || 70;
     }
     
     // Cargar datos de trabajo cotidiano
@@ -2669,6 +2678,34 @@ function configurarEscalaMaxima() {
             actualizarCalculosTrabajoCotidiano();
         };
     }
+    
+    // Configurar nota de aprobación
+    configurarNotaAprobacion();
+}
+
+function configurarNotaAprobacion() {
+    const input = document.getElementById('notaAprobacionInput');
+    if (input) {
+        input.value = notaAprobacion;
+        input.onchange = function() {
+            notaAprobacion = parseInt(this.value) || 70;
+            localStorage.setItem('notaAprobacion', notaAprobacion.toString());
+            // Actualizar el resumen del SEA para reflejar el nuevo umbral
+            actualizarResumenSeaPeriodo();
+            mostrarAlerta(`Nota de aprobación actualizada a ${notaAprobacion}%`, 'exito');
+        };
+    }
+}
+
+function actualizarNotaAprobacion() {
+    const input = document.getElementById('notaAprobacionInput');
+    if (input) {
+        notaAprobacion = parseInt(input.value) || 70;
+        localStorage.setItem('notaAprobacion', notaAprobacion.toString());
+        // Actualizar el resumen del SEA para reflejar el nuevo umbral
+        actualizarResumenSeaPeriodo();
+        mostrarAlerta(`Nota de aprobación actualizada a ${notaAprobacion}%`, 'exito');
+    }
 }
 
 function exportarTrabajoCotidiano() {
@@ -2738,7 +2775,8 @@ function guardarTrabajoCotidiano() {
         diasTrabajo: diasTrabajo,
         trabajoCotidianoEstudiantes: trabajoCotidianoEstudiantes,
         escalaMaxima: escalaMaxima,
-        valorTotalTrabajo: valorTotalTrabajo
+        valorTotalTrabajo: valorTotalTrabajo,
+        notaAprobacion: notaAprobacion
     };
     localStorage.setItem('trabajoCotidiano', JSON.stringify(datos));
 }
@@ -2752,6 +2790,7 @@ function cargarTrabajoCotidiano() {
             trabajoCotidianoEstudiantes = parsed.trabajoCotidianoEstudiantes || [];
             escalaMaxima = parsed.escalaMaxima || 3;
             valorTotalTrabajo = parsed.valorTotalTrabajo || 30;
+            notaAprobacion = parsed.notaAprobacion || 70;
             
             // Asegurar que los datos están en el formato correcto
             if (trabajoCotidianoEstudiantes && Array.isArray(trabajoCotidianoEstudiantes)) {
@@ -2777,6 +2816,7 @@ function cargarTrabajoCotidiano() {
             trabajoCotidianoEstudiantes = [];
             escalaMaxima = 3;
             valorTotalTrabajo = 30;
+            notaAprobacion = 70;
         }
     }
 }
@@ -4097,6 +4137,8 @@ function hayDatosActivosPortafolio() {
 
 function renderSeaPeriodo() {
     console.log('=== INICIANDO RENDERIZACIÓN SEA I PERIÓDO ===');
+    console.log('📊 notaAprobacion actual:', notaAprobacion);
+    console.log('🕐 Timestamp:', new Date().toLocaleTimeString());
     
     // Buscar el contenedor correcto
     const container = document.getElementById('sea-periodo-content');
@@ -4221,13 +4263,23 @@ function renderSeaPeriodo() {
         
         // Nota Final
         const notaFinalFormateado = Number(notaFinal).toFixed(1).replace('.', ',');
-        const estadoNota = notaFinal >= 70 ? 'APROBADO' : 'REPROBADO';
-        const colorNota = notaFinal >= 70 ? '#bbf7d0' : '#fecaca';
-        const colorTexto = notaFinal >= 70 ? '#166534' : '#dc2626';
+        const estadoNota = notaFinal >= notaAprobacion ? 'APROBADO' : 'APLAZADO';
+        const colorNota = notaFinal >= notaAprobacion ? '#bbf7d0' : '#fecaca';
+        const colorTexto = notaFinal >= notaAprobacion ? '#22c55e' : '#ef4444';
         
-        html += `<td style="padding: 10px; text-align: center; background-color: ${colorNota}; color: ${colorTexto}; font-weight: bold;">
+        // Debug: Log the values for this student
+        console.log(`🎨 Estudiante ${index + 1} (${nombreCompleto}):`, {
+            notaFinal,
+            notaAprobacion,
+            estadoNota,
+            colorTexto,
+            colorNota
+        });
+        
+        const claseNota = notaFinal >= notaAprobacion ? 'aprobado' : 'aplazado';
+        html += `<td class="nota-final ${claseNota}" style="padding: 10px; text-align: center; background-color: ${colorNota} !important; color: ${colorTexto} !important; font-weight: bold !important;">
             <strong>${notaFinalFormateado}%</strong><br>
-            <span style="font-size: 0.8em; opacity: 0.8;">${estadoNota}</span>
+            <span style="font-size: 0.8em; opacity: 0.8; color: ${colorTexto} !important;">${estadoNota}</span>
         </td>`;
         
         html += '</tr>';
@@ -4278,15 +4330,52 @@ function obtenerEstiloNota(nota) {
 }
 
 function obtenerEstiloNotaFinal(nota) {
-    if (nota >= 90) return 'background-color: #bbf7d0; color: #166534; font-weight: bold;';
-    if (nota >= 80) return 'background-color: #bfdbfe; color: #1e40af; font-weight: bold;';
-    if (nota >= 70) return 'background-color: #fde68a; color: #92400e; font-weight: bold;';
-    if (nota >= 60) return 'background-color: #fdba74; color: #ea580c; font-weight: bold;';
-    return 'background-color: #fca5a5; color: #dc2626; font-weight: bold;';
+    if (nota >= notaAprobacion) {
+        return 'background-color: #bbf7d0 !important; color: #22c55e !important; font-weight: bold !important;';
+    } else {
+        return 'background-color: #fecaca !important; color: #ef4444 !important; font-weight: bold !important;';
+    }
 }
 
 function obtenerEstadoNota(nota) {
-    return nota >= 70 ? 'APROBADO' : 'REPROBADO';
+    return nota >= notaAprobacion ? 'APROBADO' : 'APLAZADO';
+}
+
+// Función de prueba para verificar el estado actual
+function probarColoresNotaFinal() {
+    console.log('🧪 === PRUEBA DE COLORES NOTA FINAL ===');
+    console.log('📊 notaAprobacion actual:', notaAprobacion);
+    console.log('🎨 Colores configurados:');
+    console.log('   - APROBADO: #22c55e (verde claro)');
+    console.log('   - APLAZADO: #ef4444 (rojo claro)');
+    console.log('🔄 Forzando actualización del resumen...');
+    
+    // Forzar actualización
+    actualizarResumenSeaPeriodo(true);
+    
+    // Verificar que las clases CSS se aplicaron correctamente
+    setTimeout(() => {
+        const celdasNotaFinal = document.querySelectorAll('.sea-periodo-table .nota-final');
+        console.log('🔍 Verificando celdas de nota final:', celdasNotaFinal.length);
+        
+        celdasNotaFinal.forEach((celda, index) => {
+            const tieneClaseAprobado = celda.classList.contains('aprobado');
+            const tieneClaseAplazado = celda.classList.contains('aplazado');
+            const estiloComputed = window.getComputedStyle(celda);
+            const colorFondo = estiloComputed.backgroundColor;
+            const colorTexto = estiloComputed.color;
+            
+            console.log(`📋 Celda ${index + 1}:`, {
+                claseAprobado: tieneClaseAprobado,
+                claseAplazado: tieneClaseAplazado,
+                colorFondo: colorFondo,
+                colorTexto: colorTexto,
+                notaFinal: celda.querySelector('strong')?.textContent
+            });
+        });
+        
+        console.log('✅ Verificación completada. Revisa los detalles arriba.');
+    }, 100);
 }
 
 

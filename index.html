@@ -360,6 +360,14 @@
             <button onclick="exportarSeaPeriodo()" class="btn-exportar-resumen">
                 <span>📤</span> Exportar Resumen
             </button>
+            <button onclick="probarColoresNotaFinal()" class="btn-probar-colores" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                <span>🧪</span> Probar Colores
+            </button>
+        </div>
+
+        <div class="nota-aprobacion-config">
+            <label for="notaAprobacionInput">Nota de aprobación (%):</label>
+            <input type="number" id="notaAprobacionInput" min="0" max="100" value="70" step="1" title="Nota mínima para aprobar (porcentaje)" onchange="actualizarNotaAprobacion()">
         </div>
 
         <div id="sea-periodo-content" class="content-section"></div>
