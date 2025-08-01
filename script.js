@@ -556,7 +556,7 @@ function generarEncabezadoDia(diaIndex, ausentesDia) {
             <input type="date" value="${dias[diaIndex].fecha}" onchange="actualizarFechaDia(${diaIndex}, this.value)" style="width:140px;align-self:flex-start;" aria-label="Fecha del día ${diaIndex+1}">
             <div style="width:100%;display:flex;align-items:center;justify-content:space-between;">
                 <span class="label-dia">${dias[diaIndex].nombre}</span>
-                ${diaIndex === dias.length - 1 ? `<button onclick="agregarDia()" class="btn-agregar-dia" title="Agregar día">+ Día</button>` : ''}
+                ${diaIndex === dias.length - 1 ? `<button onclick="agregarDia()" class="btn-agregar-dia">+ Día</button>` : ''}
             </div>
         </div>
         <br><div style='display:flex;align-items:center;gap:8px;margin-top:6px;'>
@@ -564,7 +564,7 @@ function generarEncabezadoDia(diaIndex, ausentesDia) {
             <input type="number" min="0" value="${dias[diaIndex].lecciones}" style="width:70px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--color-primario);font-size:1em;box-shadow:0 2px 8px rgba(25,118,210,0.07);transition:border 0.18s, box-shadow 0.18s;' onchange="actualizarLeccionesDia(${diaIndex}, this.value)" oninput="actualizarLeccionesDia(${diaIndex}, this.value)" placeholder="Lecciones" aria-label="Lecciones día ${diaIndex+1}">
         </div>
         <br><span style="font-size:11px;color:var(--color-error);font-weight:bold;">Ausentes: ${ausentesDia}</span>
-        <br><button onclick="eliminarDia(${diaIndex})" class="btn-eliminar-dia" title="Eliminar este día" aria-label="Eliminar día">
+        <br><button onclick="eliminarDia(${diaIndex})" class="btn-eliminar-dia" aria-label="Eliminar día">
             <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle;'><polyline points='3 6 5 6 21 6'/><path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m5 0V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2'/><line x1='10' y1='11' x2='10' y2='17'/><line x1='14' y1='11' x2='14' y2='17'/></svg>
             Eliminar día
         </button>
@@ -669,14 +669,14 @@ function generarCeldaAsistencia(estIndex, diaIndex, dia) {
         
         // Botón eliminar ausencia (solo si hay más de una)
         if (dia.ausencias.length > 1) {
-            html += `<button onclick="eliminarAusencia(${estIndex},${diaIndex},${ausenciaIndex})" style="background:#e11d48;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.8em;cursor:pointer;" title="Eliminar ausencia">×</button>`;
+            html += `<button onclick="eliminarAusencia(${estIndex},${diaIndex},${ausenciaIndex})" style="background:#e11d48;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.8em;cursor:pointer;">×</button>`;
         }
         
         html += `</div>`;
     });
     
     // Botón agregar nueva ausencia
-    html += `<button onclick="agregarAusencia(${estIndex},${diaIndex})" style="background:#2ed573;color:white;border:none;border-radius:4px;padding:4px 8px;font-size:0.9em;cursor:pointer;margin-top:4px;" title="Agregar ausencia">+</button>`;
+    html += `<button onclick="agregarAusencia(${estIndex},${diaIndex})" style="background:#2ed573;color:white;border:none;border-radius:4px;padding:4px 8px;font-size:0.9em;cursor:pointer;margin-top:4px;">+</button>`;
     
     html += `</div></td>`;
     return html;
@@ -1634,13 +1634,13 @@ function renderEvaluacion() {
     html += '<td class="student-name">CONFIGURACIÓN</td>';
     
     pruebas.forEach((prueba, idx) => {
-        html += `<td class="editable"><input type="number" value="${prueba.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximos(${idx}, this.value)" title="Puntos máximos de la prueba"></td>`;
+        html += `<td class="editable"><input type="number" value="${prueba.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximos(${idx}, this.value)"></td>`;
         html += '<td class="calculated">-------</td>';
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" title="% de peso de la prueba" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar prueba">🗑️</button>
+                            <input type="number" value="${prueba.peso}" min="0" max="100" step="1" onchange="actualizarPeso(${idx}, this.value)" style="padding-right:40px;width:80px;">
+                            <button onclick="eliminarPrueba(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
         </td>`;
     });
     
@@ -1666,7 +1666,7 @@ function renderEvaluacion() {
             const porcentajePonderado = (nota * prueba.peso) / 100;
             totalPorcentaje += porcentajePonderado;
             
-            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${prueba.puntosMaximos}" step="0.1" onchange="actualizarPuntos(${estIdx}, ${pruebaIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${prueba.puntosMaximos}" step="0.1" onchange="actualizarPuntos(${estIdx}, ${pruebaIdx}, this.value)"></td>`;
             html += `<td class="calculated">${nota.toFixed(1)}</td>`;
             html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
         });
@@ -1965,13 +1965,13 @@ function renderTareas() {
     html += '<td class="student-name">CONFIGURACIÓN</td>';
     
     tareas.forEach((tarea, idx) => {
-        html += `<td class="editable"><input type="number" value="${tarea.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosTarea(${idx}, this.value)" title="Puntos máximos de la tarea"></td>`;
+        html += `<td class="editable"><input type="number" value="${tarea.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosTarea(${idx}, this.value)"></td>`;
         html += '<td class="calculated">-------</td>';
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" title="% de peso de la tarea" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar tarea">🗑️</button>
+                            <input type="number" value="${tarea.peso}" min="0" max="100" step="1" onchange="actualizarPesoTarea(${idx}, this.value)" style="padding-right:40px;width:80px;">
+                            <button onclick="eliminarTarea(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
         </td>`;
     });
     
@@ -1997,7 +1997,7 @@ function renderTareas() {
             const porcentajePonderado = (nota * tarea.peso) / 100;
             totalPorcentaje += porcentajePonderado;
             
-            html += `<td class="editable"><input type="number" value="${tareaEstudiante.puntos}" min="0" max="${tarea.puntosMaximos}" step="0.1" onchange="actualizarPuntosTarea(${estIdx}, ${tareaIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="editable"><input type="number" value="${tareaEstudiante.puntos}" min="0" max="${tarea.puntosMaximos}" step="0.1" onchange="actualizarPuntosTarea(${estIdx}, ${tareaIdx}, this.value)"></td>`;
             html += `<td class="calculated">${nota.toFixed(1)}</td>`;
             html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
         });
@@ -2258,7 +2258,7 @@ function renderTrabajoCotidiano() {
         html += '<th colspan="1">No hay días configurados</th>';
     } else {
         diasTrabajo.forEach((dia, idx) => {
-            html += `<th colspan="1">Indicador ${idx + 1}${idx === diasTrabajo.length - 1 ? ' <button onclick="agregarDiaTrabajo();" class="btn-agregar-dia" title="Agregar indicador" style="margin-left:8px;padding:2px 6px;font-size:0.7em;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;">+ Indicador</button>' : ''}</th>`;
+            html += `<th colspan="1">Indicador ${idx + 1}${idx === diasTrabajo.length - 1 ? ' <button onclick="agregarDiaTrabajo();" class="btn-agregar-dia" style="margin-left:8px;padding:2px 6px;font-size:0.7em;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;">+ Indicador</button>' : ''}</th>`;
         });
     }
     
@@ -2288,12 +2288,12 @@ function renderTrabajoCotidiano() {
             const fechaFormateada = dia.fecha || new Date().toISOString().split('T')[0];
             
             html += `<td class="editable" style="position:relative;">
-                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" title="Fecha del día" style="padding-right:40px;width:150px;font-size:1.1em;">
-                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar día">🗑️</button>
+                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" style="padding-right:40px;width:150px;font-size:1.1em;">
+                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
             </td>`;
         });
     } else {
-        html += '<td class="editable"><input type="date" value="" disabled title="Agregue un día primero"></td>';
+        html += '<td class="editable"><input type="date" value="" disabled></td>';
     }
     
     html += `<td class="calculated">${valorTotalTrabajo}.0%</td>`;
@@ -2323,12 +2323,12 @@ function renderTrabajoCotidiano() {
                 const inputValue = nota !== null && nota !== undefined ? nota : '';
                 html += `<td class="editable">
                     <input id="${inputId}" type="number" value="${inputValue}" min="0" max="${escalaMaxima}" step="0.1" 
-                           title="Nota del estudiante (0-${escalaMaxima})" 
+                
                            style="width: 80px; padding: 8px; border: 2px solid #ff9800; border-radius: 6px; text-align: center; background: #fff; color: #333;">
                 </td>`;
             });
         } else {
-            html += '<td class="editable"><input type="number" value="" disabled title="Agregue un día primero" style="width: 80px; padding: 8px; border: 2px solid #ccc; border-radius: 6px; text-align: center; background: #f5f5f5; color: #999;"></td>';
+            html += '<td class="editable"><input type="number" value="" disabled style="width: 80px; padding: 8px; border: 2px solid #ccc; border-radius: 6px; text-align: center; background: #f5f5f5; color: #999;"></td>';
         }
         
         // Calcular porcentaje final con validación robusta
@@ -2907,13 +2907,13 @@ function renderProyecto() {
     html += '<tr class="config-row">';
     html += '<td class="student-name">CONFIGURACIÓN</td>';
     proyectos.forEach((proyecto, idx) => {
-        html += `<td class="editable"><input type="number" value="${proyecto.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosProyecto(${idx}, this.value)" title="Puntos máximos del proyecto"></td>`;
+        html += `<td class="editable"><input type="number" value="${proyecto.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosProyecto(${idx}, this.value)"></td>`;
         html += '<td class="calculated">-------</td>';
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" title="% de peso del proyecto" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar proyecto">🗑️</button>
+                            <input type="number" value="${proyecto.peso}" min="0" max="100" step="1" onchange="actualizarPesoProyecto(${idx}, this.value)" style="padding-right:40px;width:80px;">
+                            <button onclick="eliminarProyecto(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
         </td>`;
     });
     
@@ -2939,7 +2939,7 @@ function renderProyecto() {
             const porcentajePonderado = (nota * proyecto.peso) / 100;
             totalPorcentaje += porcentajePonderado;
             
-            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${proyecto.puntosMaximos}" step="0.1" onchange="actualizarPuntosProyecto(${estIdx}, ${proyectoIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${proyecto.puntosMaximos}" step="0.1" onchange="actualizarPuntosProyecto(${estIdx}, ${proyectoIdx}, this.value)"></td>`;
             html += `<td class="calculated">${nota.toFixed(1)}</td>`;
             html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
         });
@@ -3197,13 +3197,13 @@ function renderPortafolio() {
     html += '<tr class="config-row">';
     html += '<td class="student-name">CONFIGURACIÓN</td>';
     portafolios.forEach((portafolio, idx) => {
-        html += `<td class="editable"><input type="number" value="${portafolio.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosPortafolio(${idx}, this.value)" title="Puntos máximos del portafolio"></td>`;
+        html += `<td class="editable"><input type="number" value="${portafolio.puntosMaximos}" min="0" step="1" onchange="actualizarPuntosMaximosPortafolio(${idx}, this.value)"></td>`;
         html += '<td class="calculated">-------</td>';
         
         // Celda de peso con botón eliminar integrado
         html += `<td class="editable" style="position:relative;">
-            <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" title="% de peso del portafolio" style="padding-right:40px;width:80px;">
-            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;" title="Eliminar portafolio">🗑️</button>
+                            <input type="number" value="${portafolio.peso}" min="0" max="100" step="1" onchange="actualizarPesoPortafolio(${idx}, this.value)" style="padding-right:40px;width:80px;">
+                            <button onclick="eliminarPortafolio(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
         </td>`;
     });
     
@@ -3229,7 +3229,7 @@ function renderPortafolio() {
             const porcentajePonderado = (nota * portafolio.peso) / 100;
             totalPorcentaje += porcentajePonderado;
             
-            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${portafolio.puntosMaximos}" step="0.1" onchange="actualizarPuntosPortafolio(${estIdx}, ${portafolioIdx}, this.value)" title="Puntos obtenidos"></td>`;
+            html += `<td class="editable"><input type="number" value="${evaluacion.puntos}" min="0" max="${portafolio.puntosMaximos}" step="0.1" onchange="actualizarPuntosPortafolio(${estIdx}, ${portafolioIdx}, this.value)"></td>`;
             html += `<td class="calculated">${nota.toFixed(1)}</td>`;
             html += `<td class="calculated">${porcentajePonderado.toFixed(1)}%</td>`;
         });
@@ -4658,55 +4658,44 @@ function calcularNotaPortafolio(estudiante) {
 
 function calcularNotaFinal(estudiante) {
     let sumaTotal = 0;
-    let totalPeso = 0;
 
     // Trabajo Cotidiano
     if (hayDatosActivosTrabajoCotidiano()) {
-        const trabajoCotidiano = obtenerPorcentajeTrabajoCotidianoDirecto(estudiante);
-        const pesoTrabajo = Number(valorTotalTrabajo) || 35;
+        const trabajoCotidiano = Number(obtenerPorcentajeTrabajoCotidianoDirecto(estudiante)) || 0;
         sumaTotal += trabajoCotidiano;
-        totalPeso += pesoTrabajo;
     }
 
     // Tareas
     if (hayDatosActivosTareas()) {
-        const tareasPorcentaje = obtenerPorcentajeTareasDirecto(estudiante);
-        const pesoTareas = (typeof tareas !== 'undefined' && Array.isArray(tareas)) ? tareas.reduce((sum, t) => sum + (Number(t.peso) || 0), 0) : 0;
+        const tareasPorcentaje = Number(obtenerPorcentajeTareasDirecto(estudiante)) || 0;
         sumaTotal += tareasPorcentaje;
-        totalPeso += pesoTareas;
     }
 
     // Pruebas
     if (hayDatosActivosPruebas()) {
-        const pruebasPorcentaje = obtenerPorcentajePruebasDirecto(estudiante);
-        const pesoPruebas = (typeof pruebas !== 'undefined' && Array.isArray(pruebas)) ? pruebas.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        const pruebasPorcentaje = Number(obtenerPorcentajePruebasDirecto(estudiante)) || 0;
         sumaTotal += pruebasPorcentaje;
-        totalPeso += pesoPruebas;
+    }
+
+    // Asistencia
+    if (hayDatosActivosAsistencia()) {
+        const asistenciaPorcentaje = Number(calcularNotaAsistencia(estudiante)) || 0;
+        sumaTotal += asistenciaPorcentaje;
     }
 
     // Proyecto
     if (hayDatosActivosProyecto()) {
-        const proyectoPorcentaje = obtenerPorcentajeProyectoDirecto(estudiante);
-        const pesoProyecto = (typeof proyectos !== 'undefined' && Array.isArray(proyectos)) ? proyectos.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        const proyectoPorcentaje = Number(obtenerPorcentajeProyectoDirecto(estudiante)) || 0;
         sumaTotal += proyectoPorcentaje;
-        totalPeso += pesoProyecto;
     }
 
     // Portafolio
     if (hayDatosActivosPortafolio()) {
-        const portafolioPorcentaje = obtenerPorcentajePortafolioDirecto(estudiante);
-        const pesoPortafolio = (typeof portafolios !== 'undefined' && Array.isArray(portafolios)) ? portafolios.reduce((sum, p) => sum + (Number(p.peso) || 0), 0) : 0;
+        const portafolioPorcentaje = Number(obtenerPorcentajePortafolioDirecto(estudiante)) || 0;
         sumaTotal += portafolioPorcentaje;
-        totalPeso += pesoPortafolio;
     }
 
-    // Normalizar la nota final a 100 si los pesos suman más de 0
-    let notaFinal = 0;
-    if (totalPeso > 0) {
-        notaFinal = sumaTotal / totalPeso * 100;
-    }
-
-    return notaFinal;
+    return sumaTotal;
 }
 
 function actualizarResumenSeaPeriodo(mostrarNotificacion = false) {

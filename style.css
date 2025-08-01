@@ -778,7 +778,6 @@ input[type="text"]:focus, select:focus, input[type="date"]:focus {
     box-shadow: var(--shadow-strong), var(--glow-primary) !important;
     background: #fff !important;
     outline: none;
-    transform: translateY(-2px) scale(1.02);
 }
 
 body.dark-mode input[type="text"], 
@@ -902,7 +901,6 @@ body.dark-mode input[type="number"]:focus {
 
 .btn-eliminar-dia:hover, .btn-eliminar-est:hover {
     background: linear-gradient(90deg, #c0392b 0%, var(--color-error) 100%);
-    transform: scale(1.07);
     box-shadow: 0 6px 24px rgba(231,76,60,0.18);
 }
 
@@ -953,7 +951,6 @@ th input[type="date"] {
 
 .btn-agregar-dia:hover {
     background: linear-gradient(90deg, #27ae60 0%, var(--color-exito) 100%);
-    transform: scale(1.05);
     box-shadow: 0 6px 18px rgba(39,174,96,0.18);
     opacity: 1;
 }
@@ -1449,26 +1446,7 @@ tr:nth-child(odd) td.numero {
 }
 
 /* ===== TOOLTIP ===== */
-[title] {
-    position: relative;
-    cursor: help;
-}
 
-[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    white-space: nowrap;
-    z-index: 1000;
-    margin-bottom: 5px;
-}
 
 /* ===== TABLA DE REFERENCIA ===== */
 .tabla-referencia {
@@ -1873,13 +1851,11 @@ body.dark-mode .referencia-table tbody tr:hover {
     border-color: #20c997;
     outline: none;
     box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
-    transform: scale(1.02);
 }
 
 .tareas-table .config-row input[type="number"]:focus {
     border-color: #f57c00;
     box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.3);
-    transform: scale(1.02);
 }
 
 .tareas-table .student-name {
@@ -2386,7 +2362,6 @@ body.dark-mode .tareas-table .config-row button:hover {
     border-color: #388e3c;
     outline: none;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
-    transform: scale(1.02);
 }
 
 .trabajo-cotidiano-table input[type="date"] {
@@ -2422,7 +2397,6 @@ body.dark-mode .tareas-table .config-row button:hover {
     border-color: #388e3c;
     background: #fff;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
-    transform: scale(1.02);
 }
 
 .trabajo-cotidiano-table input[type="checkbox"] {
@@ -2439,7 +2413,6 @@ body.dark-mode .tareas-table .config-row button:hover {
 .trabajo-cotidiano-table input[type="checkbox"]:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
-    transform: scale(1.1);
 }
 
 .trabajo-cotidiano-table input[type="checkbox"]:checked {
@@ -9880,4 +9853,44 @@ body.dark-mode .proyecto-table .student-name,
 body.dark-mode .portafolio-table .student-name {
     color: #000000 !important;
     font-weight: 600 !important;
+}
+
+/* ===== ANIMACIONES PARA CELDAS DE ASISTENCIA ===== */
+/* Aplicar las mismas animaciones que tiene la columna de nombres a las celdas de asistencia */
+
+/* Hover en celdas de asistencia */
+tbody tr:hover td:not(.nombre):not(.numero):not(.th-resumen) {
+    background: #fffbe9 !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    position: relative;
+}
+
+/* Focus en celdas de asistencia */
+td:not(.nombre):not(.numero):not(.th-resumen):focus-within {
+    outline: 2.5px solid #e74c3c !important;
+    outline-offset: -2px !important;
+    z-index: 10 !important;
+    background: #fffbe9 !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+
+/* Hover en modo oscuro para celdas de asistencia */
+body.dark-mode tbody tr:hover td:not(.nombre):not(.numero):not(.th-resumen) {
+    background: #2d2a1e !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    position: relative;
+}
+
+/* Focus en modo oscuro para celdas de asistencia */
+body.dark-mode td:not(.nombre):not(.numero):not(.th-resumen):focus-within {
+    background: #2d2a1e !important;
+    outline: 2.5px solid #e74c3c !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
 }
