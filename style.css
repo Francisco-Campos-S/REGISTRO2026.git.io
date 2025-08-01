@@ -43,7 +43,7 @@ body.dark-mode {
     --color-table-bg: #1e293b;
     --color-table-row: #334155;
     --color-table-hover: #475569;
-    --color-text: #f1f5f9;
+    --color-text: #f8fafc;
     --color-border: #475569;
     --color-shadow: rgba(0, 0, 0, 0.3);
     --color-shadow-hover: rgba(0, 0, 0, 0.4);
@@ -51,7 +51,7 @@ body.dark-mode {
     --gradient-success: linear-gradient(135deg, #34d399 0%, #10b981 100%);
     --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     --gradient-error: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-    /* Variables para modo oscuro */
+    /* Variables para modo oscuro mejoradas */
     --shadow-soft: 0 2px 8px rgba(96, 165, 250, 0.2);
     --shadow-medium: 0 4px 16px rgba(96, 165, 250, 0.25);
     --shadow-strong: 0 8px 32px rgba(96, 165, 250, 0.3);
@@ -59,6 +59,18 @@ body.dark-mode {
     --glow-success: 0 0 20px rgba(52, 211, 153, 0.5);
     --glow-warning: 0 0 20px rgba(251, 191, 36, 0.5);
     --glow-error: 0 0 20px rgba(248, 113, 113, 0.5);
+    /* Nuevos colores para mejor contraste */
+    --dark-text-primary: #f8fafc;
+    --dark-text-secondary: #e2e8f0;
+    --dark-text-muted: #cbd5e1;
+    --dark-bg-primary: #1e293b;
+    --dark-bg-secondary: #334155;
+    --dark-bg-tertiary: #475569;
+    --dark-border-primary: #475569;
+    --dark-border-secondary: #64748b;
+    --dark-input-bg: #1e293b;
+    --dark-input-border: #475569;
+    --dark-input-focus: #60a5fa;
 }
 
 /* ===== RESET Y BASE ===== */
@@ -692,13 +704,13 @@ tbody tr:nth-child(even) td {
 }
 
 body.dark-mode tbody tr:nth-child(odd) td {
-    background: #2d3436 !important;
-    color: #fff !important;
+    background: #1e293b !important;
+    color: #f8fafc !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
-    background: #4a5568 !important;
-    color: #fff !important;
+    background: #334155 !important;
+    color: #f8fafc !important;
 }
 
 /* ===== CELDA NUMERO ===== */
@@ -772,16 +784,18 @@ input[type="text"]:focus, select:focus, input[type="date"]:focus {
 body.dark-mode input[type="text"], 
 body.dark-mode select, 
 body.dark-mode input[type="date"] {
-    background: rgba(44,62,80,0.18) !important;
-    color: #fff !important;
-    border: 2px solid var(--color-primario) !important;
-    box-shadow: 0 2px 8px var(--color-shadow) !important;
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: 2px solid #475569 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.dark-mode input[type="text"]:focus, 
 body.dark-mode select:focus, 
 body.dark-mode input[type="date"]:focus {
-    background: #263238 !important;
+    background: #334155 !important;
+    border: 2px solid #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
 }
 
 /* Texto negro en inputs de filas pares (blancas) en modo oscuro */
@@ -856,6 +870,20 @@ input[type="number"]:focus {
     border: 2px solid var(--color-exito);
     box-shadow: 0 4px 16px rgba(67,160,71,0.13);
     outline: none;
+}
+
+/* Estilos generales para inputs de números en modo oscuro */
+body.dark-mode input[type="number"] {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: 2px solid #475569 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode input[type="number"]:focus {
+    background: #334155 !important;
+    border: 2px solid #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
 }
 
 /* ===== BOTONES ===== */
@@ -1928,8 +1956,8 @@ body.dark-mode .tareas-table th {
 
 body.dark-mode .tareas-table td {
     border: none;
-    color: #e2e8f0;
-    font-weight: 500;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .tareas-table .config-row {
@@ -1946,15 +1974,17 @@ body.dark-mode .tareas-table .config-row:hover {
 body.dark-mode .tareas-table .editable {
     background: #ffffff !important;
     border: 2px solid #48bb78 !important;
-    color: #000;
-    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.2);
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
     border-radius: 6px;
+    font-weight: 600;
 }
 
 body.dark-mode .tareas-table .editable:hover {
-    background: #ffffff !important;
-    color: #000;
+    background: #f8f9fa !important;
+    color: #000000;
     border-color: #38a169 !important;
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
 }
 
 body.dark-mode .tareas-table .calculated {
@@ -1975,40 +2005,43 @@ body.dark-mode .tareas-table .student-name {
 
 body.dark-mode .tareas-table input[type="number"] {
     background: #ffffff;
-    color: #000;
+    color: #000000;
     border: 2px solid #48bb78;
     border-radius: 6px;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.2);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
 }
 
 body.dark-mode .tareas-table .config-row input[type="number"] {
     background: #ffffff;
-    color: #000;
+    color: #000000;
     border: 2px solid #ffc107;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
 }
 
 body.dark-mode .tareas-table input[type="number"]:focus {
     border-color: #38a169;
     background: #ffffff;
+    color: #000000;
     box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.3);
     transform: scale(1.02);
 }
 
 body.dark-mode .tareas-table .config-row input[type="number"]:focus {
     border-color: #f57c00;
+    background: #ffffff;
+    color: #000000;
     box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.3);
     transform: scale(1.02);
 }
 
 body.dark-mode .tareas-table tbody tr:nth-child(odd) {
-    background: #1a202c;
+    background: #1e293b;
 }
 
 body.dark-mode .tareas-table tbody tr:nth-child(even) {
-    background: #2d3748;
+    background: #334155;
 }
 
 body.dark-mode .tareas-table tbody tr:hover {
@@ -6541,7 +6574,8 @@ body.dark-mode .evaluacion-table th {
 
 body.dark-mode .evaluacion-table td {
     border: none;
-    color: #fff;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .evaluacion-table .config-row {
@@ -6553,9 +6587,10 @@ body.dark-mode .evaluacion-table .config-row {
 body.dark-mode .evaluacion-table .editable {
     background: #ffffff !important;
     border: 2px solid #42a5f5 !important;
-    color: #000;
-    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.2);
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.3);
     border-radius: 6px;
+    font-weight: 600;
 }
 
 body.dark-mode .evaluacion-table .calculated {
@@ -6583,25 +6618,26 @@ body.dark-mode .evaluacion-table .student-name {
 
 body.dark-mode .evaluacion-table input[type="number"] {
     background: #ffffff;
-    color: #000;
+    color: #000000;
     border: 2px solid #42a5f5;
     border-radius: 6px;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.2);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(66, 165, 245, 0.3);
 }
 
 /* Inputs de configuración en modo oscuro */
 body.dark-mode .evaluacion-table .config-row input[type="number"] {
     background: #ffffff;
-    color: #000;
+    color: #000000;
     border: 2px solid #ffc107;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
 }
 
 body.dark-mode .evaluacion-table input[type="number"]:focus {
     border-color: #1976d2;
     background: #ffffff;
+    color: #000000;
     box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3);
     transform: scale(1.02);
 }
@@ -6609,6 +6645,7 @@ body.dark-mode .evaluacion-table input[type="number"]:focus {
 body.dark-mode .evaluacion-table .config-row input[type="number"]:focus {
     border-color: #f57c00;
     background: #ffffff;
+    color: #000000;
     box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.3);
     transform: scale(1.02);
 }
@@ -7472,7 +7509,8 @@ body.dark-mode .proyecto-table th {
 
 body.dark-mode .proyecto-table td {
     border-bottom: 1px solid #34495e;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .proyecto-table .config-row {
@@ -7485,14 +7523,16 @@ body.dark-mode .proyecto-table .config-row:hover {
 }
 
 body.dark-mode .proyecto-table .editable {
-    background: #34495e;
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .proyecto-table .editable:hover {
     border-color: #667eea;
-    background: #2c3e50;
+    background: #f8f9fa;
+    color: #000000;
 }
 
 body.dark-mode .proyecto-table .calculated {
@@ -7504,25 +7544,29 @@ body.dark-mode .proyecto-table .student-name {
 }
 
 body.dark-mode .proyecto-table input[type="number"] {
-    background: #34495e;
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .proyecto-table .config-row input[type="number"] {
-    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .proyecto-table input[type="number"]:focus {
     border-color: #667eea;
-    background: #2c3e50;
+    background: #ffffff;
+    color: #000000;
 }
 
 body.dark-mode .proyecto-table .config-row input[type="number"]:focus {
     border-color: #ffc107;
-    background: #34495e;
+    background: #ffffff;
+    color: #000000;
 }
 
 body.dark-mode .proyecto-table tbody tr:nth-child(odd) {
@@ -7604,7 +7648,8 @@ body.dark-mode .portafolio-table th {
 
 body.dark-mode .portafolio-table td {
     border-bottom: 1px solid #34495e;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .portafolio-table .config-row {
@@ -7617,14 +7662,16 @@ body.dark-mode .portafolio-table .config-row:hover {
 }
 
 body.dark-mode .portafolio-table .editable {
-    background: #34495e;
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .portafolio-table .editable:hover {
     border-color: #a78bfa;
-    background: #2c3e50;
+    background: #f8f9fa;
+    color: #000000;
 }
 
 body.dark-mode .portafolio-table .calculated {
@@ -7636,25 +7683,29 @@ body.dark-mode .portafolio-table .student-name {
 }
 
 body.dark-mode .portafolio-table input[type="number"] {
-    background: #34495e;
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .portafolio-table .config-row input[type="number"] {
-    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    background: #ffffff;
     border-color: #4a5568;
-    color: #ecf0f1;
+    color: #000000;
+    font-weight: 600;
 }
 
 body.dark-mode .portafolio-table input[type="number"]:focus {
     border-color: #a78bfa;
-    background: #2c3e50;
+    background: #ffffff;
+    color: #000000;
 }
 
 body.dark-mode .portafolio-table .config-row input[type="number"]:focus {
     border-color: #a78bfa;
-    background: #34495e;
+    background: #ffffff;
+    color: #000000;
 }
 
 body.dark-mode .portafolio-table tbody tr:nth-child(odd) {
@@ -9698,4 +9749,15 @@ body.dark-mode .sea-periodo-table td {
 
 body.dark-mode .sea-periodo-table .estudiante-nombre {
     color: var(--text-color);
+}
+
+/* ===== SOBRESCRITURA PARA TEXTO NEGRO EN MODO OSCURO ===== */
+/* Aplicar texto negro a todas las columnas de nombres desde Trabajo Cotidiano hacia abajo */
+body.dark-mode .trabajo-cotidiano-table .student-name,
+body.dark-mode .tareas-table .student-name,
+body.dark-mode .evaluacion-table .student-name,
+body.dark-mode .proyecto-table .student-name,
+body.dark-mode .portafolio-table .student-name {
+    color: #000000 !important;
+    font-weight: 600 !important;
 }
