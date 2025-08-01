@@ -1,40 +1,81 @@
-# 📊 Sistema de Registro de Asistencia 2026
+# 📊 Sistema Integral de Evaluación Educativa 2026
 
-Un sistema web profesional y moderno para el control de asistencia estudiantil, diseñado específicamente para instituciones educativas.
+Un sistema web profesional y moderno para la gestión completa de evaluación estudiantil, diseñado específicamente para instituciones educativas. Incluye control de asistencia, evaluación de múltiples rubros y generación de reportes integrales.
 
 ## ✨ Características Principales
 
-- **🎯 Interfaz Moderna**: Diseño responsive y profesional con modo oscuro
+- **🎯 Sistema Integral**: Gestión completa de asistencia, evaluación y reportes
 - **📱 Totalmente Responsive**: Funciona perfectamente en dispositivos móviles y desktop
 - **💾 Persistencia Local**: Los datos se guardan automáticamente en el navegador
-- **📊 Cálculos Automáticos**: Porcentajes de asistencia y alertas tempranas
+- **📊 Cálculos Automáticos**: Porcentajes, promedios y evaluaciones automáticas
 - **📥📤 Importación/Exportación**: Soporte completo para archivos Excel (.xlsx)
-- **🔍 Búsqueda y Filtrado**: Herramientas avanzadas de gestión de datos
+- **🔍 Navegación Intuitiva**: Menú organizado por secciones funcionales
 - **⚡ Rendimiento Optimizado**: Carga rápida y funcionamiento fluido
+- **🌙 Modo Oscuro**: Interfaz adaptable con tema claro/oscuro
 
-## 🚀 Funcionalidades
+## 🚀 Módulos del Sistema
 
-### Gestión de Estudiantes
-- ✅ Agregar/eliminar estudiantes
-- ✅ Edición en línea de datos personales
-- ✅ Ordenamiento automático por apellidos
-- ✅ Validación de datos en tiempo real
-
-### Control de Asistencia
-- ✅ Registro diario de asistencia
+### 📊 Control de Asistencia
+- ✅ Registro diario de asistencia por estudiante
 - ✅ Múltiples tipos: Presente, Ausente, Tardía, Escapada, Justificada
-- ✅ Cálculo automático de porcentajes
+- ✅ Cálculo automático de porcentajes de asistencia
 - ✅ Sistema de alertas tempranas configurable
+- ✅ Escala de calificación automática (0-10 puntos)
+- ✅ Gestión de días de clase con fechas y lecciones
 
-### Gestión de Días
-- ✅ Agregar/eliminar días de clase
-- ✅ Configuración de fechas y lecciones por día
-- ✅ Ordenamiento automático por fecha
+### 📋 Gestión de Indicadores
+- ✅ Definición de indicadores por grupo
+- ✅ Utilización en tareas y trabajo cotidiano
+- ✅ Importación/exportación de indicadores
+- ✅ Gestión completa (agregar, eliminar, editar)
 
-### Exportación de Datos
-- ✅ Exportar a Excel con formato profesional
-- ✅ Plantillas descargables
-- ✅ Importación desde archivos Excel existentes
+### 📋 Trabajo Cotidiano
+- ✅ Evaluación diaria por estudiante
+- ✅ Escala configurable (0-3, 0-5, etc.)
+- ✅ Valor total configurable para cálculo de porcentajes
+- ✅ Gestión de fechas de evaluación
+- ✅ Exportación de datos
+
+### 📚 Evaluación de Tareas
+- ✅ Múltiples tareas configurables
+- ✅ Puntos máximos personalizables
+- ✅ Porcentaje de peso configurable
+- ✅ Cálculo automático de promedios
+- ✅ Gestión completa de evaluaciones
+
+### 📝 Evaluación de Pruebas
+- ✅ Múltiples pruebas configurables
+- ✅ Puntos máximos personalizables
+- ✅ Porcentaje de peso configurable
+- ✅ Cálculo automático de promedios
+- ✅ Gestión completa de evaluaciones
+
+### 🔬 Evaluación de Proyectos
+- ✅ Múltiples proyectos configurables
+- ✅ Puntos máximos personalizables
+- ✅ Porcentaje de peso configurable
+- ✅ Cálculo automático de promedios
+- ✅ Gestión completa de evaluaciones
+
+### 📁 Evaluación de Portafolio
+- ✅ Múltiples portafolios configurables
+- ✅ Puntos máximos personalizables
+- ✅ Porcentaje de peso configurable
+- ✅ Cálculo automático de promedios
+- ✅ Gestión completa de evaluaciones
+
+### 📊 SEA I Período (Resumen General)
+- ✅ Resumen consolidado de todas las evaluaciones
+- ✅ Cálculo automático de nota final
+- ✅ Configuración de nota de aprobación
+- ✅ Visualización de porcentajes por rubro
+- ✅ Exportación de resumen completo
+- ✅ Sistema de colores para notas finales
+
+### 📋 Resumen de Evaluaciones
+- ✅ Vista consolidada de todas las evaluaciones
+- ✅ Comparación de rendimiento por estudiante
+- ✅ Análisis de tendencias
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -67,7 +108,7 @@ cd REGISTRO2026git.io
 
 ```
 REGISTRO2026git.io/
-├── index.html          # Página principal
+├── index.html          # Página principal con todos los módulos
 ├── style.css           # Estilos CSS optimizados
 ├── script.js           # Lógica JavaScript modular
 ├── README.md           # Documentación
@@ -84,7 +125,7 @@ REGISTRO2026git.io/
 ### Responsive Design
 - Adaptable a cualquier tamaño de pantalla
 - Navegación optimizada para móviles
-- Tabla con scroll horizontal inteligente
+- Tablas con scroll horizontal inteligente
 
 ### Accesibilidad
 - Navegación por teclado
@@ -100,7 +141,7 @@ El sistema calcula automáticamente el porcentaje basado en:
 - **Escapadas**: 100% de penalización
 - **Justificadas**: 0% de penalización
 
-### Escala de Calificación
+### Escala de Calificación de Asistencia
 - **10 puntos**: 0% a <1% de ausencias
 - **9 puntos**: 1% a <10% de ausencias
 - **8 puntos**: 10% a <20% de ausencias
@@ -113,9 +154,21 @@ El sistema calcula automáticamente el porcentaje basado en:
 - **1 punto**: 80% a <90% de ausencias
 - **0 puntos**: 90% a 100% de ausencias
 
+### Cálculo de Evaluaciones
+- **Trabajo Cotidiano**: (Puntos obtenidos / Puntos máximos) × Valor total
+- **Tareas**: (Puntos obtenidos / Puntos máximos) × Porcentaje de peso
+- **Pruebas**: (Puntos obtenidos / Puntos máximos) × Porcentaje de peso
+- **Proyectos**: (Puntos obtenidos / Puntos máximos) × Porcentaje de peso
+- **Portafolio**: (Puntos obtenidos / Puntos máximos) × Porcentaje de peso
+
+### Nota Final SEA I Período
+- Suma de los 5 rubros principales (sin asistencia)
+- Configuración de nota de aprobación personalizable
+- Sistema de colores para visualización rápida
+
 ## 🔔 Sistema de Alertas
 
-### Alerta Temprana
+### Alerta Temprana de Asistencia
 - Configurable entre 0% y 10%
 - Se activa cuando: `(10 - %Asistencia) ≥ ValorConfigurado`
 - Visualización clara en la tabla
@@ -149,15 +202,32 @@ Edita las variables CSS en `style.css`:
 }
 ```
 
-### Límites Configurables
+### Configuraciones del Sistema
 ```javascript
-const maxEstudiantes = 50;  // Máximo de estudiantes
-const maxDias = 100;        // Máximo de días
+// Asistencia
+const maxEstudiantes = 50;        // Máximo de estudiantes
+const maxDias = 100;              // Máximo de días
+const alertaTemprana = 2;         // Porcentaje para alerta temprana
+
+// Trabajo Cotidiano
+const escalaMaxima = 3;           // Escala de evaluación (0-3)
+const valorTotalTrabajo = 35;     // Valor total para porcentaje
+
+// Evaluación General
+const notaAprobacion = 70;        // Nota mínima para aprobar (%)
 ```
 
 ## 📈 Versiones
 
-### v2.2 (Actual)
+### v3.0 (Actual) - Sistema Integral de Evaluación
+- ✅ Sistema completo de evaluación educativa
+- ✅ 8 módulos principales integrados
+- ✅ Cálculos automáticos de notas finales
+- ✅ Resumen consolidado SEA I Período
+- ✅ Gestión de indicadores
+- ✅ Exportación/importación Excel para todos los módulos
+
+### v2.2
 - ✅ Interfaz completamente rediseñada
 - ✅ Modo oscuro mejorado
 - ✅ Responsive design optimizado
@@ -173,6 +243,26 @@ const maxDias = 100;        // Máximo de días
 - ✅ Nueva estructura de datos
 - ✅ Persistencia mejorada
 - ✅ Interfaz moderna
+
+## 🎯 Casos de Uso
+
+### Para Docentes
+- Control diario de asistencia
+- Evaluación continua de estudiantes
+- Generación de reportes de rendimiento
+- Seguimiento de indicadores de aprendizaje
+
+### Para Coordinadores
+- Monitoreo de asistencia por grupos
+- Análisis de tendencias de evaluación
+- Generación de reportes institucionales
+- Control de indicadores educativos
+
+### Para Administradores
+- Reportes consolidados de rendimiento
+- Análisis de datos por períodos
+- Exportación de datos para sistemas externos
+- Control de calidad educativa
 
 ## 🤝 Contribuciones
 
@@ -199,11 +289,12 @@ Si encuentras algún problema o tienes sugerencias:
 ## 🙏 Agradecimientos
 
 - **SheetJS**: Por la librería de procesamiento Excel
-- **Comunidad**: Por el feedback y mejoras sugeridas
-- **Educadores**: Por las necesidades específicas identificadas
+- **Comunidad Educativa**: Por las necesidades específicas identificadas
+- **Educadores**: Por el feedback y mejoras sugeridas
+- **Desarrolladores**: Por las contribuciones técnicas
 
 ---
 
 **Desarrollado con ❤️ para la comunidad educativa**
 
-*Sistema de Registro de Asistencia 2026 - Versión 2.2*
+*Sistema Integral de Evaluación Educativa 2026 - Versión 3.0*
