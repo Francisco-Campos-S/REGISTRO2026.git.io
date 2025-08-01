@@ -1696,6 +1696,8 @@ body.dark-mode .referencia-table tbody tr:hover {
     border: none;
     text-align: center;
     vertical-align: middle;
+    color: #2c3e50;
+    font-weight: 500;
 }
 
 .tareas-table .config-row {
@@ -1715,7 +1717,7 @@ body.dark-mode .referencia-table tbody tr:hover {
 }
 
 .tareas-table tbody tr:nth-child(even) {
-    background: var(--color-table-row);
+    background: #f8f9fa;
 }
 
 .tareas-table tbody tr:hover {
@@ -1751,11 +1753,12 @@ body.dark-mode .referencia-table tbody tr:hover {
 }
 
 .tareas-table .calculated {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-    color: #555;
-    font-weight: 500;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%) !important;
+    color: #1565c0;
+    font-weight: 600;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #90caf9;
 }
 
 .tareas-table .total-excedido {
@@ -1885,7 +1888,8 @@ body.dark-mode .tareas-table th {
 
 body.dark-mode .tareas-table td {
     border: none;
-    color: #fff;
+    color: #e2e8f0;
+    font-weight: 500;
 }
 
 body.dark-mode .tareas-table .config-row {
@@ -1914,17 +1918,19 @@ body.dark-mode .tareas-table .editable:hover {
 }
 
 body.dark-mode .tareas-table .calculated {
-    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
-    color: #ffffff;
+    background: linear-gradient(135deg, #2c5282 0%, #1e3a8a 100%) !important;
+    color: #90cdf4;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
     border-radius: 4px;
-    font-weight: 500;
+    font-weight: 600;
+    border: 1px solid #3182ce;
 }
 
 body.dark-mode .tareas-table .student-name {
     background: inherit !important;
-    color: #48bb78;
+    color: #68d391;
     font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 body.dark-mode .tareas-table input[type="number"] {
@@ -1958,11 +1964,11 @@ body.dark-mode .tareas-table .config-row input[type="number"]:focus {
 }
 
 body.dark-mode .tareas-table tbody tr:nth-child(odd) {
-    background: #2d3748;
+    background: #1a202c;
 }
 
 body.dark-mode .tareas-table tbody tr:nth-child(even) {
-    background: #4a5568;
+    background: #2d3748;
 }
 
 body.dark-mode .tareas-table tbody tr:hover {
@@ -2207,6 +2213,8 @@ body.dark-mode .tareas-table .config-row button:hover {
     border: none;
     text-align: center;
     vertical-align: middle;
+    color: #2c3e50;
+    font-weight: 500;
 }
 
 .trabajo-cotidiano-table .config-row {
@@ -2226,7 +2234,7 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table tbody tr:nth-child(even) {
-    background: var(--color-table-row);
+    background: #f8f9fa;
 }
 
 .trabajo-cotidiano-table tbody tr:hover {
@@ -2257,11 +2265,12 @@ body.dark-mode .tareas-table .config-row button:hover {
 }
 
 .trabajo-cotidiano-table .calculated {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-    color: #555;
-    font-weight: 500;
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%) !important;
+    color: #2e7d32;
+    font-weight: 600;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #81c784;
 }
 
 .trabajo-cotidiano-table .student-name {
@@ -6041,11 +6050,11 @@ body.dark-mode .trabajo-cotidiano-table input[type="checkbox"]:checked {
 }
 
 body.dark-mode .trabajo-cotidiano-table tbody tr:nth-child(odd) {
-    background: #2d3748;
+    background: #1a202c;
 }
 
 body.dark-mode .trabajo-cotidiano-table tbody tr:nth-child(even) {
-    background: #4a5568;
+    background: #2d3748;
 }
 
 body.dark-mode .trabajo-cotidiano-table tbody tr:hover {

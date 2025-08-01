@@ -3918,8 +3918,7 @@ function eliminarIndicador() {
     // Eliminar el indicador específico
     const indicadorEliminado = indicadores.splice(indexEliminar, 1)[0];
     
-    // Usar la función existente para eliminar el día de trabajo cotidiano
-    // Esto asegura que se elimine correctamente sin problemas de índices
+    // Eliminar el día correspondiente de trabajo cotidiano
     if (diasTrabajo && Array.isArray(diasTrabajo) && diasTrabajo.length > indexEliminar) {
         // Preservar datos de inputs antes de re-renderizar
         preservarDatosInputs();
@@ -3933,8 +3932,28 @@ function eliminarIndicador() {
         guardarTrabajoCotidiano();
     }
     
-    // Ordenar indicadores por número después de eliminar
+    // Ordenar y renumerar indicadores secuencialmente
     ordenarIndicadores();
+    
+    // Sincronizar los días de trabajo cotidiano con la nueva numeración de indicadores
+    if (diasTrabajo && Array.isArray(diasTrabajo)) {
+        // Asegurar que hay un día por cada indicador
+        while (diasTrabajo.length < indicadores.length) {
+            diasTrabajo.push({
+                fecha: new Date().toISOString().split('T')[0]
+            });
+        }
+        
+        // Si hay más días que indicadores, eliminar los extras
+        if (diasTrabajo.length > indicadores.length) {
+            diasTrabajo.splice(indicadores.length);
+        }
+        
+        // Sincronizar estudiantes con la nueva estructura
+        sincronizarEstudiantesTrabajoCotidiano();
+        
+        guardarTrabajoCotidiano();
+    }
     
     guardarIndicadores();
     renderIndicadores();
@@ -3945,7 +3964,7 @@ function eliminarIndicador() {
     // Limpiar el input
     inputEliminar.value = '';
     
-    mostrarAlerta(`Indicador ${indicadorEliminado.id} eliminado y datos relacionados limpiados correctamente`, 'exito');
+    mostrarAlerta(`Indicador ${indicadorEliminado.id} eliminado y numeración actualizada correctamente`, 'exito');
 }
 
 function exportarIndicadores() {
@@ -4030,12 +4049,15 @@ function obtenerIndicadores() {
 
 // Función para ordenar indicadores por número
 function ordenarIndicadores() {
-    // Ordenar por ID/número - NO reasignar IDs para mantener la integridad de los datos
+    // Ordenar por ID/número
     indicadores.sort((a, b) => a.id - b.id);
     
-    // NO renumerar secuencialmente para evitar desalineación de datos
-    // Los IDs deben mantenerse estables para preservar los datos de trabajo cotidiano
-    console.log('Indicadores ordenados por ID:', indicadores.map(i => i.id));
+    // Renumerar secuencialmente para mantener orden 1, 2, 3, 4...
+    indicadores.forEach((indicador, index) => {
+        indicador.id = index + 1;
+    });
+    
+    console.log('Indicadores ordenados y renumerados:', indicadores.map(i => i.id));
 }
 
 // Función para descargar plantilla de indicadores
