@@ -457,24 +457,11 @@ function aplicarColoresFilasModoOscuro(esModoOscuro) {
     });
 }
 
-// FUNCIÓN NUCLEAR - APLICAR COLORES DE FORMA AGRESIVA
+// FUNCIÓN SIMPLIFICADA - APLICAR COLORES ALTERNADOS
 function forzarColoresNuclear() {
     if (!document.body.classList.contains('dark-mode')) return;
     
-    // ELIMINAR TODOS LOS ESTILOS BLOQUEANTES
-    const todosLosElementos = document.querySelectorAll('*');
-    todosLosElementos.forEach(elemento => {
-        // Eliminar estilos inline que puedan estar bloqueando
-        if (elemento.style.backgroundColor && elemento.style.backgroundColor !== '') {
-            elemento.style.removeProperty('background-color');
-        }
-        if (elemento.style.background && elemento.style.background !== '') {
-            elemento.style.removeProperty('background');
-        }
-        if (elemento.style.color && elemento.style.color !== '') {
-            elemento.style.removeProperty('color');
-        }
-    });
+    console.log('🔧 Aplicando colores alternados...');
     
     // Aplicar a todas las celdas de tabla
     const todasLasCeldas = document.querySelectorAll('td');
@@ -483,66 +470,14 @@ function forzarColoresNuclear() {
         if (fila) {
             const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
             if (filaIndex % 2 === 0) { // Fila impar
-                celda.style.setProperty('background-color', '#1f2937', 'important');
-                celda.style.setProperty('color', '#f3f4f6', 'important');
-                celda.style.setProperty('border-color', '#374151', 'important');
+                celda.style.setProperty('background-color', '#1e293b', 'important');
+                celda.style.setProperty('color', '#f8fafc', 'important');
+                celda.style.setProperty('border-color', '#334155', 'important');
             } else { // Fila par
-                celda.style.setProperty('background-color', '#111827', 'important');
+                celda.style.setProperty('background-color', '#0f172a', 'important');
                 celda.style.setProperty('color', '#ffffff', 'important');
-                celda.style.setProperty('border-color', '#1f2937', 'important');
+                celda.style.setProperty('border-color', '#1e293b', 'important');
             }
-        }
-    });
-    
-    // Aplicar también a elementos dentro de las celdas
-    const elementosEnCeldas = document.querySelectorAll('td *');
-    elementosEnCeldas.forEach(elemento => {
-        const celda = elemento.closest('td');
-        if (celda) {
-            const fila = celda.closest('tr');
-            if (fila) {
-                const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
-                if (filaIndex % 2 === 0) { // Fila impar
-                    elemento.style.setProperty('background-color', '#1f2937', 'important');
-                    elemento.style.setProperty('color', '#f3f4f6', 'important');
-                } else { // Fila par
-                    elemento.style.setProperty('background-color', '#111827', 'important');
-                    elemento.style.setProperty('color', '#ffffff', 'important');
-                }
-            }
-        }
-    });
-    
-    // APLICAR A TODAS LAS TABLAS ESPECÍFICAS
-    const tablasEspecificas = [
-        '.tareas-table',
-        '.trabajo-cotidiano-table', 
-        '.evaluacion-table',
-        '.proyecto-table',
-        '.portafolio-table',
-        '.indicadores-table',
-        '.sea-periodo-table',
-        '.asistencia-table'
-    ];
-    
-    tablasEspecificas.forEach(selector => {
-        const tabla = document.querySelector(selector);
-        if (tabla) {
-            const filas = tabla.querySelectorAll('tbody tr');
-            filas.forEach((fila, index) => {
-                const celdas = fila.querySelectorAll('td');
-                celdas.forEach(celda => {
-                    if (index % 2 === 0) { // Fila impar
-                        celda.style.setProperty('background-color', '#1f2937', 'important');
-                        celda.style.setProperty('color', '#f3f4f6', 'important');
-                        celda.style.setProperty('border-color', '#374151', 'important');
-                    } else { // Fila par
-                        celda.style.setProperty('background-color', '#111827', 'important');
-                        celda.style.setProperty('color', '#ffffff', 'important');
-                        celda.style.setProperty('border-color', '#1f2937', 'important');
-                    }
-                });
-            });
         }
     });
     
@@ -550,38 +485,10 @@ function forzarColoresNuclear() {
     document.body.offsetHeight;
 }
 
-// FUNCIÓN PARA ELIMINAR ESTILOS BLOQUEANTES
+// FUNCIÓN SIMPLIFICADA - SIN INTERFERENCIAS
 function eliminarEstilosBloqueantes() {
-    if (!document.body.classList.contains('dark-mode')) return;
-    
-    // Eliminar estilos de todas las filas y celdas
-    const filas = document.querySelectorAll('tbody tr');
-    filas.forEach((fila, filaIndex) => {
-        // Limpiar estilos de la fila
-        fila.style.removeProperty('background-color');
-        fila.style.removeProperty('background');
-        fila.style.removeProperty('color');
-        
-        // Limpiar estilos de las celdas
-        const celdas = fila.querySelectorAll('td');
-        celdas.forEach(celda => {
-            celda.style.removeProperty('background-color');
-            celda.style.removeProperty('background');
-            celda.style.removeProperty('color');
-            celda.style.removeProperty('border-color');
-            
-            // Limpiar estilos de elementos dentro de las celdas
-            const elementos = celda.querySelectorAll('*');
-            elementos.forEach(elemento => {
-                elemento.style.removeProperty('background-color');
-                elemento.style.removeProperty('background');
-                elemento.style.removeProperty('color');
-            });
-        });
-    });
-    
-    // Forzar repaint
-    document.body.offsetHeight;
+    // Esta función ya no es necesaria con el enfoque simplificado
+    return;
 }
 
 // Función para detectar navegador y aplicar mejoras específicas
@@ -602,14 +509,12 @@ function detectarNavegadorYMejorar() {
         console.log('🌐 Detectado Edge - Aplicando mejoras específicas');
     }
     
-    // Iniciar monitoreo continuo de colores en modo oscuro
+    // Monitoreo simplificado de colores en modo oscuro
     setInterval(() => {
         if (document.body.classList.contains('dark-mode')) {
-            eliminarEstilosBloqueantes();
-            aplicarColoresFilasModoOscuro(true);
             forzarColoresNuclear();
         }
-    }, 300);
+    }, 1000);
 }
 
 function toggleModoOscuro() {
