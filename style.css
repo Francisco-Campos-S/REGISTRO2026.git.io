@@ -1,7 +1,7 @@
 /* ===== VARIABLES CSS ===== */
 :root {
-    --color-primario: #059669;
-    --color-secundario: #047857;
+    --color-primario: #3b82f6;
+    --color-secundario: #6366f1;
     --color-exito: #10b981;
     --color-alerta: #f59e0b;
     --color-error: #ef4444;
@@ -10,32 +10,32 @@
     --color-table-row: #f1f5f9;
     --color-table-hover: #e2e8f0;
     --color-text: #1e293b;
-    --color-border: #cbd5e1;
+    --color-border: #e2e8f0;
     --color-shadow: rgba(0, 0, 0, 0.05);
     --color-shadow-hover: rgba(0, 0, 0, 0.1);
     --border-radius: 12px;
     --border-radius-lg: 18px;
-    --transition: all 0.2s ease;
-    --gradient-primary: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
     --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     /* Nuevas variables para mejoras UX */
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
-    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-soft: 0 2px 8px rgba(59, 130, 246, 0.1);
+    --shadow-medium: 0 4px 16px rgba(59, 130, 246, 0.15);
+    --shadow-strong: 0 8px 32px rgba(59, 130, 246, 0.2);
     --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-    --glow-primary: 0 0 20px rgba(5, 150, 105, 0.3);
-    --glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
-    --glow-warning: 0 0 20px rgba(245, 158, 11, 0.3);
-    --glow-error: 0 0 20px rgba(239, 68, 68, 0.3);
+    --glow-primary: 0 0 20px rgba(59, 130, 246, 0.4);
+    --glow-success: 0 0 20px rgba(16, 185, 129, 0.4);
+    --glow-warning: 0 0 20px rgba(245, 158, 11, 0.4);
+    --glow-error: 0 0 20px rgba(239, 68, 68, 0.4);
 }
 
 /* ===== MODO OSCURO ===== */
 body.dark-mode {
-    --color-primario: #34d399;
-    --color-secundario: #10b981;
+    --color-primario: #60a5fa;
+    --color-secundario: #818cf8;
     --color-exito: #34d399;
     --color-alerta: #fbbf24;
     --color-error: #f87171;
@@ -47,18 +47,18 @@ body.dark-mode {
     --color-border: #475569;
     --color-shadow: rgba(0, 0, 0, 0.3);
     --color-shadow-hover: rgba(0, 0, 0, 0.4);
-    --gradient-primary: linear-gradient(135deg, #34d399 0%, #14b8a6 100%);
+    --gradient-primary: linear-gradient(135deg, #60a5fa 0%, #818cf8 100%);
     --gradient-success: linear-gradient(135deg, #34d399 0%, #10b981 100%);
     --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
     --gradient-error: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
     /* Variables para modo oscuro */
-    --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.4);
-    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.5);
-    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.6);
-    --glow-primary: 0 0 20px rgba(52, 211, 153, 0.4);
-    --glow-success: 0 0 20px rgba(52, 211, 153, 0.4);
-    --glow-warning: 0 0 20px rgba(251, 191, 36, 0.4);
-    --glow-error: 0 0 20px rgba(248, 113, 113, 0.4);
+    --shadow-soft: 0 2px 8px rgba(96, 165, 250, 0.2);
+    --shadow-medium: 0 4px 16px rgba(96, 165, 250, 0.25);
+    --shadow-strong: 0 8px 32px rgba(96, 165, 250, 0.3);
+    --glow-primary: 0 0 20px rgba(96, 165, 250, 0.5);
+    --glow-success: 0 0 20px rgba(52, 211, 153, 0.5);
+    --glow-warning: 0 0 20px rgba(251, 191, 36, 0.5);
+    --glow-error: 0 0 20px rgba(248, 113, 113, 0.5);
 }
 
 /* ===== RESET Y BASE ===== */
@@ -90,15 +90,15 @@ header {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
     box-shadow: var(--shadow-medium);
-    padding: 20px;
+    padding: 25px 20px;
     border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
     margin: 0;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s var(--animation-smooth);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    transition: var(--transition);
     /* Mejoras de UX */
     will-change: transform, box-shadow;
 }
@@ -124,6 +124,7 @@ body.dark-mode header.scrolled {
     -webkit-backdrop-filter: blur(25px);
     box-shadow: var(--shadow-strong);
     transform: translateY(0);
+    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
 }
 
 #btnModoOscuro {
@@ -166,16 +167,23 @@ body.dark-mode header.scrolled {
     align-items: center;
     width: 100%;
     height: 140px;
-    background: linear-gradient(90deg, #fffde4 0%, #ffeeba 100%);
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     border-radius: var(--border-radius-lg);
-    border: 2.5px solid #ffeeba;
-    box-shadow: 0 6px 32px rgba(251,192,45,0.18);
+    border: 2.5px solid #93c5fd;
+    box-shadow: var(--shadow-medium);
     margin-bottom: 10px;
+    transition: var(--transition);
 }
 
 .header-icon img {
     height: 70px;
     filter: drop-shadow(0 2px 8px var(--color-shadow));
+}
+
+body.dark-mode .header-content {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    border: 2.5px solid #3b82f6;
+    box-shadow: var(--shadow-medium);
 }
 
 .header-text {
@@ -311,7 +319,7 @@ body.dark-mode header.scrolled {
     font-size: 1.08em;
     background: var(--gradient-primary);
     color: #fff;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 14px;
     padding: 14px 32px;
     cursor: pointer;
@@ -363,12 +371,20 @@ body.dark-mode header.scrolled {
     margin: 0 20px 10px 20px;
     font-weight: bold;
     color: var(--color-primario);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
     padding: 12px 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(59, 130, 246, 0.2);
     backdrop-filter: blur(10px);
+    transition: var(--transition);
+}
+
+body.dark-mode #contadorEstudiantes {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(129, 140, 248, 0.15) 100%);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #60a5fa;
+    box-shadow: var(--shadow-soft);
 }
 
 /* ===== CONTENEDOR DE TABLA ===== */
@@ -1269,55 +1285,53 @@ tr:nth-child(odd) td.numero {
     100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE PARA TABLA PRINCIPAL ===== */
 @media (max-width: 900px) {
-    table, thead, tbody, th, td, tr { 
-        display: revert; 
+    /* Tabla principal de asistencia */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    table {
+        min-width: 800px;
+        font-size: 0.85em;
     }
     
     th, td { 
-        width: revert; 
-        font-size: 14px; 
+        padding: 6px 4px; 
+        font-size: 0.8em;
     }
     
-    .instrucciones, #contadorEstudiantes, #app, div[style*="margin-bottom"] { 
-        padding: 8px; 
-    }
-    
-    table { 
-        font-size: 13px; 
-    }
-    
-    /* Asegurar que los inputs de fecha se vean bien en móviles */
+    /* Inputs de fecha optimizados para móviles */
     th input[type="date"] {
-        width: 120px !important;
-        min-width: 120px !important;
-        max-width: 120px !important;
-        font-size: 0.9em;
+        width: 100px !important;
+        min-width: 100px !important;
+        max-width: 100px !important;
+        font-size: 0.75em;
+        padding: 4px;
     }
     
-    /* Ajustar alertas en móviles */
+    /* Alertas optimizadas para móviles */
     .alerta {
         top: 190px;
         min-width: 90vw;
         max-width: 95vw;
-        font-size: 1em;
-        padding: 12px 20px;
+        font-size: 0.9em;
+        padding: 10px 15px;
+        margin: 10px;
     }
     
-    .actions-bar {
-        flex-direction: column;
-        gap: 15px;
+    /* Contenedores principales */
+    .instrucciones, #contadorEstudiantes, #app, div[style*="margin-bottom"] { 
+        margin: 10px; 
+        padding: 10px;
     }
     
-    .actions-left, .actions-right {
-        width: 100%;
-        justify-content: center;
-    }
-    
+    /* Header responsivo */
     header {
         margin: 0;
-        padding: 15px;
+        padding: 15px 10px;
         position: fixed;
         top: 0;
         left: 0;
@@ -1325,25 +1339,51 @@ tr:nth-child(odd) td.numero {
     }
     
     body {
-        padding-top: 180px;
+        padding-top: 160px;
     }
     
     .header-content {
         height: auto;
-        padding: 20px;
+        padding: 15px;
         flex-direction: column;
         text-align: center;
     }
     
     .header-text {
         margin-left: 0;
-        margin-top: 15px;
+        margin-top: 10px;
     }
     
     .header-text h1 {
-        font-size: 2em;
+        font-size: 1.6em;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    /* Barra de acciones responsiva */
+    .actions-bar {
         flex-direction: column;
         gap: 10px;
+        padding: 15px;
+    }
+    
+    .actions-left, .actions-right {
+        width: 100%;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .actions-bar button {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 0.9em;
+        justify-content: center;
+    }
+    
+    .actions-bar input[type="number"] {
+        width: 100%;
+        padding: 8px;
     }
 }
 
@@ -8309,13 +8349,14 @@ body.dark-mode .sea-periodo-table .nota-final:not(.aprobado):not(.aplazado) {
 
 /* ===== MENÚ DE NAVEGACIÓN ===== */
 .menu-navegacion {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
     border-radius: 15px;
     padding: 25px;
     margin: 30px 0;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--shadow-medium);
     position: relative;
     overflow: hidden;
+    transition: var(--transition);
 }
 
 .menu-navegacion::before {
@@ -8466,8 +8507,8 @@ body.dark-mode .sea-periodo-table .nota-final:not(.aprobado):not(.aplazado) {
 
 /* ===== MODO OSCURO PARA MENÚ ===== */
 body.dark-mode .menu-navegacion {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.4);
+    background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%);
+    box-shadow: var(--shadow-medium);
 }
 
 body.dark-mode .menu-navegacion::before {
@@ -8509,37 +8550,396 @@ body.dark-mode .asistencia-actions {
     border-bottom-color: #444;
 }
 
-/* ===== RESPONSIVE PARA MENÚ ===== */
+/* ===== RESPONSIVE COMPLETO PARA MÓVILES ===== */
+
+/* Tablets y pantallas medianas */
 @media (max-width: 768px) {
+    /* Header responsivo */
+    header {
+        padding: 15px 10px;
+    }
+    
+    .header-content {
+        height: 100px;
+        padding: 15px;
+    }
+    
+    .header-text h1 {
+        font-size: 1.4em;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .subtitle {
+        font-size: 0.8em;
+    }
+    
+    /* Menú de navegación */
     .menu-botones {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .menu-btn {
+        padding: 10px 12px;
+        font-size: 0.85em;
+        min-height: 50px;
+    }
+    
+    .menu-btn span {
+        font-size: 1em;
+    }
+    
+    /* Barra de acciones */
+    .actions-bar {
+        flex-direction: column;
         gap: 10px;
+        padding: 15px;
+    }
+    
+    .actions-left, .actions-right {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .actions-bar button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .actions-bar input[type="number"] {
+        width: 100%;
+        padding: 8px;
+    }
+    
+    /* Instrucciones */
+    .instrucciones {
+        padding: 15px;
+        margin: 10px;
+        font-size: 0.9em;
+    }
+    
+    .instrucciones p {
+        margin: 5px 0;
+    }
+    
+    /* Tabla de referencia */
+    .tabla-referencia {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .referencia-table {
+        font-size: 0.8em;
+    }
+    
+    .referencia-table th,
+    .referencia-table td {
+        padding: 6px 4px;
+    }
+    
+    /* Contenedores de secciones */
+    .tareas-container,
+    .trabajo-cotidiano-container,
+    .evaluacion-container,
+    .proyecto-container,
+    .portafolio-container,
+    .indicadores-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .tareas-actions,
+    .trabajo-cotidiano-actions,
+    .evaluacion-actions,
+    .proyecto-actions,
+    .portafolio-actions,
+    .indicadores-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btn-agregar-tarea,
+    .btn-exportar-tareas,
+    .btn-agregar-dia-trabajo,
+    .btn-exportar-trabajo,
+    .btn-agregar-prueba,
+    .btn-exportar-evaluacion,
+    .btn-agregar-proyecto,
+    .btn-exportar-proyecto,
+    .btn-agregar-portafolio,
+    .btn-exportar-portafolio,
+    .btn-descargar-plantilla-indicadores,
+    .btn-agregar-indicador,
+    .btn-eliminar-indicador,
+    .btn-exportar-indicadores,
+    .btn-importar-indicadores {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    /* Configuración de escala */
+    .escala-config {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .escala-config input {
+        width: 100%;
+        padding: 8px;
+    }
+    
+    /* Tablas responsivas */
+    .tareas-table-responsive,
+    .trabajo-cotidiano-table-responsive,
+    .evaluacion-table-responsive,
+    .proyecto-table-responsive,
+    .portafolio-table-responsive,
+    .indicadores-table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .tareas-table,
+    .trabajo-cotidiano-table,
+    .evaluacion-table,
+    .proyecto-table,
+    .portafolio-table,
+    .indicadores-table {
+        min-width: 600px;
+        font-size: 0.8em;
+    }
+    
+    .tareas-table th,
+    .trabajo-cotidiano-table th,
+    .evaluacion-table th,
+    .proyecto-table th,
+    .portafolio-table th,
+    .indicadores-table th {
+        padding: 8px 4px;
+        font-size: 0.75em;
+    }
+    
+    .tareas-table td,
+    .trabajo-cotidiano-table td,
+    .evaluacion-table td,
+    .proyecto-table td,
+    .portafolio-table td,
+    .indicadores-table td {
+        padding: 6px 4px;
+        font-size: 0.75em;
+    }
+    
+    /* Inputs en tablas */
+    .tareas-table input[type="number"],
+    .trabajo-cotidiano-table input[type="number"],
+    .evaluacion-table input[type="number"],
+    .proyecto-table input[type="number"],
+    .portafolio-table input[type="number"],
+    .indicadores-table input[type="text"] {
+        width: 50px;
+        padding: 4px;
+        font-size: 0.7em;
+    }
+    
+    /* SEA Período */
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btn-actualizar-sea,
+    .btn-exportar-resumen,
+    .btn-probar-colores {
+        width: 100%;
+        padding: 10px 15px;
+    }
+    
+    .nota-aprobacion-config {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .nota-aprobacion-config input {
+        width: 100%;
+        padding: 8px;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 480px) {
+    /* Header más compacto */
+    .header-content {
+        height: 80px;
+        padding: 10px;
+    }
+    
+    .header-text h1 {
+        font-size: 1.2em;
+    }
+    
+    .subtitle {
+        font-size: 0.7em;
+    }
+    
+    /* Menú de navegación */
+    .menu-botones {
+        grid-template-columns: 1fr;
+        gap: 6px;
     }
     
     .menu-btn {
         padding: 12px 15px;
         font-size: 0.9em;
+        min-height: 45px;
     }
     
-    .menu-btn span {
+    .menu-navegacion {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .menu-navegacion h3 {
         font-size: 1.1em;
+        margin-bottom: 10px;
     }
     
-    .btn-volver-menu {
-        padding: 8px 15px;
+    /* Botones más compactos */
+    .actions-bar button {
+        padding: 8px 12px;
+        font-size: 0.85em;
+        min-height: 40px;
+    }
+    
+    /* Instrucciones más compactas */
+    .instrucciones {
+        padding: 10px;
+        margin: 5px;
         font-size: 0.8em;
-        margin-bottom: 10px;
+    }
+    
+    .instrucciones p {
+        margin: 3px 0;
+    }
+    
+    /* Tablas más compactas */
+    .tareas-table,
+    .trabajo-cotidiano-table,
+    .evaluacion-table,
+    .proyecto-table,
+    .portafolio-table,
+    .indicadores-table {
+        min-width: 500px;
+        font-size: 0.7em;
+    }
+    
+    .tareas-table th,
+    .trabajo-cotidiano-table th,
+    .evaluacion-table th,
+    .proyecto-table th,
+    .portafolio-table th,
+    .indicadores-table th {
+        padding: 6px 3px;
+        font-size: 0.7em;
+    }
+    
+    .tareas-table td,
+    .trabajo-cotidiano-table td,
+    .evaluacion-table td,
+    .proyecto-table td,
+    .portafolio-table td,
+    .indicadores-table td {
+        padding: 4px 3px;
+        font-size: 0.7em;
+    }
+    
+    /* Inputs más pequeños */
+    .tareas-table input[type="number"],
+    .trabajo-cotidiano-table input[type="number"],
+    .evaluacion-table input[type="number"],
+    .proyecto-table input[type="number"],
+    .portafolio-table input[type="number"],
+    .indicadores-table input[type="text"] {
+        width: 40px;
+        padding: 3px;
+        font-size: 0.65em;
+    }
+    
+    /* Contador de estudiantes */
+    #contadorEstudiantes {
+        margin: 0 10px 8px 10px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+    
+    /* Tabla de referencia más compacta */
+    .tabla-referencia {
+        margin: 5px;
+        padding: 10px;
+    }
+    
+    .tabla-referencia h4 {
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+    
+    .referencia-table {
+        font-size: 0.7em;
+    }
+    
+    .referencia-table th,
+    .referencia-table td {
+        padding: 4px 3px;
     }
 }
 
-@media (max-width: 480px) {
-    .menu-botones {
-        grid-template-columns: 1fr;
+/* Celulares muy pequeños */
+@media (max-width: 360px) {
+    .header-text h1 {
+        font-size: 1em;
+    }
+    
+    .subtitle {
+        font-size: 0.6em;
     }
     
     .menu-btn {
-        padding: 15px 20px;
-        font-size: 1em;
+        padding: 10px 12px;
+        font-size: 0.8em;
+        min-height: 40px;
+    }
+    
+    .actions-bar button {
+        padding: 6px 10px;
+        font-size: 0.8em;
+        min-height: 35px;
+    }
+    
+    .tareas-table,
+    .trabajo-cotidiano-table,
+    .evaluacion-table,
+    .proyecto-table,
+    .portafolio-table,
+    .indicadores-table {
+        min-width: 450px;
+        font-size: 0.65em;
+    }
+    
+    .tareas-table input[type="number"],
+    .trabajo-cotidiano-table input[type="number"],
+    .evaluacion-table input[type="number"],
+    .proyecto-table input[type="number"],
+    .portafolio-table input[type="number"],
+    .indicadores-table input[type="text"] {
+        width: 35px;
+        padding: 2px;
+        font-size: 0.6em;
     }
 }
 
