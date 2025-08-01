@@ -403,13 +403,13 @@ function forzarActualizacionEstilosModoOscuro() {
         celdas.forEach(celda => {
             if (esModoOscuro) {
                 if (index % 2 === 0) { // Fila impar (índice 0, 2, 4...)
-                    celda.style.backgroundColor = '#ffffff';
-                    celda.style.color = '#000000';
-                    celda.style.borderColor = '#e5e7eb';
+                    celda.style.backgroundColor = '#1f2937';
+                    celda.style.color = '#f3f4f6';
+                    celda.style.borderColor = '#374151';
                 } else { // Fila par (índice 1, 3, 5...)
-                    celda.style.backgroundColor = '#f8fafc';
-                    celda.style.color = '#1e293b';
-                    celda.style.borderColor = '#e2e8f0';
+                    celda.style.backgroundColor = '#111827';
+                    celda.style.color = '#ffffff';
+                    celda.style.borderColor = '#1f2937';
                 }
             } else {
                 celda.style.backgroundColor = '';
@@ -440,13 +440,13 @@ function aplicarColoresFilasModoOscuro(esModoOscuro) {
         celdas.forEach(celda => {
             if (esModoOscuro) {
                 if (index % 2 === 0) { // Fila impar (índice 0, 2, 4...)
-                    celda.style.backgroundColor = '#ffffff';
-                    celda.style.color = '#000000';
-                    celda.style.borderColor = '#e5e7eb';
+                    celda.style.backgroundColor = '#1f2937';
+                    celda.style.color = '#f3f4f6';
+                    celda.style.borderColor = '#374151';
                 } else { // Fila par (índice 1, 3, 5...)
-                    celda.style.backgroundColor = '#f8fafc';
-                    celda.style.color = '#1e293b';
-                    celda.style.borderColor = '#e2e8f0';
+                    celda.style.backgroundColor = '#111827';
+                    celda.style.color = '#ffffff';
+                    celda.style.borderColor = '#1f2937';
                 }
             } else {
                 celda.style.backgroundColor = '';
@@ -483,13 +483,13 @@ function forzarColoresNuclear() {
         if (fila) {
             const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
             if (filaIndex % 2 === 0) { // Fila impar
-                celda.style.setProperty('background-color', '#ffffff', 'important');
-                celda.style.setProperty('color', '#000000', 'important');
-                celda.style.setProperty('border-color', '#e5e7eb', 'important');
+                celda.style.setProperty('background-color', '#1f2937', 'important');
+                celda.style.setProperty('color', '#f3f4f6', 'important');
+                celda.style.setProperty('border-color', '#374151', 'important');
             } else { // Fila par
-                celda.style.setProperty('background-color', '#f8fafc', 'important');
-                celda.style.setProperty('color', '#1e293b', 'important');
-                celda.style.setProperty('border-color', '#e2e8f0', 'important');
+                celda.style.setProperty('background-color', '#111827', 'important');
+                celda.style.setProperty('color', '#ffffff', 'important');
+                celda.style.setProperty('border-color', '#1f2937', 'important');
             }
         }
     });
@@ -503,13 +503,46 @@ function forzarColoresNuclear() {
             if (fila) {
                 const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
                 if (filaIndex % 2 === 0) { // Fila impar
-                    elemento.style.setProperty('background-color', '#ffffff', 'important');
-                    elemento.style.setProperty('color', '#000000', 'important');
+                    elemento.style.setProperty('background-color', '#1f2937', 'important');
+                    elemento.style.setProperty('color', '#f3f4f6', 'important');
                 } else { // Fila par
-                    elemento.style.setProperty('background-color', '#f8fafc', 'important');
-                    elemento.style.setProperty('color', '#1e293b', 'important');
+                    elemento.style.setProperty('background-color', '#111827', 'important');
+                    elemento.style.setProperty('color', '#ffffff', 'important');
                 }
             }
+        }
+    });
+    
+    // APLICAR A TODAS LAS TABLAS ESPECÍFICAS
+    const tablasEspecificas = [
+        '.tareas-table',
+        '.trabajo-cotidiano-table', 
+        '.evaluacion-table',
+        '.proyecto-table',
+        '.portafolio-table',
+        '.indicadores-table',
+        '.sea-periodo-table',
+        '.asistencia-table'
+    ];
+    
+    tablasEspecificas.forEach(selector => {
+        const tabla = document.querySelector(selector);
+        if (tabla) {
+            const filas = tabla.querySelectorAll('tbody tr');
+            filas.forEach((fila, index) => {
+                const celdas = fila.querySelectorAll('td');
+                celdas.forEach(celda => {
+                    if (index % 2 === 0) { // Fila impar
+                        celda.style.setProperty('background-color', '#1f2937', 'important');
+                        celda.style.setProperty('color', '#f3f4f6', 'important');
+                        celda.style.setProperty('border-color', '#374151', 'important');
+                    } else { // Fila par
+                        celda.style.setProperty('background-color', '#111827', 'important');
+                        celda.style.setProperty('color', '#ffffff', 'important');
+                        celda.style.setProperty('border-color', '#1f2937', 'important');
+                    }
+                });
+            });
         }
     });
     
@@ -5907,7 +5940,7 @@ function obtenerPorcentajePortafolioDirecto(estudiante) {
 function sincronizarPorcentajesFinales() {
     console.log('🔄 === SINCRONIZANDO PORCENTAJES FINALES ===');
     
-    // Sincronizar trabajo cotidiano - multiplicar por 10 para convertir a porcentaje
+    // Sincronizar trabajo cotidiano - multiplicar por 10 pa ra convertir a porcentaje
     if (trabajoCotidianoEstudiantes && trabajoCotidianoEstudiantes.length > 0) {
         console.log('📚 Sincronizando trabajo cotidiano...');
         trabajoCotidianoEstudiantes.forEach((estudiante, estIdx) => {

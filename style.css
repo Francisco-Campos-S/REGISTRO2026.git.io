@@ -309,11 +309,11 @@ body.dark-mode tbody tr td[style*="saddlebrown"],
 body.dark-mode tbody tr td[style*="chocolate"],
 body.dark-mode tbody tr td[style*="peru"],
 body.dark-mode tbody tr td[style*="sienna"] {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    background-color: #1f2937 !important;
+    color: #f3f4f6 !important;
 }
 
-/* FORZAR COLORES CLAROS EN TODAS LAS FILAS */
+/* FORZAR COLORES OSCUROS CON EFECTO ALTERNADO EN TODAS LAS FILAS */
 body.dark-mode tbody tr:nth-child(odd) td,
 body.dark-mode tbody tr:nth-child(1) td,
 body.dark-mode tbody tr:nth-child(3) td,
@@ -321,9 +321,9 @@ body.dark-mode tbody tr:nth-child(5) td,
 body.dark-mode tbody tr:nth-child(7) td,
 body.dark-mode tbody tr:nth-child(9) td,
 body.dark-mode tbody tr:nth-child(11) td {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-color: #e5e7eb !important;
+    background-color: #1f2937 !important;
+    color: #f3f4f6 !important;
+    border-color: #374151 !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td,
@@ -333,9 +333,36 @@ body.dark-mode tbody tr:nth-child(6) td,
 body.dark-mode tbody tr:nth-child(8) td,
 body.dark-mode tbody tr:nth-child(10) td,
 body.dark-mode tbody tr:nth-child(12) td {
-    background-color: #f8fafc !important;
-    color: #1e293b !important;
-    border-color: #e2e8f0 !important;
+    background-color: #111827 !important;
+    color: #ffffff !important;
+    border-color: #1f2937 !important;
+}
+
+/* FORZAR COLORES EN TODAS LAS TABLAS ESPECÍFICAS */
+body.dark-mode .tareas-table tbody tr:nth-child(odd) td,
+body.dark-mode .trabajo-cotidiano-table tbody tr:nth-child(odd) td,
+body.dark-mode .evaluacion-table tbody tr:nth-child(odd) td,
+body.dark-mode .proyecto-table tbody tr:nth-child(odd) td,
+body.dark-mode .portafolio-table tbody tr:nth-child(odd) td,
+body.dark-mode .indicadores-table tbody tr:nth-child(odd) td,
+body.dark-mode .sea-periodo-table tbody tr:nth-child(odd) td,
+body.dark-mode .asistencia-table tbody tr:nth-child(odd) td {
+    background-color: #1f2937 !important;
+    color: #f3f4f6 !important;
+    border-color: #374151 !important;
+}
+
+body.dark-mode .tareas-table tbody tr:nth-child(even) td,
+body.dark-mode .trabajo-cotidiano-table tbody tr:nth-child(even) td,
+body.dark-mode .evaluacion-table tbody tr:nth-child(even) td,
+body.dark-mode .proyecto-table tbody tr:nth-child(even) td,
+body.dark-mode .portafolio-table tbody tr:nth-child(even) td,
+body.dark-mode .indicadores-table tbody tr:nth-child(even) td,
+body.dark-mode .sea-periodo-table tbody tr:nth-child(even) td,
+body.dark-mode .asistencia-table tbody tr:nth-child(even) td {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+    border-color: #1f2937 !important;
 }
 
 /* FORZAR TODAS LAS CELDAS DE TABLA */
@@ -349,7 +376,7 @@ body.dark-mode tr:nth-child(even) td {
     color: #374151 !important;
 }
 
-/* SOLUCIÓN FINAL - COLORES MUY CLAROS */
+/* SOLUCIÓN FINAL - COLORES OSCUROS CON EFECTO ALTERNADO */
 body.dark-mode tbody tr:nth-child(odd) td,
 body.dark-mode tbody tr:nth-child(1) td,
 body.dark-mode tbody tr:nth-child(3) td,
@@ -357,9 +384,9 @@ body.dark-mode tbody tr:nth-child(5) td,
 body.dark-mode tbody tr:nth-child(7) td,
 body.dark-mode tbody tr:nth-child(9) td,
 body.dark-mode tbody tr:nth-child(11) td {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border-color: #e5e7eb !important;
+    background-color: #1f2937 !important;
+    color: #f3f4f6 !important;
+    border-color: #374151 !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td,
@@ -369,9 +396,9 @@ body.dark-mode tbody tr:nth-child(6) td,
 body.dark-mode tbody tr:nth-child(8) td,
 body.dark-mode tbody tr:nth-child(10) td,
 body.dark-mode tbody tr:nth-child(12) td {
-    background-color: #f8fafc !important;
-    color: #1e293b !important;
-    border-color: #e2e8f0 !important;
+    background-color: #111827 !important;
+    color: #ffffff !important;
+    border-color: #1f2937 !important;
 }
 
 .navegador-firefox body.dark-mode input[type="text"],
