@@ -8592,13 +8592,102 @@ body.dark-mode .btn-volver-menu:hover {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 15px 0;
+    gap: 15px;
+    padding: 20px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #e0e0e0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
 }
 
+.asistencia-actions .btn-volver-menu {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    margin-right: 10px;
+}
+
+.asistencia-actions .btn-volver-menu:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.asistencia-actions input[type="number"] {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 120px;
+}
+
+.asistencia-actions input[type="number"]:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.asistencia-actions .btn-eliminar-est {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.asistencia-actions .btn-eliminar-est:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.asistencia-actions label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+    margin: 0 5px 0 0;
+    white-space: nowrap;
+}
+
+/* Modo oscuro para asistencia-actions */
 body.dark-mode .asistencia-actions {
-    border-bottom-color: #444;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #475569;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .asistencia-actions input[type="number"] {
+    background: #ffffff;
+    border-color: #64748b;
+    color: #000000;
+    font-weight: 600;
+}
+
+body.dark-mode .asistencia-actions input[type="number"]:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+body.dark-mode .asistencia-actions label {
+    color: #f8fafc;
+    font-weight: 600;
 }
 
 /* ===== RESPONSIVE COMPLETO PARA MÓVILES ===== */
@@ -8648,6 +8737,31 @@ body.dark-mode .asistencia-actions {
         padding: 15px;
     }
     
+    /* Barra de acciones de asistencia */
+    .asistencia-actions {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+        align-items: stretch;
+    }
+    
+    .asistencia-actions .btn-volver-menu,
+    .asistencia-actions .btn-eliminar-est {
+        width: 100%;
+        justify-content: center;
+        margin-right: 0;
+    }
+    
+    .asistencia-actions input[type="number"] {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .asistencia-actions label {
+        text-align: center;
+        margin: 0 0 5px 0;
+    }
+    
     .actions-left, .actions-right {
         flex-direction: column;
         gap: 8px;
@@ -8659,6 +8773,12 @@ body.dark-mode .asistencia-actions {
         font-size: 0.9em;
         width: 100%;
         justify-content: center;
+    }
+    
+    .asistencia-actions .btn-volver-menu,
+    .asistencia-actions .btn-eliminar-est {
+        padding: 12px 15px;
+        font-size: 0.9em;
     }
     
     .actions-bar input[type="number"] {
