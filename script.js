@@ -4225,7 +4225,7 @@ function renderSeaPeriodo() {
 
     // Generar filas de estudiantes con datos reales
     estudiantes.forEach((estudiante, index) => {
-        const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
+        const nombreCompleto = `${estudiante.nombre || ''} ${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''}`.trim();
         
         // Calcular porcentajes reales
         const trabajoCotidiano = Number(obtenerPorcentajeTrabajoCotidianoDirecto(estudiante)) || 0;
@@ -4722,7 +4722,7 @@ function exportarSeaPeriodo() {
         const datos = [];
         
         estudiantes.forEach((estudiante, index) => {
-            const nombreCompleto = `${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''} ${estudiante.nombre || ''}`.trim();
+            const nombreCompleto = `${estudiante.nombre || ''} ${estudiante.apellido1 || ''} ${estudiante.apellido2 || ''}`.trim();
             const row = {
                 'Estudiante': nombreCompleto || `Estudiante ${index + 1}`
             };
