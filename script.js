@@ -132,6 +132,9 @@ function inicializarAplicacion() {
     // Cargar todos los datos primero
     cargarDatosGuardados();
     
+    // Detectar navegador y aplicar mejoras específicas
+    detectarNavegadorYMejorar();
+    
     // Configurar modo oscuro y eventos
     configurarModoOscuro();
     configurarEventos();
@@ -329,12 +332,283 @@ function aplicarModoOscuro(valor) {
         document.getElementById('btnModoOscuro').innerHTML = '🌙';
         document.getElementById('tooltipModoOscuro').textContent = 'Modo oscuro';
     }
+    
+    // Aplicar colores inmediatamente
+    eliminarEstilosBloqueantes();
+    aplicarColoresFilasModoOscuro(valor);
+    forzarColoresNuclear();
+    
+    // Forzar actualización de estilos para elementos dinámicos
+    setTimeout(() => {
+        eliminarEstilosBloqueantes();
+        forzarActualizacionEstilosModoOscuro();
+        forzarColoresNuclear();
+    }, 100);
+}
+
+// Función para forzar la actualización de estilos en modo oscuro
+function forzarActualizacionEstilosModoOscuro() {
+    const esModoOscuro = document.body.classList.contains('dark-mode');
+    
+    // Actualizar inputs
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select');
+    inputs.forEach(input => {
+        if (esModoOscuro) {
+            input.style.backgroundColor = 'var(--input-bg)';
+            input.style.color = 'var(--input-text)';
+            input.style.borderColor = 'var(--input-border)';
+            
+            // Mejoras específicas para Chrome
+            if (navigator.userAgent.includes('Chrome')) {
+                input.style.webkitAppearance = 'none';
+            }
+            
+            // Mejoras específicas para Firefox
+            if (navigator.userAgent.includes('Firefox')) {
+                input.style.mozAppearance = 'none';
+            }
+        } else {
+            input.style.backgroundColor = '';
+            input.style.color = '';
+            input.style.borderColor = '';
+            input.style.webkitAppearance = '';
+            input.style.mozAppearance = '';
+        }
+    });
+    
+    // Actualizar tooltips y elementos dinámicos
+    const tooltips = document.querySelectorAll('[id*="tooltip"]');
+    tooltips.forEach(tooltip => {
+        if (esModoOscuro) {
+            tooltip.style.backgroundColor = 'var(--tooltip-bg)';
+            tooltip.style.color = 'var(--tooltip-text)';
+        } else {
+            tooltip.style.backgroundColor = '';
+            tooltip.style.color = '';
+        }
+    });
+    
+    // Actualizar elementos con colores hardcodeados
+    const elementosConColorNegro = document.querySelectorAll('[style*="color:#000"], [style*="color: #000"]');
+    elementosConColorNegro.forEach(elemento => {
+        if (esModoOscuro) {
+            elemento.style.color = 'var(--color-text)';
+        }
+    });
+    
+    // FORZAR COLORES DE FILAS EN MODO OSCURO
+    const filas = document.querySelectorAll('tbody tr');
+    filas.forEach((fila, index) => {
+        const celdas = fila.querySelectorAll('td');
+        celdas.forEach(celda => {
+            if (esModoOscuro) {
+                if (index % 2 === 0) { // Fila impar (índice 0, 2, 4...)
+                    celda.style.backgroundColor = '#ffffff';
+                    celda.style.color = '#000000';
+                    celda.style.borderColor = '#e5e7eb';
+                } else { // Fila par (índice 1, 3, 5...)
+                    celda.style.backgroundColor = '#f8fafc';
+                    celda.style.color = '#1e293b';
+                    celda.style.borderColor = '#e2e8f0';
+                }
+            } else {
+                celda.style.backgroundColor = '';
+                celda.style.color = '';
+                celda.style.borderColor = '';
+            }
+        });
+    });
+    
+    // Forzar re-renderizado de tablas si es necesario
+    if (typeof renderAsistencia === 'function') {
+        setTimeout(() => {
+            renderAsistencia();
+            // Aplicar colores después del renderizado
+            setTimeout(() => {
+                aplicarColoresFilasModoOscuro(esModoOscuro);
+                forzarColoresNuclear();
+            }, 100);
+        }, 50);
+    }
+}
+
+// Función para aplicar colores de filas en modo oscuro
+function aplicarColoresFilasModoOscuro(esModoOscuro) {
+    const filas = document.querySelectorAll('tbody tr');
+    filas.forEach((fila, index) => {
+        const celdas = fila.querySelectorAll('td');
+        celdas.forEach(celda => {
+            if (esModoOscuro) {
+                if (index % 2 === 0) { // Fila impar (índice 0, 2, 4...)
+                    celda.style.backgroundColor = '#ffffff';
+                    celda.style.color = '#000000';
+                    celda.style.borderColor = '#e5e7eb';
+                } else { // Fila par (índice 1, 3, 5...)
+                    celda.style.backgroundColor = '#f8fafc';
+                    celda.style.color = '#1e293b';
+                    celda.style.borderColor = '#e2e8f0';
+                }
+            } else {
+                celda.style.backgroundColor = '';
+                celda.style.color = '';
+                celda.style.borderColor = '';
+            }
+        });
+    });
+}
+
+// FUNCIÓN NUCLEAR - APLICAR COLORES DE FORMA AGRESIVA
+function forzarColoresNuclear() {
+    if (!document.body.classList.contains('dark-mode')) return;
+    
+    // ELIMINAR TODOS LOS ESTILOS BLOQUEANTES
+    const todosLosElementos = document.querySelectorAll('*');
+    todosLosElementos.forEach(elemento => {
+        // Eliminar estilos inline que puedan estar bloqueando
+        if (elemento.style.backgroundColor && elemento.style.backgroundColor !== '') {
+            elemento.style.removeProperty('background-color');
+        }
+        if (elemento.style.background && elemento.style.background !== '') {
+            elemento.style.removeProperty('background');
+        }
+        if (elemento.style.color && elemento.style.color !== '') {
+            elemento.style.removeProperty('color');
+        }
+    });
+    
+    // Aplicar a todas las celdas de tabla
+    const todasLasCeldas = document.querySelectorAll('td');
+    todasLasCeldas.forEach((celda, index) => {
+        const fila = celda.closest('tr');
+        if (fila) {
+            const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
+            if (filaIndex % 2 === 0) { // Fila impar
+                celda.style.setProperty('background-color', '#ffffff', 'important');
+                celda.style.setProperty('color', '#000000', 'important');
+                celda.style.setProperty('border-color', '#e5e7eb', 'important');
+            } else { // Fila par
+                celda.style.setProperty('background-color', '#f8fafc', 'important');
+                celda.style.setProperty('color', '#1e293b', 'important');
+                celda.style.setProperty('border-color', '#e2e8f0', 'important');
+            }
+        }
+    });
+    
+    // Aplicar también a elementos dentro de las celdas
+    const elementosEnCeldas = document.querySelectorAll('td *');
+    elementosEnCeldas.forEach(elemento => {
+        const celda = elemento.closest('td');
+        if (celda) {
+            const fila = celda.closest('tr');
+            if (fila) {
+                const filaIndex = Array.from(fila.parentNode.children).indexOf(fila);
+                if (filaIndex % 2 === 0) { // Fila impar
+                    elemento.style.setProperty('background-color', '#ffffff', 'important');
+                    elemento.style.setProperty('color', '#000000', 'important');
+                } else { // Fila par
+                    elemento.style.setProperty('background-color', '#f8fafc', 'important');
+                    elemento.style.setProperty('color', '#1e293b', 'important');
+                }
+            }
+        }
+    });
+    
+    // FORZAR REPAINT
+    document.body.offsetHeight;
+}
+
+// FUNCIÓN PARA ELIMINAR ESTILOS BLOQUEANTES
+function eliminarEstilosBloqueantes() {
+    if (!document.body.classList.contains('dark-mode')) return;
+    
+    // Eliminar estilos de todas las filas y celdas
+    const filas = document.querySelectorAll('tbody tr');
+    filas.forEach((fila, filaIndex) => {
+        // Limpiar estilos de la fila
+        fila.style.removeProperty('background-color');
+        fila.style.removeProperty('background');
+        fila.style.removeProperty('color');
+        
+        // Limpiar estilos de las celdas
+        const celdas = fila.querySelectorAll('td');
+        celdas.forEach(celda => {
+            celda.style.removeProperty('background-color');
+            celda.style.removeProperty('background');
+            celda.style.removeProperty('color');
+            celda.style.removeProperty('border-color');
+            
+            // Limpiar estilos de elementos dentro de las celdas
+            const elementos = celda.querySelectorAll('*');
+            elementos.forEach(elemento => {
+                elemento.style.removeProperty('background-color');
+                elemento.style.removeProperty('background');
+                elemento.style.removeProperty('color');
+            });
+        });
+    });
+    
+    // Forzar repaint
+    document.body.offsetHeight;
+}
+
+// Función para detectar navegador y aplicar mejoras específicas
+function detectarNavegadorYMejorar() {
+    const userAgent = navigator.userAgent;
+    
+    if (userAgent.includes('Chrome')) {
+        document.body.classList.add('navegador-chrome');
+        console.log('🌐 Detectado Chrome - Aplicando mejoras específicas');
+    } else if (userAgent.includes('Firefox')) {
+        document.body.classList.add('navegador-firefox');
+        console.log('🦊 Detectado Firefox - Aplicando mejoras específicas');
+    } else if (userAgent.includes('Safari')) {
+        document.body.classList.add('navegador-safari');
+        console.log('🍎 Detectado Safari - Aplicando mejoras específicas');
+    } else if (userAgent.includes('Edge')) {
+        document.body.classList.add('navegador-edge');
+        console.log('🌐 Detectado Edge - Aplicando mejoras específicas');
+    }
+    
+    // Iniciar monitoreo continuo de colores en modo oscuro
+    setInterval(() => {
+        if (document.body.classList.contains('dark-mode')) {
+            eliminarEstilosBloqueantes();
+            aplicarColoresFilasModoOscuro(true);
+            forzarColoresNuclear();
+        }
+    }, 300);
 }
 
 function toggleModoOscuro() {
     const esOscuro = !document.body.classList.contains('dark-mode');
     aplicarModoOscuro(esOscuro);
     localStorage.setItem('modoOscuro', esOscuro ? '1' : '0');
+    
+    // Forzar actualización adicional después del cambio
+    setTimeout(() => {
+        forzarActualizacionEstilosModoOscuro();
+        
+        // Forzar repaint de todas las tablas
+        const tablas = document.querySelectorAll('table');
+        tablas.forEach(tabla => {
+            tabla.style.display = 'none';
+            setTimeout(() => {
+                tabla.style.display = '';
+                aplicarColoresFilasModoOscuro(esModoOscuro);
+                forzarColoresNuclear();
+            }, 10);
+        });
+        
+        // Re-renderizar todas las secciones para asegurar consistencia
+        if (typeof renderAsistencia === 'function') renderAsistencia();
+        if (typeof renderEvaluacion === 'function') renderEvaluacion();
+        if (typeof renderTareas === 'function') renderTareas();
+        if (typeof renderTrabajoCotidiano === 'function') renderTrabajoCotidiano();
+        if (typeof renderProyecto === 'function') renderProyecto();
+        if (typeof renderPortafolio === 'function') renderPortafolio();
+        if (typeof renderIndicadores === 'function') renderIndicadores();
+        if (typeof renderSeaPeriodo === 'function') renderSeaPeriodo();
+    }, 200);
 }
 
 function mostrarTooltipModoOscuro() {
@@ -447,6 +721,12 @@ function renderAsistencia() {
     
     // Verificar y corregir alertas tempranas después del renderizado
     verificarYCorregirAlertas();
+    
+    // Aplicar colores de modo oscuro después del renderizado
+    setTimeout(() => {
+        const esModoOscuro = document.body.classList.contains('dark-mode');
+        aplicarColoresFilasModoOscuro(esModoOscuro);
+    }, 150);
     
     // Validar alertas tempranas
     setTimeout(() => {

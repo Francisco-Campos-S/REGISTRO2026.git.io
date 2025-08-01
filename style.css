@@ -30,9 +30,20 @@
     --glow-success: 0 0 20px rgba(16, 185, 129, 0.4);
     --glow-warning: 0 0 20px rgba(245, 158, 11, 0.4);
     --glow-error: 0 0 20px rgba(239, 68, 68, 0.4);
+    /* Variables para inputs y elementos interactivos */
+    --input-bg: #ffffff;
+    --input-border: #d1d5db;
+    --input-focus: #3b82f6;
+    --input-text: #1e293b;
+    --input-placeholder: #9ca3af;
+    --button-bg: #ffffff;
+    --button-text: #1e293b;
+    --button-hover: #f3f4f6;
+    --tooltip-bg: #1f2937;
+    --tooltip-text: #f9fafb;
 }
 
-/* ===== MODO OSCURO ===== */
+/* ===== MODO OSCURO MEJORADO ===== */
 body.dark-mode {
     --color-primario: #60a5fa;
     --color-secundario: #818cf8;
@@ -59,7 +70,18 @@ body.dark-mode {
     --glow-success: 0 0 20px rgba(52, 211, 153, 0.5);
     --glow-warning: 0 0 20px rgba(251, 191, 36, 0.5);
     --glow-error: 0 0 20px rgba(248, 113, 113, 0.5);
-    /* Nuevos colores para mejor contraste */
+    /* Variables para inputs y elementos interactivos en modo oscuro */
+    --input-bg: #1e293b;
+    --input-border: #475569;
+    --input-focus: #60a5fa;
+    --input-text: #f8fafc;
+    --input-placeholder: #64748b;
+    --button-bg: #1e293b;
+    --button-text: #f8fafc;
+    --button-hover: #334155;
+    --tooltip-bg: #1f2937;
+    --tooltip-text: #f9fafb;
+    /* Colores específicos para mejor contraste */
     --dark-text-primary: #f8fafc;
     --dark-text-secondary: #e2e8f0;
     --dark-text-muted: #cbd5e1;
@@ -68,9 +90,6 @@ body.dark-mode {
     --dark-bg-tertiary: #475569;
     --dark-border-primary: #475569;
     --dark-border-secondary: #64748b;
-    --dark-input-bg: #1e293b;
-    --dark-input-border: #475569;
-    --dark-input-focus: #60a5fa;
 }
 
 /* ===== RESET Y BASE ===== */
@@ -78,6 +97,37 @@ body.dark-mode {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+/* Mejoras de compatibilidad con navegadores */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Asegurar que las variables CSS funcionen en todos los navegadores */
+@supports not (color: var(--color-primario)) {
+    :root {
+        --color-primario: #3b82f6;
+        --color-secundario: #6366f1;
+        --color-exito: #10b981;
+        --color-alerta: #f59e0b;
+        --color-error: #ef4444;
+        --color-fondo: #f8fafc;
+        --color-table-bg: #ffffff;
+        --color-table-row: #f1f5f9;
+        --color-table-hover: #e2e8f0;
+        --color-text: #1e293b;
+        --color-border: #e2e8f0;
+        --input-bg: #ffffff;
+        --input-border: #d1d5db;
+        --input-focus: #3b82f6;
+        --input-text: #1e293b;
+        --button-bg: #ffffff;
+        --button-text: #1e293b;
+        --button-hover: #f3f4f6;
+        --tooltip-bg: #1f2937;
+        --tooltip-text: #f9fafb;
+    }
 }
 
 body {
@@ -94,7 +144,263 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-/* ===== HEADER ===== */
+/* Mejorar el fondo en modo oscuro */
+body.dark-mode {
+    background: linear-gradient(135deg, var(--color-fondo) 0%, #1e293b 100%);
+}
+
+/* Mejoras específicas para Chrome y Firefox en modo oscuro */
+@supports (-webkit-appearance: none) {
+    /* Chrome/Safari específico */
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="number"],
+    body.dark-mode input[type="date"],
+    body.dark-mode select {
+        -webkit-appearance: none;
+        background: var(--input-bg) !important;
+        color: var(--input-text) !important;
+    }
+    
+    /* Forzar colores de filas en Chrome */
+    body.dark-mode tbody tr:nth-child(odd) td {
+        background: #6b7280 !important;
+        color: #ffffff !important;
+        border-color: #9ca3af !important;
+    }
+    
+    body.dark-mode tbody tr:nth-child(even) td {
+        background: #9ca3af !important;
+        color: #1f2937 !important;
+        border-color: #d1d5db !important;
+    }
+}
+
+@supports (-moz-appearance: none) {
+    /* Firefox específico */
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="number"],
+    body.dark-mode input[type="date"],
+    body.dark-mode select {
+        -moz-appearance: none;
+        background: var(--input-bg) !important;
+        color: var(--input-text) !important;
+    }
+    
+    /* Forzar colores de filas en Firefox */
+    body.dark-mode tbody tr:nth-child(odd) td {
+        background: #6b7280 !important;
+        color: #ffffff !important;
+        border-color: #9ca3af !important;
+    }
+    
+    body.dark-mode tbody tr:nth-child(even) td {
+        background: #9ca3af !important;
+        color: #1f2937 !important;
+        border-color: #d1d5db !important;
+    }
+}
+
+/* Mejoras para inputs de fecha en modo oscuro */
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+body.dark-mode input[type="date"]::-webkit-datetime-edit-year-field,
+body.dark-mode input[type="date"]::-webkit-datetime-edit-month-field,
+body.dark-mode input[type="date"]::-webkit-datetime-edit-day-field {
+    color: var(--input-text) !important;
+}
+
+/* Mejoras para inputs de número en modo oscuro */
+body.dark-mode input[type="number"]::-webkit-outer-spin-button,
+body.dark-mode input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    background: var(--input-bg);
+}
+
+body.dark-mode input[type="number"]::-webkit-outer-spin-button {
+    background: var(--input-bg);
+    color: var(--input-text);
+}
+
+/* Estilos específicos por navegador */
+.navegador-chrome body.dark-mode input[type="text"],
+.navegador-chrome body.dark-mode input[type="number"],
+.navegador-chrome body.dark-mode input[type="date"],
+.navegador-chrome body.dark-mode select {
+    -webkit-appearance: none;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+}
+
+/* FORZAR COLORES DE FILAS EN TODOS LOS NAVEGADORES - SOLUCIÓN AGRESIVA */
+body.dark-mode tbody tr:nth-child(odd) td,
+.navegador-chrome body.dark-mode tbody tr:nth-child(odd) td,
+.navegador-firefox body.dark-mode tbody tr:nth-child(odd) td,
+body.dark-mode tbody tr:nth-child(1) td,
+body.dark-mode tbody tr:nth-child(3) td,
+body.dark-mode tbody tr:nth-child(5) td,
+body.dark-mode tbody tr:nth-child(7) td,
+body.dark-mode tbody tr:nth-child(9) td {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td,
+.navegador-chrome body.dark-mode tbody tr:nth-child(even) td,
+.navegador-firefox body.dark-mode tbody tr:nth-child(even) td,
+body.dark-mode tbody tr:nth-child(2) td,
+body.dark-mode tbody tr:nth-child(4) td,
+body.dark-mode tbody tr:nth-child(6) td,
+body.dark-mode tbody tr:nth-child(8) td,
+body.dark-mode tbody tr:nth-child(10) td {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    border-color: #e5e7eb !important;
+}
+
+/* SOLUCIÓN ULTRA AGRESIVA - APLICAR A TODAS LAS CELDAS */
+body.dark-mode table tbody tr td {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+body.dark-mode table tbody tr:nth-child(even) td {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+/* SOLUCIÓN NUCLEAR - APLICAR A TODO */
+body.dark-mode * {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) * {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+/* ELIMINAR TODOS LOS BLOQUEOS DE COLOR */
+body.dark-mode tbody tr,
+body.dark-mode tbody tr *,
+body.dark-mode tbody tr td,
+body.dark-mode tbody tr td * {
+    background-color: inherit !important;
+    background: inherit !important;
+    background-image: none !important;
+    background-attachment: initial !important;
+    background-clip: initial !important;
+    background-origin: initial !important;
+    background-position: initial !important;
+    background-repeat: initial !important;
+    background-size: initial !important;
+}
+
+/* ELIMINAR COLORES MARRONES OSCUROS ESPECÍFICAMENTE */
+body.dark-mode tbody tr td[style*="brown"],
+body.dark-mode tbody tr td[style*="rgb(139, 69, 19)"],
+body.dark-mode tbody tr td[style*="#8B4513"],
+body.dark-mode tbody tr td[style*="dark"],
+body.dark-mode tbody tr td[style*="maroon"],
+body.dark-mode tbody tr td[style*="saddlebrown"],
+body.dark-mode tbody tr td[style*="chocolate"],
+body.dark-mode tbody tr td[style*="peru"],
+body.dark-mode tbody tr td[style*="sienna"] {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* FORZAR COLORES CLAROS EN TODAS LAS FILAS */
+body.dark-mode tbody tr:nth-child(odd) td,
+body.dark-mode tbody tr:nth-child(1) td,
+body.dark-mode tbody tr:nth-child(3) td,
+body.dark-mode tbody tr:nth-child(5) td,
+body.dark-mode tbody tr:nth-child(7) td,
+body.dark-mode tbody tr:nth-child(9) td,
+body.dark-mode tbody tr:nth-child(11) td {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #e5e7eb !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td,
+body.dark-mode tbody tr:nth-child(2) td,
+body.dark-mode tbody tr:nth-child(4) td,
+body.dark-mode tbody tr:nth-child(6) td,
+body.dark-mode tbody tr:nth-child(8) td,
+body.dark-mode tbody tr:nth-child(10) td,
+body.dark-mode tbody tr:nth-child(12) td {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* FORZAR TODAS LAS CELDAS DE TABLA */
+body.dark-mode td {
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+body.dark-mode tr:nth-child(even) td {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+/* SOLUCIÓN FINAL - COLORES MUY CLAROS */
+body.dark-mode tbody tr:nth-child(odd) td,
+body.dark-mode tbody tr:nth-child(1) td,
+body.dark-mode tbody tr:nth-child(3) td,
+body.dark-mode tbody tr:nth-child(5) td,
+body.dark-mode tbody tr:nth-child(7) td,
+body.dark-mode tbody tr:nth-child(9) td,
+body.dark-mode tbody tr:nth-child(11) td {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #e5e7eb !important;
+}
+
+body.dark-mode tbody tr:nth-child(even) td,
+body.dark-mode tbody tr:nth-child(2) td,
+body.dark-mode tbody tr:nth-child(4) td,
+body.dark-mode tbody tr:nth-child(6) td,
+body.dark-mode tbody tr:nth-child(8) td,
+body.dark-mode tbody tr:nth-child(10) td,
+body.dark-mode tbody tr:nth-child(12) td {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+}
+
+.navegador-firefox body.dark-mode input[type="text"],
+.navegador-firefox body.dark-mode input[type="number"],
+.navegador-firefox body.dark-mode input[type="date"],
+.navegador-firefox body.dark-mode select {
+    -moz-appearance: none;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+}
+
+.navegador-safari body.dark-mode input[type="text"],
+.navegador-safari body.dark-mode input[type="number"],
+.navegador-safari body.dark-mode input[type="date"],
+.navegador-safari body.dark-mode select {
+    -webkit-appearance: none;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+}
+
+.navegador-edge body.dark-mode input[type="text"],
+.navegador-edge body.dark-mode input[type="number"],
+.navegador-edge body.dark-mode input[type="date"],
+.navegador-edge body.dark-mode select {
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+}
+
+/* ===== HEADER MEJORADO ===== */
 header {
     text-align: center;
     position: fixed;
@@ -113,6 +419,12 @@ header {
     transition: var(--transition);
     /* Mejoras de UX */
     will-change: transform, box-shadow;
+}
+
+/* Header en modo oscuro */
+body.dark-mode header {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+    border-bottom: 1px solid rgba(96, 165, 250, 0.2);
 }
 
 /* Ajustar el contenido principal para el header fijo */
@@ -139,38 +451,48 @@ body.dark-mode header.scrolled {
     border-bottom: 1px solid rgba(96, 165, 250, 0.2);
 }
 
+/* ===== BOTÓN MODO OSCURO MEJORADO ===== */
 #btnModoOscuro {
     position: absolute;
     top: 18px;
     right: 18px;
-    background: none;
-    border: none;
+    background: var(--button-bg);
+    border: 2px solid var(--color-border);
     font-size: 2.2em;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
     z-index: 20;
     padding: 8px;
     border-radius: 50%;
+    box-shadow: var(--shadow-soft);
 }
 
 #btnModoOscuro:hover {
     transform: scale(1.1);
-    background: rgba(255,255,255,0.1);
+    background: var(--button-hover);
+    border-color: var(--color-primario);
+    box-shadow: var(--shadow-medium);
 }
 
+/* Tooltip mejorado */
 #tooltipModoOscuro {
     display: none;
     position: absolute;
     top: 60px;
     right: 18px;
-    background: #222;
-    color: #fff;
-    padding: 7px 18px;
+    background: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    padding: 8px 16px;
     border-radius: 8px;
-    font-size: 1em;
-    box-shadow: 0 2px 8px var(--color-shadow);
+    font-size: 0.9em;
+    font-weight: 500;
+    box-shadow: var(--shadow-medium);
     z-index: 30;
     pointer-events: none;
+    white-space: nowrap;
+    border: 1px solid var(--color-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .header-content {
@@ -582,13 +904,15 @@ body.dark-mode td.nombre {
 }
 
 body.dark-mode tbody tr:nth-child(odd) td.nombre {
-    background: #2d3436 !important;
-    color: #fff !important;
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td.nombre {
-    background: #4a5568 !important;
-    color: #fff !important;
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    border-color: #e5e7eb !important;
 }
 
 body.dark-mode td.nombre:focus-within {
@@ -598,8 +922,8 @@ body.dark-mode td.nombre:focus-within {
 
 /* Inputs de nombre iguales a inputs normales en modo oscuro */
 body.dark-mode td.nombre input[type="text"] {
-    background: rgba(44,62,80,0.18) !important;
-    color: #fff !important;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
     border: 2px solid var(--color-primario) !important;
     box-shadow: 0 2px 8px var(--color-shadow) !important;
     border-radius: 10px;
@@ -610,16 +934,16 @@ body.dark-mode td.nombre input[type="text"] {
 
 /* Focus igual a inputs normales */
 body.dark-mode td.nombre input[type="text"]:focus {
-    background: #263238 !important;
-    border: 2px solid var(--color-primario) !important;
+    background: var(--dark-bg-secondary) !important;
+    border: 2px solid var(--input-focus) !important;
     box-shadow: 0 4px 16px rgba(25,118,210,0.13) !important;
     outline: none;
 }
 
-/* Texto negro en inputs de filas pares (blancas) en modo oscuro - IGUAL A INPUTS NORMALES */
+/* Corregir inputs de nombres en filas pares del modo oscuro */
 body.dark-mode tbody tr:nth-child(even) td.nombre input[type="text"] {
-    color: #000 !important;
-    background: #fff !important;
+    color: var(--input-text) !important;
+    background: var(--input-bg) !important;
 }
 
 /* Asegurar que la columna de acciones no sea sticky */
@@ -632,7 +956,7 @@ th.th-resumen, td.th-resumen {
 
 /* Números en celdas de resumen - negros y más grandes */
 td.th-resumen {
-    color: #000 !important;
+    color: var(--color-text) !important;
     font-weight: 900 !important;
     font-size: 1.3em !important;
     text-align: center !important;
@@ -640,7 +964,7 @@ td.th-resumen {
 
 /* Modo oscuro para números de resumen */
 body.dark-mode td.th-resumen {
-    color: #fff !important;
+    color: var(--color-text) !important;
     font-weight: 900 !important;
     font-size: 1.3em !important;
     text-align: center !important;
@@ -648,7 +972,7 @@ body.dark-mode td.th-resumen {
 
 /* Forzar colores en modo oscuro para números de resumen */
 body.dark-mode td[style*="color:#000"] {
-    color: #fff !important;
+    color: var(--color-text) !important;
 }
 
 th.apellido1, td.apellido1,
@@ -704,13 +1028,15 @@ tbody tr:nth-child(even) td {
 }
 
 body.dark-mode tbody tr:nth-child(odd) td {
-    background: #1e293b !important;
-    color: #f8fafc !important;
+    background-color: #e5e7eb !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
 }
 
 body.dark-mode tbody tr:nth-child(even) td {
-    background: #334155 !important;
-    color: #f8fafc !important;
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    border-color: #e5e7eb !important;
 }
 
 /* ===== CELDA NUMERO ===== */
@@ -753,10 +1079,10 @@ th.numero {
     max-width: 55px;
 }
 
-/* ===== INPUTS Y SELECTS ===== */
+/* ===== INPUTS Y SELECTS MEJORADOS ===== */
 input[type="text"], select, input[type="date"] {
-    background: #fff !important;
-    color: #263238 !important;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
     box-shadow: var(--shadow-soft) !important;
     border: 1.5px solid var(--color-border) !important;
     border-radius: 10px;
@@ -774,35 +1100,35 @@ input[type="text"]:hover, select:hover, input[type="date"]:hover {
 }
 
 input[type="text"]:focus, select:focus, input[type="date"]:focus {
-    border: 2px solid var(--color-primario) !important;
+    border: 2px solid var(--input-focus) !important;
     box-shadow: var(--shadow-strong), var(--glow-primary) !important;
-    background: #fff !important;
+    background: var(--input-bg) !important;
     outline: none;
 }
 
 body.dark-mode input[type="text"], 
 body.dark-mode select, 
 body.dark-mode input[type="date"] {
-    background: #1e293b !important;
-    color: #f8fafc !important;
-    border: 2px solid #475569 !important;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 2px solid var(--input-border) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.dark-mode input[type="text"]:focus, 
 body.dark-mode select:focus, 
 body.dark-mode input[type="date"]:focus {
-    background: #334155 !important;
-    border: 2px solid #60a5fa !important;
+    background: var(--dark-bg-secondary) !important;
+    border: 2px solid var(--input-focus) !important;
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
 }
 
-/* Texto negro en inputs de filas pares (blancas) en modo oscuro */
+/* Corregir inputs en filas pares del modo oscuro */
 body.dark-mode tbody tr:nth-child(even) input[type="text"],
 body.dark-mode tbody tr:nth-child(even) select,
 body.dark-mode tbody tr:nth-child(even) input[type="number"] {
-    color: #000 !important;
-    background: #fff !important;
+    color: var(--input-text) !important;
+    background: var(--input-bg) !important;
 }
 
 input[type="number"] {
@@ -810,7 +1136,8 @@ input[type="number"] {
     padding: 10px 6px;
     border-radius: 10px;
     border: 1.5px solid var(--color-border);
-    background: #f8fafc;
+    background: var(--input-bg);
+    color: var(--input-text);
     font-size: 1em;
     text-align: center;
     margin-bottom: 2px;
@@ -873,15 +1200,15 @@ input[type="number"]:focus {
 
 /* Estilos generales para inputs de números en modo oscuro */
 body.dark-mode input[type="number"] {
-    background: #1e293b !important;
-    color: #f8fafc !important;
-    border: 2px solid #475569 !important;
+    background: var(--input-bg) !important;
+    color: var(--input-text) !important;
+    border: 2px solid var(--input-border) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.dark-mode input[type="number"]:focus {
-    background: #334155 !important;
-    border: 2px solid #60a5fa !important;
+    background: var(--dark-bg-secondary) !important;
+    border: 2px solid var(--input-focus) !important;
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
 }
 
@@ -1129,9 +1456,11 @@ tbody tr.fila-focus-activa td.nombre {
 /* Dark mode para borde rojo - MÁS VISIBLE */
 body.dark-mode tbody tr:hover,
 body.dark-mode tbody tr.fila-focus-activa {
+    background: #1f2937 !important;
     box-shadow: 0 0 0 4px #ff6b6b !important;
     z-index: 100 !important;
     position: relative !important;
+    transform: translateY(-1px);
 }
 
 /* ===== ALERTAS TEMPRANAS ===== */
