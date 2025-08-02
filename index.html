@@ -14,33 +14,67 @@
     <!-- SheetJS para exportar a Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
-    <header>
+
+
+    <!-- Menú de navegación separado del header -->
+    <div class="menu-navegacion">
+        <div class="menu-botones">
+            <button onclick="scrollToSection('asistencia')" class="menu-btn asistencia-btn">
+                <span>📊</span> Asistencia
+            </button>
+            <button onclick="scrollToSection('indicadores')" class="menu-btn indicadores-btn">
+                <span>📊</span> Indicadores
+            </button>
+            <button onclick="scrollToSection('sea-periodo-app')" class="menu-btn sea-periodo-btn">
+                <span>📊</span> SEA I PERÍODO
+            </button>
+            <button onclick="scrollToSection('trabajo-cotidiano')" class="menu-btn trabajo-btn">
+                <span>📋</span> Trabajo Cotidiano
+            </button>
+            <button onclick="scrollToSection('tareas')" class="menu-btn tareas-btn">
+                <span>📚</span> Tareas
+            </button>
+            <button onclick="scrollToSection('evaluacion')" class="menu-btn evaluacion-btn">
+                <span>📝</span> Evaluación
+            </button>
+            <button onclick="scrollToSection('proyecto')" class="menu-btn proyecto-btn">
+                <span>🔬</span> Proyecto
+            </button>
+            <button onclick="scrollToSection('portafolio')" class="menu-btn portafolio-btn">
+                <span>📁</span> Portafolio
+            </button>
+            <button onclick="mostrarResumenEvaluaciones()" class="menu-btn resumen-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <span>📋</span> Resumen
+            </button>
+        </div>
+        
+        <!-- Botón de modo oscuro -->
         <button id="btnModoOscuro" onclick="toggleModoOscuro()">
             🌙
         </button>
         <div id="tooltipModoOscuro">Modo oscuro</div>
-        <div class="header-content">
-            <div class="header-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Asistencia">
-            </div>
-            <div class="header-text">
-                <h1>
-                    <span class="icon-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="4"/>
-                            <line x1="16" y1="2" x2="16" y2="6"/>
-                            <line x1="8" y1="2" x2="8" y2="6"/>
-                            <line x1="3" y1="10" x2="21" y2="10"/>
-                            <line x1="7" y1="14" x2="17" y2="14"/>
-                            <line x1="7" y1="18" x2="17" y2="18"/>
-                        </svg>
-                    </span>
-                    <span>Registro de Asistencia 2026</span>
-                </h1>
-                <span class="subtitle">Sistema profesional para el control de asistencia por día y estudiante</span>
-            </div>
+    </div>
+
+    <!-- Contenido principal debajo del menú -->
+    <div class="main-content-header">
+        <div class="main-content-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Persona">
         </div>
-    </header>
+        <div class="main-content-calendar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="4"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <line x1="7" y1="14" x2="17" y2="14"/>
+                <line x1="7" y1="18" x2="17" y2="18"/>
+            </svg>
+        </div>
+        <div class="main-content-text">
+            <h2>Registro de Asistencia 2026</h2>
+            <p>Sistema profesional para el control de asistencia por día y estudiante</p>
+        </div>
+    </div>
 
     <div class="instrucciones">
         <strong>📚 Instrucciones:</strong>
@@ -78,39 +112,7 @@
 
     <div id="contadorEstudiantes"></div>
 
-    <!-- Menú de navegación -->
-    <div class="menu-navegacion">
-        <h3>📋 Menú de Navegación</h3>
-        <div class="menu-botones">
-            <button onclick="scrollToSection('asistencia')" class="menu-btn asistencia-btn">
-                <span>📊</span> Asistencia
-            </button>
-            <button onclick="scrollToSection('indicadores')" class="menu-btn indicadores-btn">
-                <span>📊</span> Indicadores
-            </button>
-            <button onclick="scrollToSection('sea-periodo-app')" class="menu-btn sea-periodo-btn">
-                <span>📊</span> SEA I PERIÓDO
-            </button>
-            <button onclick="scrollToSection('trabajo-cotidiano')" class="menu-btn trabajo-btn">
-                <span>📋</span> Trabajo Cotidiano
-            </button>
-            <button onclick="scrollToSection('tareas')" class="menu-btn tareas-btn">
-                <span>📚</span> Tareas
-            </button>
-            <button onclick="scrollToSection('evaluacion')" class="menu-btn evaluacion-btn">
-                <span>📝</span> Evaluación
-            </button>
-            <button onclick="scrollToSection('proyecto')" class="menu-btn proyecto-btn">
-                <span>🔬</span> Proyecto
-            </button>
-            <button onclick="scrollToSection('portafolio')" class="menu-btn portafolio-btn">
-                <span>📁</span> Portafolio
-            </button>
-            <button onclick="mostrarResumenEvaluaciones()" class="menu-btn resumen-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <span>📋</span> Resumen Evaluaciones
-            </button>
-        </div>
-    </div>
+
 
     <!-- Tabla de referencia de porcentajes -->
     <div class="tabla-referencia">

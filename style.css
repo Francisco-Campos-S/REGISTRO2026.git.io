@@ -370,7 +370,7 @@ body.dark-mode header {
 
 /* Ajustar el contenido principal para el header fijo */
 body {
-    padding-top: 200px;
+    padding-top: 120px;
     scroll-behavior: smooth;
 }
 
@@ -394,24 +394,24 @@ body.dark-mode header.scrolled {
 
 /* ===== BOTÓN MODO OSCURO MEJORADO ===== */
 #btnModoOscuro {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    background: var(--button-bg);
-    border: 2px solid var(--color-border);
-    font-size: 2.2em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 20;
-    padding: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
     border-radius: 50%;
-    box-shadow: var(--shadow-soft);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 1.2em;
+    box-shadow: var(--shadow-medium);
+    transition: all 0.3s var(--animation-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 #btnModoOscuro:hover {
     transform: scale(1.1);
-    background: var(--button-hover);
-    border-color: var(--color-primario);
+    background: rgba(255, 255, 255, 1);
     box-shadow: var(--shadow-medium);
 }
 
@@ -419,19 +419,18 @@ body.dark-mode header.scrolled {
 #tooltipModoOscuro {
     display: none;
     position: absolute;
-    top: 60px;
-    right: 18px;
-    background: var(--tooltip-bg);
-    color: var(--tooltip-text);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 0.9em;
+    top: 50px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8em;
     font-weight: 500;
     box-shadow: var(--shadow-medium);
     z-index: 30;
     pointer-events: none;
     white-space: nowrap;
-    border: 1px solid var(--color-border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
@@ -441,13 +440,14 @@ body.dark-mode header.scrolled {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 140px;
+    height: 120px;
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     border-radius: var(--border-radius-lg);
     border: 2.5px solid #93c5fd;
     box-shadow: var(--shadow-medium);
     margin-bottom: 10px;
     transition: var(--transition);
+    padding: 0 25px;
 }
 
 .header-icon img {
@@ -464,12 +464,13 @@ body.dark-mode .header-content {
 .header-text {
     text-align: left;
     margin-left: 22px;
+    flex-shrink: 0;
 }
 
 .header-text h1 {
-    font-size: 2.8em;
-    margin-bottom: 8px;
-    letter-spacing: 1.5px;
+    font-size: 2.2em;
+    margin-bottom: 0;
+    letter-spacing: 1px;
     font-weight: 900;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
@@ -477,7 +478,7 @@ body.dark-mode .header-content {
     -webkit-text-fill-color: transparent;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     text-shadow: none;
 }
 
@@ -521,6 +522,76 @@ body.dark-mode .subtitle {
     color: #e2e8f0;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content-header {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-radius: 15px;
+    border: 2.5px solid #93c5fd;
+    box-shadow: var(--shadow-medium);
+    margin: 10px 20px 20px 20px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    transition: var(--transition);
+    min-height: 120px;
+}
+
+.main-content-icon img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #000;
+    background: #fff;
+    object-fit: cover;
+}
+
+.main-content-calendar {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content-text h2 {
+    font-size: 2.4em;
+    font-weight: 900;
+    color: #1976d2;
+    margin: 0 0 10px 0;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.main-content-text p {
+    font-size: 1.2em;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+}
+
+body.dark-mode .main-content-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    border: 2.5px solid #3b82f6;
+}
+
+body.dark-mode .main-content-text h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .main-content-text p {
+    color: #e2e8f0;
 }
 
 /* ===== INSTRUCCIONES ===== */
@@ -1654,9 +1725,7 @@ tr:nth-child(odd) td.numero {
         right: 0;
     }
     
-    body {
-        padding-top: 160px;
-    }
+
     
     .header-content {
         height: auto;
@@ -8692,13 +8761,20 @@ body.dark-mode .sea-periodo-table .nota-final:not(.aprobado):not(.aplazado) {
 /* ===== MENÚ DE NAVEGACIÓN ===== */
 .menu-navegacion {
     background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-    border-radius: 15px;
-    padding: 25px;
-    margin: 30px 0;
+    border-radius: 0 0 15px 15px;
+    padding: 12px 20px;
+    margin: 0;
     box-shadow: var(--shadow-medium);
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
     overflow: hidden;
     transition: var(--transition);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .menu-navegacion::before {
@@ -8725,9 +8801,11 @@ body.dark-mode .sea-periodo-table .nota-final:not(.aprobado):not(.aplazado) {
 }
 
 .menu-botones {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
     position: relative;
     z-index: 2;
 }
@@ -8736,22 +8814,24 @@ body.dark-mode .sea-periodo-table .nota-final:not(.aprobado):not(.aplazado) {
     background: rgba(255, 255, 255, 0.95);
     color: #2c3e50;
     border: none;
-    padding: 15px 20px;
-    border-radius: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 1em;
+    font-size: 0.9em;
     transition: all 0.3s var(--animation-smooth);
     box-shadow: var(--shadow-medium);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     overflow: hidden;
     /* Mejoras de UX */
     will-change: transform, box-shadow;
     letter-spacing: 0.3px;
+    white-space: nowrap;
+    min-width: fit-content;
 }
 
 .menu-btn::before {
@@ -8990,9 +9070,41 @@ body.dark-mode .asistencia-actions label {
         padding: 15px 10px;
     }
     
+    body {
+        padding-top: 100px;
+    }
+    
+    .menu-navegacion {
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 8px 12px;
+        border-radius: 0 0 12px 12px;
+    }
+    
+    #btnModoOscuro {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+    }
+    
     .header-content {
         height: 100px;
         padding: 15px;
+    }
+    
+    .main-content-header {
+        margin: 15px;
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .main-content-text h2 {
+        font-size: 1.8em;
+    }
+    
+    .main-content-text p {
+        font-size: 1em;
     }
     
     .header-text h1 {
@@ -9242,6 +9354,44 @@ body.dark-mode .asistencia-actions label {
         padding: 10px;
     }
     
+    body {
+        padding-top: 80px;
+    }
+    
+    .menu-navegacion {
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 6px 8px;
+        border-radius: 0 0 10px 10px;
+    }
+    
+    #btnModoOscuro {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9em;
+    }
+    
+    .main-content-header {
+        margin: 10px;
+        padding: 15px;
+        gap: 10px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .main-content-text h2 {
+        font-size: 1.5em;
+    }
+    
+    .main-content-text p {
+        font-size: 0.9em;
+    }
+    
+
+    
+
+    
     .header-text h1 {
         font-size: 1.2em;
     }
@@ -9260,11 +9410,6 @@ body.dark-mode .asistencia-actions label {
         padding: 12px 15px;
         font-size: 0.9em;
         min-height: 45px;
-    }
-    
-    .menu-navegacion {
-        padding: 15px;
-        margin: 15px 0;
     }
     
     .menu-navegacion h3 {
