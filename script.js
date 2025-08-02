@@ -2506,8 +2506,8 @@ function renderTrabajoCotidiano() {
             const fechaFormateada = dia.fecha || new Date().toISOString().split('T')[0];
             
             html += `<td class="editable" style="position:relative;">
-                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" style="padding-right:40px;width:150px;font-size:1.1em;">
-                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
+                <input type="date" value="${fechaFormateada}" onchange="actualizarFechaTrabajo(${idx}, this.value)" style="width:150px;font-size:1.1em;margin-right:10px;">
+                <button onclick="eliminarDiaTrabajo(${idx})" style="position:absolute;right:0;top:50%;transform:translateY(-50%);background:#dc2626;color:white;border:none;border-radius:4px;padding:2px 6px;font-size:0.7em;cursor:pointer;">🗑️</button>
             </td>`;
         });
     } else {

@@ -2534,6 +2534,14 @@ body.dark-mode .tareas-table .config-row button:hover {
     vertical-align: middle;
     color: #2c3e50;
     font-weight: 500;
+    min-width: 200px; /* Ancho mínimo para las celdas */
+}
+
+/* Estilos específicos para celdas con fecha y botón eliminar */
+.trabajo-cotidiano-table td.editable {
+    min-width: 220px !important;
+    padding: 8px !important;
+    vertical-align: middle !important;
 }
 
 .trabajo-cotidiano-table .config-row {
@@ -2829,10 +2837,29 @@ body.dark-mode .trabajo-cotidiano-table input[type="date"] {
     border-radius: 6px;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-    width: 180px;
-    padding: 10px 12px;
+    width: 150px;
+    padding: 8px;
     font-size: 1.1em;
 }
+
+
+
+
+
+.trabajo-cotidiano-table .fecha-input:focus {
+    border-color: #388e3c;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+}
+
+
+
+
+
+
+
+
 
 body.dark-mode .trabajo-cotidiano-table input[type="number"]:focus {
     border-color: #388e3c;
